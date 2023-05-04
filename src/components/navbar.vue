@@ -1,20 +1,24 @@
 <template>
     <div class="nav">
         <div class="logo">
-            <img src="@/assets/logo.png" alt="">
-            <span> R E D B R I C K </span>
+            <img src="@/assets/karavya.png" alt="">
+            <span> Vuejs e-Commerce </span>
+            <!-- <span> R E D B R I C K </span> -->
         </div>
         <div class="navelements">
-            <router-link to="/">Toys</router-link>
-            <router-link to="/">
+            <!-- <router-link to="/">Toys</router-link> -->
+            <router-link to="/">Home</router-link>
+            <router-link to="/">About</router-link>
+            <!-- <router-link to="/">
                 <span><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M11 7H7V11H11V7Z" fill="currentColor" />
                         <path d="M11 13H7V17H11V13Z" fill="currentColor" />
                         <path d="M13 13H17V17H13V13Z" fill="currentColor" />
                         <path d="M17 7H13V11H17V7Z" fill="currentColor" />
                     </svg>Catalogue</span>
-            </router-link>
-            <router-link to="/">Charactères</router-link>
+            </router-link> -->
+            <!-- <router-link to="/">Charactères</router-link> -->
+            <router-link to="/">Products</router-link>
             <router-link to="/">Brand</router-link>
             <div class="flex">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -30,7 +34,7 @@
 
         </div>
         <div class="user">
-            <router-link to="/dashboard">
+            <!-- <router-link to="/dashboard">
                 <span><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" clip-rule="evenodd"
                             d="M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7ZM14 7C14 8.10457 13.1046 9 12 9C10.8954 9 10 8.10457 10 7C10 5.89543 10.8954 5 12 5C13.1046 5 14 5.89543 14 7Z"
@@ -39,29 +43,56 @@
                             d="M16 15C16 14.4477 15.5523 14 15 14H9C8.44772 14 8 14.4477 8 15V21H6V15C6 13.3431 7.34315 12 9 12H15C16.6569 12 18 13.3431 18 15V21H16V15Z"
                             fill="currentColor" />
                     </svg> {{getCurrentUser()}} </span>
-            </router-link>
-
+            </router-link> -->
+            <div class="wrapper" v-if="userType()">
+              <router-link to="/profile" :title="userType()">Profile</router-link>
+              <button @click="logout" class="btn link logout">Logout</button>
+            </div>
+            <div class="wrapper" v-else>
+              <router-link to="/auth">Register</router-link>
+              <router-link to="/auth">Login</router-link>
+            </div>
         </div>
     </div>
 </template>
 <script setup>
 
+import { ref } from 'vue';
+let name = ref('');
 
 const getCurrentUser = async () => {
 
-    const response = await fetch('http://localhost:3005/api/user', {
+    const response = await fetch('http://127.0.0.1:8000/api/auth/user-profile', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
+            Authorization : `Bearer ${sessionStorage.jwtToken}` 
         },
-        cookie: 'jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaWF0IjoxNjYzMTU5MjkxLCJleHAiOjE2NjMyNDU2OTF9.NdvORxlq7z2HLXePYqCDluugQN-pO8pKEYOJtZ8iGQY; '
+        // cookie: 'jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaWF0IjoxNjYzMTU5MjkxLCJleHAiOjE2NjMyNDU2OTF9.NdvORxlq7z2HLXePYqCDluugQN-pO8pKEYOJtZ8iGQY; '
 
     })
     const res = await response.json()
-    console.log(res)
+    console.log('res', res)
     return res
 
 }
+
+const userType = () => {
+  // return sessionStorage.getItem('email')
+  // return sessionStorage.getItem('name')
+  // return window.sessionStorage.getItem('email')
+  name = window.sessionStorage.getItem('name')
+  return name;
+  // return window.sessionStorage.getItem('name')
+}
+
+const logout = async () => {
+  // alert('l');
+  sessionStorage.clear();
+  localStorage.clear();
+  window.location = '/';
+}
+
 
 </script>
 <style scoped>

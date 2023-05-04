@@ -6,6 +6,34 @@ export const routes = [
     component: Home,
     meta: { requiresAuth: false },
   },
+  // {
+  //   path: '/about',
+  //   name: 'About',
+  //   // route level code-splitting
+  //   // this generates a separate chunk (About.[hash].js) for this route
+  //   // which is lazy-loaded when the route is visited.
+  //   component: () => import("@views/AboutView.vue"),
+  //   meta: { breadCrumb: 'About' },
+  // },
+  {
+    path: '/register',
+    name: 'Register',
+    // component: Register
+    component: () => import("@/views/Register.vue"),
+    meta: { breadCrumb: 'Register' },
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: import("@/views/Login.vue"),
+    meta: { breadCrumb: 'Login' },
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: import("@/views/Profile.vue"),
+    meta: { breadCrumb: 'Profile' },
+  },
   {
     path: "/auth",
     name: "auth",

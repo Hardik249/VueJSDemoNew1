@@ -2,8 +2,9 @@
         <div class="auth">
                 <div v-if="action === 'register'" class="register">
                         <div class="top">
-                                <img src="@/assets/logo.png" alt="logo" />
-                                <h3> RED REGISTER </h3>
+                                <img src="@/assets/karavya.png" alt="logo" />
+                                <h3> Karavya REGISTER </h3>
+                                <!-- <h3> RED REGISTER </h3> -->
                         </div>
                         <forminput class="login_input" :svg_value="inputs.register.firstname.svg"
                                 :placeholder="inputs.register.firstname.placeholder"
@@ -49,15 +50,16 @@
                 <!-- This is the login  -->
                 <form v-if="action === 'login'" :onsubmit="try_login" class="login">
                         <div class="top">
-                                <img src="@/assets/logo.png" alt="logo" />
-                                <h3> RED LOGIN </h3>
+                                <img src="@/assets/karavya.png" alt="logo" />
+                                <h3> Karavya LOGIN </h3>
+                                <!-- <h3> RED LOGIN </h3> -->
                         </div>
                         <formfeedback v-if="message !== ''"
                                 :svg_value="'M10.2426 16.3137L6 12.071L7.41421 10.6568L10.2426 13.4853L15.8995 7.8284L17.3137 9.24262L10.2426 16.3137Z'"
                                 :feedback="feedback"> {{ message }}
                         </formfeedback>
                         <forminput class="login_input" :svg_value="inputs.login.email.svg"
-                                :placeholder="inputs.login.email.placeholder" :type="inputs.login.email.type">
+                                :placeholder="inputs.login.email.placeholder" :type="text">
                         </forminput>
                         <forminput class="login_input" :svg_value="inputs.login.password.svg"
                                 :placeholder="inputs.login.password.placeholder" :type="inputs.login.password.type">
@@ -92,6 +94,7 @@ import loader from '@/components/loader.vue'
 import { googleOneTap, decodeCredential } from "vue3-google-login"
 import { check_mail } from '../services/utils/utils';
 import { googleLogout } from "vue3-google-login"
+import axios from 'axios'
 
 const action = ref('login')
 const phone = ref('')
@@ -121,35 +124,62 @@ const callback = (response) => {
 
 const yourLogoutFunction = () => {
         googleLogout()
+        window.location = '/';
 }
 
 const try_login = async () => {
         let inputs = window.document.getElementsByClassName('login_input');
-        const data_login = { email: inputs[0].childNodes[1].value, password: inputs[1].childNodes[1].value }
-        if (check_mail(data_login.email)) {
-                const response = await fetch('http://localhost:3005/api/login', {
+        // const data_login = { email: inputs[0].childNodes[1].value, password: inputs[1].childNodes[1].value }
+        // console.log('data_login', data_login)
+      const formData = new FormData()
+      let email = inputs[0].childNodes[1].value ? inputs[0].childNodes[1].value : ''
+      let password = inputs[1].childNodes[1].value ? inputs[1].childNodes[1].value : ''
+      formData.append('email', email)
+      formData.append('password', password)
+      let resp;
+      console.log('formData', formData)
+                // alert('login')
+        // if (check_mail(data_login.email)) {
+                // const response = await fetch('http://localhost:3005/api/login', {
+                axios.post('http://127.0.0.1:8000/api/auth/login', formData, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(data_login)
+                        mode: 'no-cors',
+                        // headers: { 'Content-Type': 'application/json' },
+                        // body: JSON.stringify(data_login)
                 })
-                const is_user = response.status === 201 ? true : false
-                if (is_user) {
-                        const res = await response.json()
-                        message.value = res.message
-                        feedback.value = 'success'
-                        window.localStorage.setItem('token', res.token);
-                        loading.value = true
-                        action.value = ''
-                        setTimeout(() => {
-                               router.push('/') 
-                        }, 2000);
-                }
-                else {
+                .then(response => {
+                        console.log('response', response)
+                        // localStorage.name = 
+                        sessionStorage.jwtToken = response.data.access_token
+                        localStorage.jwtToken = response.data.access_token
+                        sessionStorage.name = response.data.user.name
+                        sessionStorage.email = response.data.user.email
+                        sessionStorage.id = response.data.user.id
+                        resp = response;
+                        window.location = '/'
+                        // this.$router.push("/");
+                        // response.json().then(res => console.log(res));
+                })
+                console.log('resp', resp);
+                // alert(resp);
+                // const is_user = response.status === 201 ? true : false
+                // if (is_user) {
+                //         const res = await response.json()
+                //         message.value = res.message
+                //         feedback.value = 'success'
+                //         window.localStorage.setItem('token', res.token);
+                //         loading.value = true
+                //         action.value = ''
+                //         setTimeout(() => {
+                //                router.push('/') 
+                //         }, 2000);
+                // }
+                // else {
                         
-                        message.value = "Failed";
-                        feedback.value = 'error';
-                }
-        }
+                //         message.value = "Failed";
+                //         feedback.value = 'error';
+                // }
+        // }
 }
 
 const forgot = () => {

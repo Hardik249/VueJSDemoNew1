@@ -32,7 +32,7 @@
                 <h4 style="color: var(--secondary);"> Your cart is empty </h4>
                 <small> Add somthing to make me happy for real :-) </small>
             </div>
-            <modalCard v-for="item_in_cart in store_cart.getItems" :image="item_in_cart.item.image"
+            <modalCard v-for="item_in_cart in store_cart.getItems" :image="item_in_cart.item.thumbnail"
                 :quantity="item_in_cart.number" :computedPrice="item_in_cart.number * item_in_cart.item.price">
                 {{ item_in_cart.item.title }}
                 <template v-slot:reduceQuantity>

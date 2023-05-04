@@ -8,7 +8,7 @@
             </svg>
         </div>
         <div class="input">
-            <input type="search" @keyup="typing" v-model="searched" placeholder="Search a item">
+            <input type="search" @keyup="typing" v-model="searched" placeholder="Search an item">
         </div>
     </div>
 </template>
@@ -18,6 +18,8 @@ import { ref } from 'vue';
 
 const searched = ref('')
 const typing = () => {
+    console.log('searched', searched)
+    console.log('send_text_typed', send_text_typed)
     send_text_typed('searched_word', searched)
 }
 

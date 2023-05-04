@@ -41,7 +41,8 @@ defineProps({
 
 <style scoped>
 img {
-    width: 50px;
+    width: 150px;
+    height: 100px;
 }
 
 .card {

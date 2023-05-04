@@ -3,8 +3,19 @@
         <div class="filter">
             <range :max="max_price"></range>
             <titleFilter> CATEGORIES </titleFilter>
-            <categoriesList v-for="categorie in categories" :key="categorie" @click="sort_by_category(categorie)">
-                {{ categorie }} </categoriesList>
+            <div class="categories">
+                <input type="checkbox" id="phone" name="phone" value="phone" @click="fetchData('phone')"> <label for="phone">Smartphones</label><br>
+                <input type="checkbox" id="Laptop" name="Laptop" value="Laptop" @click="fetchData('Laptop')"> <label for="Laptop">Laptops</label><br>
+                <input type="checkbox" id="sunglasses" name="sunglasses" value="sunglasses" @click="fetchData('sunglasses')"> <label for="sunglasses">Sunglasses</label><br>
+                <input type="checkbox" id="furniture" name="furniture" value="furniture" @click="fetchData('furniture')"> <label for="furniture">Furniture</label><br>
+                <input type="checkbox" id="home" name="home" value="home" @click="fetchData('home')"> <label for="home">home-decoration</label><br>
+                <input type="checkbox" id="motorcycle" name="motorcycle" value="motorcycle" @click="fetchData('motorcycle')"> <label for="motorcycle">Motorcycle</label><br>
+                <input type="checkbox" id="lighting" name="lighting" value="lighting" @click="fetchData('lighting')"> <label for="lighting">Lighting</label><br>
+                <input type="checkbox" id="watch" name="watch" value="watch" @click="fetchData('watch')"> <label for="watch">Watch</label><br>
+                <input type="checkbox" id="bags" name="bags" value="bags" @click="fetchData('bags')"> <label for="bags">Bags</label><br>
+                <input type="checkbox" id="handbags" name="handbags" value="handbags" @click="fetchData('handbags')"> <label for="handbags">Hand Bags</label><br>
+                <input type="checkbox" id="ring" name="ring" value="ring" @click="fetchData('ring')"> <label for="ring">Rings</label><br>
+            </div>
         </div>
         <main>
             <h1> CATALOG </h1>
@@ -12,10 +23,13 @@
                 <search @searched_word="handle_search"></search>
             </div>
             <div class="products">
-                <card v-for="product in filtered_products" :key="product.id" :url="product.image" :alt="product.title"
-                    :title="hide_long_text(product.title)" :price="product.price" :category="product.category"
+                <card v-for="product in filtered_products" :key="product.id" :url="product.thumbnail" :alt="product.title"
+                    :title="product.title" :price="product.price" :category="product.category"
                     @handle_like="handle_like" @dis_like="remove_like" @item_clicked="add_item(product)" @click="moreDetails(product)">
                 </card>
+            </div>
+            <div v-if="filtered_products.length >= 6 && filtered_products.length <= total" style="margin-bottom: 10%;margin-left: 50%;">
+                <button class="btn btn-primary" href="" @click="loadMoreData">Load More</button>
             </div>
         </main>
     </div>
@@ -42,6 +56,16 @@ const max_price = ref(0)
 const store_cart = useCart()
 const store_categories = useSort()
 const categories = ref([])
+let limit = ref(0);
+let total = ref(0);
+let totalProducts = ref(0);
+let length = ref(0);
+let items = ref([]);
+let columns = ref([]);
+let totalProductsLimit = ref(0);
+let isActive = false;
+let queries = ref(['products', 'phone', 'Laptop', 'sunglasses', 'furniture', 'home', 'motorcycle', 'lighting', 'watch', 'bags', 'handbags', 'ring']);
+
 
 const sort_by_category = (e) => {
     store_categories.add_or_remove_selected(e)
@@ -73,7 +97,7 @@ const remove_like = () => {
 const handle_search = (e) => {
     /* console.log(e) */
     if (e.value !== '') {
-        filtered_products.value = JSON.parse(JSON.stringify(products.value)).filter(el => {
+        filtered_products.value = JSON.parse(JSON.stringify(initial_products.value)).filter(el => {
             const val = e.value.toLowerCase();
             const title = el.title && el.title.toLowerCase();
             if (val && title.indexOf(val) !== -1) {
@@ -107,15 +131,26 @@ const send_to_home = defineEmits('send_like', 'send_item')
 
 onMounted(async () => {
     await axios
-        .get('https://fakestoreapi.com/products?limit=30')
+        .get('https://dummyjson.com/products?limit=6')
         .then(response => {
-            products.value = response.data
+            console.log('djp', response.data.limit)
+            products.value = response.data.products
             initial_products.value = products.value
+            console.log(products)
+            limit.value = 6;
+            items.value = response;
+            columns.value = Object.keys(response.data.products[0]);
+            totalProducts.value = response.data;
+            totalProductsLimit.value = response.data.limit
+            total.value = response.data.total;
+            console.log('total', total)
+            length = products.value.length;
             max_price.value = check_max_price(products._rawValue)
+            // max_price.value = check_max_price(products)
         });
     if (store_categories.getAllCategories.length === 0) {
         await axios
-            .get('https://fakestoreapi.com/products/categories')
+            .get('https://dummyjson.com/products/categories')
             .then(response => {
                 store_categories.add_all_categories(JSON.parse(JSON.stringify(response.data)))
                 categories.value = store_categories.getAllCategories
@@ -126,6 +161,109 @@ onMounted(async () => {
     }
 
 })
+
+const loadMoreData = () => {
+    // alert(limit.value)
+    // alert(totalProductsLimit.value)
+    // alert(limit.value < totalProductsLimit.value)
+    // alert(limit.value <= 30)
+    // console.log(`limit ${limit.value} totalProductsLimit ${totalProductsLimit.value}`, limit.value > totalProductsLimit.value)
+    // console.log('products.value[0].category', products.value[0].category)
+    let query = products.value[0].category == 'mens-watches' ? 'watch' : 'ring';
+    // alert(query)
+  if (limit.value < totalProductsLimit.value) return;
+    // limit = limit + 6;
+    // limit = 6;
+    limit.value == total.value ? limit.value = 6 : limit.value = limit.value + 6;
+    let url;
+    // products.value[0].category == 'smartphones' ? url = `https://dummyjson.com/products?limit=${limit.value}` : url = `https://dummyjson.com/products/search?limit=${limit.value}&q=watch&skip=${limit.value-6}`;
+    products.value[0].category == 'smartphones' ? url = `https://dummyjson.com/products?limit=${limit.value}` : url = `https://dummyjson.com/products/search?limit=${limit.value}&q=${query}`;
+    axios
+      .get(url, {
+      // .get(`https://dummyjson.com/products/search?limit=${this.limit}&skip=${this.limit}`, {
+      // .get(`https://dummyjson.com/products/search?limit=${this.limit}&q=${query}`, {
+      // .get(`https://dummyjson.com/products/search?limit=${this.limit}&q=${query}&skip=${this.limit}`, {
+        mode: 'no-cors',
+        headers: {
+          // Authorization : `Bearer ${sessionStorage.jwtToken}` 
+        }
+      })
+      .then(response => {
+        // length = 6;
+        // limit = response.data.isActivelimit;
+        // limit = 6;
+        // products = response.data.products.slice(0, this.limit);
+        // columns;
+        items.value = response;
+        totalProducts.value = response.data;
+        products.value = response.data.products;
+        // columns = response.data.products ? Object.keys(response.data.products[0]) : '';
+        // return products.slice(0, length);
+        // products = totalProducts.slice(0, length);
+      });
+        // limit = limit + 6;
+}
+
+const fetchData = (query) => {
+    store_categories.add_or_remove_selected(query)
+    console.log(JSON.parse(JSON.stringify(store_categories.selected_categories)).length !== 0)
+    if (JSON.parse(JSON.stringify(store_categories.selected_categories)).length !== 0) {
+      isActive = true;
+      $('.isActive').removeClass('active');
+      queries.value.forEach(function(key, value) {
+        if (key == query) {
+          $("#"+key).addClass('active');
+          // isActive.value = false;
+        }
+        // $("#"+key).removeClass('active');
+      })
+      // $('.isActive').addClass('active');
+      // if (isActive.value == true) {}
+      limit.value = 6;
+      let url;
+      limit.value == total.value ? url = `https://dummyjson.com/products/search?limit=${limit.value}&q=${query}&skip=${limit.value}` : url = `https://dummyjson.com/products/search?limit=${limit.value}&q=${query}`;
+      // axios.get('http://127.0.0.1:8000/api/auth/user-profile', {
+      // axios.get(`https://dummyjson.com/products/search?q=${query}`, {
+      // axios.get(`https://dummyjson.com/products/search?limit=${limit.value}&q=${query}`, {
+      axios.get(url, {
+        method: 'GET',
+        // method: 'POST',
+        mode: 'no-cors',
+      })
+      .then(resp => {
+        // $('.container').html('')
+        // limit.value = resp.data.limit;
+        // alert(limit.value)
+        // limit.value = limit.value + 6;
+        total.value = resp.data.total;
+        // limit.value > total.value ? limit.value = 6 : limit.value + 6;
+        items.value = resp;
+        products.value = resp.data.products
+        filtered_products.value = products.value
+        columns.value = Object.keys(resp.data.products[0]);
+        length.value = products.length;
+      })
+      .catch(error => {
+        if (error.response != undefined) {
+          if (error.response.status == 422) {
+            // let messages = JSON.parse(error.response.data)
+            // errors = JSON.parse(error.response.data)
+            $('.error').html('')
+            // this.nameError.append(error.response.data.name)
+          } else if (error.response.status == 401) {
+            // :class="{ 'active' : fetchData }"
+            // document.getElementByClassName('error').remove()
+            // document.getElementsByClassName('error').html('')
+            $('.error').html('')
+          }
+        }
+      });
+    }
+    else {
+        filtered_products.value = initial_products.value
+    }
+}
+
 
 </script>
     
@@ -182,4 +320,23 @@ main h1 {
         grid-template-columns: 1fr 1fr 1fr;
     }
 }
+
+
+.categories {
+    padding: 0px 20px;
+}
+
+.categories h4 {
+    margin: 10px 0px;
+    font-weight: bold;
+}
+
+.categories span {
+    margin: 0px 15px;
+}
+
+input[type='checkbox'] {
+    accent-color: var(--secondary);
+}
+
 </style>
