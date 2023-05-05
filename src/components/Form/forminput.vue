@@ -7,7 +7,7 @@
                     fill="currentColor" />
             </svg>
         </div>
-        <input :type="type" id="" :placeholder="placeholder">
+        <input :type="type" :id="id" :placeholder="placeholder">
     </div>
 </template> 
     
@@ -24,6 +24,10 @@ defineProps({
     placeholder: {
         type: String,
         required: true
+    },
+    id:{
+        type: String,
+        required: false
     }
 })
 </script>

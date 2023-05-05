@@ -4,17 +4,22 @@
             <range :max="max_price"></range>
             <titleFilter> CATEGORIES </titleFilter>
             <div class="categories">
-                <input type="checkbox" id="phone" name="phone" value="phone" @click="fetchData('phone')"> <label for="phone">Smartphones</label><br>
-                <input type="checkbox" id="Laptop" name="Laptop" value="Laptop" @click="fetchData('Laptop')"> <label for="Laptop">Laptops</label><br>
-                <input type="checkbox" id="sunglasses" name="sunglasses" value="sunglasses" @click="fetchData('sunglasses')"> <label for="sunglasses">Sunglasses</label><br>
-                <input type="checkbox" id="furniture" name="furniture" value="furniture" @click="fetchData('furniture')"> <label for="furniture">Furniture</label><br>
-                <input type="checkbox" id="home" name="home" value="home" @click="fetchData('home')"> <label for="home">home-decoration</label><br>
-                <input type="checkbox" id="motorcycle" name="motorcycle" value="motorcycle" @click="fetchData('motorcycle')"> <label for="motorcycle">Motorcycle</label><br>
-                <input type="checkbox" id="lighting" name="lighting" value="lighting" @click="fetchData('lighting')"> <label for="lighting">Lighting</label><br>
-                <input type="checkbox" id="watch" name="watch" value="watch" @click="fetchData('watch')"> <label for="watch">Watch</label><br>
-                <input type="checkbox" id="bags" name="bags" value="bags" @click="fetchData('bags')"> <label for="bags">Bags</label><br>
-                <input type="checkbox" id="handbags" name="handbags" value="handbags" @click="fetchData('handbags')"> <label for="handbags">Hand Bags</label><br>
-                <input type="checkbox" id="ring" name="ring" value="ring" @click="fetchData('ring')"> <label for="ring">Rings</label><br>
+                <!-- <categoriesList v-for="category in categories" :key="category" @click="sort_by_category(category)" :id="category" :name="category" :value="category" :for="category">
+                {{ category }} </categoriesList> -->
+
+                <button class="btn" id="clearAll" @click="clearAll" style="float: inline-end;">Clear All</button><br>
+                <span id="selectedCategory" style="margin-left: 0;">{{ selected_category }}</span><br>
+                <input type="checkbox" class="isActive" id="phone" name="phone" value="phone" @click="fetchData('phone')"> <label for="phone">Smartphones</label><br>
+                <input type="checkbox" class="isActive" id="Laptop" name="Laptop" value="Laptop" @click="fetchData('Laptop')"> <label for="Laptop">Laptops</label><br>
+                <input type="checkbox" class="isActive" id="sunglasses" name="sunglasses" value="sunglasses" @click="fetchData('sunglasses')"> <label for="sunglasses">Sunglasses</label><br>
+                <input type="checkbox" class="isActive" id="furniture" name="furniture" value="furniture" @click="fetchData('furniture')"> <label for="furniture">Furniture</label><br>
+                <input type="checkbox" class="isActive" id="home" name="home" value="home" @click="fetchData('home')"> <label for="home">home-decoration</label><br>
+                <input type="checkbox" class="isActive" id="motorcycle" name="motorcycle" value="motorcycle" @click="fetchData('motorcycle')"> <label for="motorcycle">Motorcycle</label><br>
+                <input type="checkbox" class="isActive" id="lighting" name="lighting" value="lighting" @click="fetchData('lighting')"> <label for="lighting">Lighting</label><br>
+                <input type="checkbox" class="isActive" id="watch" name="watch" value="watch" @click="fetchData('watch')"> <label for="watch">Watch</label><br>
+                <input type="checkbox" class="isActive" id="bags" name="bags" value="bags" @click="fetchData('bags')"> <label for="bags">Bags</label><br>
+                <input type="checkbox" class="isActive" id="handbags" name="handbags" value="handbags" @click="fetchData('handbags')"> <label for="handbags">Hand Bags</label><br>
+                <input type="checkbox" class="isActive" id="ring" name="ring" value="ring" @click="fetchData('ring')"> <label for="ring">Rings</label><br>
             </div>
         </div>
         <main>
@@ -28,7 +33,7 @@
                     @handle_like="handle_like" @dis_like="remove_like" @item_clicked="add_item(product)" @click="moreDetails(product)">
                 </card>
             </div>
-            <div v-if="filtered_products.length >= 6 && filtered_products.length <= total" style="margin-bottom: 10%;margin-left: 50%;">
+            <div v-if="limit >= 6 && limit <= total" style="margin-bottom: 10%;margin-left: 50%;">
                 <button class="btn btn-primary" href="" @click="loadMoreData">Load More</button>
             </div>
         </main>
@@ -48,7 +53,9 @@ import { useSort } from '@/store/sort.store.js'
 import categoriesList from './Filter/categories.vue'
 import titleFilter from './Filter/titleFilter.vue';
 
+const selected_category = ref('')
 const products = ref([])
+const selected_categories = ref([])
 const initial_products = ref([])
 const filtered_products = ref(products)
 const nbr_favorites = ref(0)
@@ -78,6 +85,43 @@ const sort_by_category = (e) => {
             }
             return false
         })
+
+        // let url;
+        // url = `https://dummyjson.com/products/category/${e}`;
+        // axios.get(url, {
+        //     method: 'GET',
+        //     // method: 'POST',
+        //     mode: 'no-cors',
+        //     })
+        // .then(resp => {
+        //     // $('.container').html('')
+        //     // limit.value = resp.data.limit;
+        //     // alert(limit.value)
+        //     // limit.value = limit.value + 6;
+        //     total.value = resp.data.total;
+        //     // limit.value > total.value ? limit.value = 6 : limit.value + 6;
+        //     items.value = resp;
+        //     products.value = resp.data.products
+        //     // selected_products.value = products.value
+        //     filtered_products.value = products.value
+        //     columns.value = Object.keys(resp.data.products[0]);
+        //     length.value = products.length;
+        // })
+        // .catch(error => {
+        //     if (error.response != undefined) {
+        //       if (error.response.status == 422) {
+        //         // let messages = JSON.parse(error.response.data)
+        //         // errors = JSON.parse(error.response.data)
+        //         $('.error').html('')
+        //         // this.nameError.append(error.response.data.name)
+        //       } else if (error.response.status == 401) {
+        //         // :class="{ 'active' : fetchData }"
+        //         // document.getElementByClassName('error').remove()
+        //         // document.getElementsByClassName('error').html('')
+        //         $('.error').html('')
+        //       }
+        //     }
+        // });
     }
     else {
         filtered_products.value = initial_products.value
@@ -101,6 +145,7 @@ const handle_search = (e) => {
             const val = e.value.toLowerCase();
             const title = el.title && el.title.toLowerCase();
             if (val && title.indexOf(val) !== -1) {
+                limit.value = 0
                 return true
             }
             return false
@@ -171,7 +216,7 @@ const loadMoreData = () => {
     // console.log('products.value[0].category', products.value[0].category)
     let query = products.value[0].category == 'mens-watches' ? 'watch' : 'ring';
     // alert(query)
-  if (limit.value < totalProductsLimit.value) return;
+    if (limit.value < totalProductsLimit.value) return;
     // limit = limit + 6;
     // limit = 6;
     limit.value == total.value ? limit.value = 6 : limit.value = limit.value + 6;
@@ -205,18 +250,31 @@ const loadMoreData = () => {
 }
 
 const fetchData = (query) => {
+      // console.log('selectedCategory', selected_categories.value)
     store_categories.add_or_remove_selected(query)
     console.log(JSON.parse(JSON.stringify(store_categories.selected_categories)).length !== 0)
     if (JSON.parse(JSON.stringify(store_categories.selected_categories)).length !== 0) {
       isActive = true;
       $('.isActive').removeClass('active');
+      console.log('', store_categories.selected_categories)
+        // $('.isActive').prop('checked', false); // Unchecks it
+
+        $('.isActive').prop('checked', false); // Unchecks it
       queries.value.forEach(function(key, value) {
         if (key == query) {
           $("#"+key).addClass('active');
+        $("#"+key).prop('checked', true); // Checks it
+        selected_category.value = key;
           // isActive.value = false;
         }
+        // $('.isActive').prop('checked', false); // Unchecks it
+        // $("#"+key).prop('checked', false); // Unchecks it
+        // $("#"+key).prop('checked', true); // Checks it
         // $("#"+key).removeClass('active');
       })
+      $('#selectedCategory').append(store_categories.value)
+      // console.log('selectedCategory1', selected_categories.value)
+      
       // $('.isActive').addClass('active');
       // if (isActive.value == true) {}
       limit.value = 6;
@@ -261,9 +319,16 @@ const fetchData = (query) => {
     }
     else {
         filtered_products.value = initial_products.value
+        total.value = 100;
     }
 }
 
+const clearAll = () => {
+    $('.isActive').prop('checked', false); // Unchecks it
+    filtered_products.value = initial_products.value
+    total.value = 100;
+    selected_category.value = '';
+}
 
 </script>
     
