@@ -1,7 +1,8 @@
 <template>
     <div class="categories">
-        <input type="checkbox">
-        <span for="checkbox"><slot></slot> </span>
+        <input type="checkbox" :id="id" :name="name" :value="value">
+        <label :for="for"><slot></slot> </label>
+        <!-- <span :for="for"><slot></slot> </span> -->
     </div>
 </template>
 
@@ -12,6 +13,28 @@
         required: true
     }
 }) */
+defineProps({
+    id:{
+        type: String,
+        required: true
+    },
+    name:{
+        type: String,
+        required: true
+    },
+    value:{
+        type: String,
+        required: true
+    },
+    for:{
+        type: String,
+        required: true
+    }
+    // check: {
+    //     type: Function,
+    //     required: true
+    // }
+})
 </script>
 
 <style scoped>

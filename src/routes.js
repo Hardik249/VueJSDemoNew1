@@ -4,7 +4,7 @@ export const routes = [
   {
     path: "/",
     component: Home,
-    meta: { requiresAuth: false },
+    // meta: { requiresAuth: false },
   },
   // {
   //   path: '/about',
