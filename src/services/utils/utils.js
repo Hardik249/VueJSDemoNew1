@@ -39,6 +39,7 @@ export const check_max_price = (tab) => {
 /* Element is a object  */
 export const element_index_in_array = (array, element) => {
     /* console.log(array) */
+    // console.log('export', array)
     const array_mapped = array.map(e => e.item.id)
     return array_mapped.indexOf(element.item.id)
 }

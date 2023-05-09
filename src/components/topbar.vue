@@ -57,6 +57,7 @@ import { inject, ref, provide } from 'vue';
 import modal from './modal.vue';
 import { useCart } from '@/store/cart.store.js'
 import { check_plural } from '@/services/utils/utils'
+// import modalCart from '@/Cart/modalCart.vue'
 
 /* const get_current_user = async () => {
     await axios.get('http://localhost:8000/api/user')

@@ -19,20 +19,29 @@
                     </svg>
                 </div>
                 <div class="details">
-                    <h2><strong> MON PANIER </strong></h2>
-                    <p style="color: gray;"> À noter qu'aucun article ne sera retourné au delà de 30 jours à
-                        compter de la date de livraison effective. </p>
-                    <p style="color: gray;"> Conctactez le <a href="">service client</a> pour toute information
-                        supplémentaire</p>
+                    <h2><strong> 
+                        <!-- MON PANIER  -->
+                        MY CART
+                    </strong></h2>
+                    <p style="color: gray;"> 
+                        <!-- À noter qu'aucun article ne sera retourné au delà de 30 jours à compter de la date de livraison effective. --> 
+                        Note that no item will be returned beyond 30 days from the actual delivery date.
+                    </p>
+                    <p style="color: gray;"> 
+                        <!-- Conctactez le <a href="">service client</a> pour toute information
+                        supplémentaire -->
+                        Contact <a href="">customer service</a> for any additional information
+                    </p>
                 </div>
             </div>
             <hr>
+            <!-- {{store_cart.getItems}} -->
             <div class="empty" v-if="store_cart.getItems.length === 0">
                 <img src="@/assets/empty.svg" alt="Empty cart">
                 <h4 style="color: var(--secondary);"> Your cart is empty </h4>
                 <small> Add somthing to make me happy for real :-) </small>
-            </div>{{cart_products}}
-            <modalCard v-for="item_in_cart in cart_products.data" :image="item_in_cart.thumbnail"
+            </div>
+            <!-- <modalCard v-for="item_in_cart in cart_products.data" :image="item_in_cart.thumbnail"
                 :quantity="item_in_cart.number" :computedPrice="item_in_cart.number * item_in_cart.price">
                 {{ item_in_cart.title }}
                 <template v-slot:reduceQuantity>
@@ -51,10 +60,16 @@
                         <path d="M13 9H15V17H13V9Z" fill="currentColor" />
                     </svg>
                 </template>
-            </modalCard>
-            <!-- <modalCard v-for="item_in_cart in store_cart.getItems" :image="item_in_cart.item.thumbnail"
-                :quantity="item_in_cart.number" :computedPrice="item_in_cart.number * item_in_cart.item.price">
-                {{ item_in_cart.item.title }}
+            </modalCard> -->
+            <!-- {{store_cart}} -->
+            <modalCard v-for="item_in_cart in store_cart.items" :image="item_in_cart.item ? item_in_cart.item.thumbnail : item_in_cart.thumbnail"
+                :quantity="item_in_cart.number" :computedPrice="item_in_cart.item ? item_in_cart.number * item_in_cart.item.price : item_in_cart.price">
+                <div v-if="item_in_cart.item">
+                    {{ item_in_cart.item.title }}
+                </div>
+                <div v-else>
+                    {{ item_in_cart.title }}
+                </div>
                 <template v-slot:reduceQuantity>
                     <button class="handleQuantity" @click="reduceQuantity(item_in_cart)"> - </button>
                 </template>
@@ -71,7 +86,7 @@
                         <path d="M13 9H15V17H13V9Z" fill="currentColor" />
                     </svg>
                 </template>
-            </modalCard> -->
+            </modalCard>
             <div class="total" v-if="store_cart.getItems.length !== 0">
                 <h5> Total <span class="amount"> {{ total }}€ </span> </h5>
             </div>
@@ -100,13 +115,14 @@ import { onMounted, ref, inject, watchEffect, watch } from 'vue';
 import modalCard from './modalCard.vue';
 import { useCart } from '@/store/cart.store.js'
 import { element_index_in_array } from '@/services/utils/utils'
+import axios from 'axios';
 
 let limit = ref(0);
 // let total = ref(0);
 let totalProducts = ref(0);
 let length = ref(0);
 let items = ref([]);
-let columns = ref([]);
+// let columns = ref([]);
 let totalProductsLimit = ref(0);
 
 let cart_products = ref([]);
@@ -118,7 +134,19 @@ const total = ref(0)
 const promo_value = ref("")
 
 const deleteItem = (e) => {
-    store_cart.delete_item(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).getItems, e))
+      console.log('add_itemif', !sessionStorage.jwtToken)
+      console.log('add_itemif', !sessionStorage.jwtToken && sessionStorage.jwtToken == '')
+      if (!sessionStorage.jwtToken) {
+        store_cart.delete_item(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).getItems, e))
+      } else {
+        alert('e')
+        axios
+        .delete(`http://localhost:3000/api/carts/removefromcart/${e.id}`)
+        .then(function(response) {
+            store_cart.getItems.map(e => e.item.id)
+        })
+        .catch(function(error) {})
+      }
 }
 const reduceQuantity = (e) => {
     store_cart.decrease_number(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).getItems, e))
@@ -133,40 +161,41 @@ const check_promo_code = () => {
     console.log(promo_value)
 }
 
-onMounted(async () => {
-    await axios
-        .get('http://localhost:3000/api/carts/viewcarts')
-        .then(response => {
-            console.log('vcp', response.data.data)
-            // products.value = response.data.products
-            cart_products.value = response.data
-            limit.value = 6;
-            items.value = response;
-            columns.value = response.data.data ? Object.keys(response.data.data[0]) : '';
-            totalProducts.value = response.data;
-            totalProductsLimit.value = response.data.limit
-            total.value = response.data.total;
-            console.log('total', total)
-            // length = response.data.value.length;
-            // max_price.value = check_max_price(response.data.products._rawValue)
-            // max_price.value = check_max_price(products)
-        });
-        // if (store_categories.getAllCategories.length === 0) {
-        //     await axios
-        //         .get('https://dummyjson.com/products/categories')
-        //         .then(response => {
-        //             store_categories.add_all_categories(JSON.parse(JSON.stringify(response.data)))
-        //             categories.value = store_categories.getAllCategories
-        //         })
-        // }
-        // else {
-        //     categories.value = store_categories.getAllCategories
-        // }
-})
+// onMounted(async () => {
+//     await axios
+//         .get('http://localhost:3000/api/carts/viewcarts')
+//         .then(response => {
+//             console.log('vcp', response.data.data)
+//             // products.value = response.data.products
+//             cart_products.value = response.data
+//             limit.value = 6;
+//             items.value = response;
+//             // columns.value = response.data.data ? Object.keys(response.data.data[0]) : '';
+//             totalProducts.value = response.data;
+//             totalProductsLimit.value = response.data.limit
+//             total.value = response.data.total;
+//             console.log('total', total)
+//             // length = response.data.value.length;
+//             // max_price.value = check_max_price(response.data.products._rawValue)
+//             // max_price.value = check_max_price(products)
+//         });
+//         // if (store_categories.getAllCategories.length === 0) {
+//         //     await axios
+//         //         .get('https://dummyjson.com/products/categories')
+//         //         .then(response => {
+//         //             store_categories.add_all_categories(JSON.parse(JSON.stringify(response.data)))
+//         //             categories.value = store_categories.getAllCategories
+//         //         })
+//         // }
+//         // else {
+//         //     categories.value = store_categories.getAllCategories
+//         // }
+// })
 
 
 watchEffect(() => {
-    total.value = store_cart.total_amount().toFixed(2)
+    console.log(`store_cart.total_amount() ${store_cart.total_amount()}`)
+    total.value = store_cart.total_amount() != 0 ? store_cart.total_amount().toFixed(2) : ''
     console.log(isOpen + "zfzfzefzefez")
 })
 const goPayement = () => {}

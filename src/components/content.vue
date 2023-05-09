@@ -161,32 +161,41 @@ const add_item = (e) => {
     console.log('e', e.id);
     console.log('if', sessionStorage.jwtToken != undefined)
     console.log('if0', !sessionStorage.jwtToken && sessionStorage.jwtToken == '')
-    if (!sessionStorage.jwtToken && sessionStorage.jwtToken == '') {
-        const element = JSON.parse(JSON.stringify(e))
-        /* JSON.parse(JSON.stringify(e)) to get de target in a proxy */
-        send_to_home('send_item', element)
-        store_cart.add_item({ 'item': element, 'number': 1 })
-        console.log(store_cart.getItems)
-    } else {
-        let formData = new FormData();
-        let product_id = e.id ? e.id : '';
-        let user_id = sessionStorage.id ? sessionStorage.id : '';
-        formData.append('product_id', product_id)
-        formData.append('user_id', user_id)
-        axios
-        .post(`http://localhost:3000/api/carts/addtocart`, {
-            'product_id': product_id,
-            'user_id': user_id
-        })
-        .then(response => {
-            console.log('response', response);
-            // store_categories.add_all_categories(JSON.parse(JSON.stringify(response.data)))
-            // categories.value = store_categories.getAllCategories
-        })
-        .catch(error => {
-            console.log(error)
-        })
-    }
+
+    const element = JSON.parse(JSON.stringify(e))
+    /* JSON.parse(JSON.stringify(e)) to get de target in a proxy */
+    send_to_home('send_item', element)
+    store_cart.add_item({ 'item': element, 'number': 1 })
+    console.log(store_cart.getItems)
+
+    // if (!sessionStorage.jwtToken) {
+    //     const element = JSON.parse(JSON.stringify(e))
+    //     /* JSON.parse(JSON.stringify(e)) to get de target in a proxy */
+    //     send_to_home('send_item', element)
+    //     store_cart.add_item({ 'item': element, 'number': 1 })
+    //     console.log(store_cart.getItems)
+    // } else {
+    //     console.log('else')
+    //     send_to_home('send_item', e)
+    //     let formData = new FormData();
+    //     let product_id = e.id ? e.id : '';
+    //     let user_id = sessionStorage.id ? sessionStorage.id : '';
+    //     formData.append('product_id', product_id)
+    //     formData.append('user_id', user_id)
+    //     axios
+    //     .post(`http://localhost:3000/api/carts/addtocart`, {
+    //         'product_id': product_id,
+    //         'user_id': user_id
+    //     })
+    //     .then(response => {
+    //         console.log('response', response);
+    //         // store_categories.add_all_categories(JSON.parse(JSON.stringify(response.data)))
+    //         // categories.value = store_categories.getAllCategories
+    //     })
+    //     .catch(error => {
+    //         console.log(error)
+    //     })
+    // }
 }
 
 // const add_item = (e) => {

@@ -1,7 +1,7 @@
 <template>
     <div class="card">
         <div class="left">
-            <img :src="image" alt="">
+            <img :src="image" :alt="alt">
         </div>
         <div class="center">
             <p><strong>
@@ -33,6 +33,10 @@ defineProps({
     },
     computedPrice: {
         type: Number,
+        required: true
+    },
+    alt: {
+        type: String,
         required: true
     },
 })
