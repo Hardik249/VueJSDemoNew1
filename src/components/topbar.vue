@@ -76,6 +76,60 @@ onMounted(() => {
 const store_cart = useCart()
 
 const open = () => {
+    if (!sessionStorage.jwtToken) {
+        // state.items = JSON.parse(JSON.stringify(state.items))
+        store_cart.items = JSON.parse(JSON.stringify(store_cart.items))
+        store_cart.length = state.items.length
+    // return JSON.parse(JSON.stringify(state.items))
+    } else {
+    // console.log('state', state);
+        axios
+        .get('http://localhost:3000/api/carts/viewcarts')
+        .then(response => {
+          console.log('gsvcp', response.data.data)
+          // products.value = response.data.products
+          // cart_products.value = response.data
+          // limit.value = 6;
+          // let productId;
+          // if (response.data) {
+          //   // productId = response.data.data[0].product_id
+          //   productId = response.data.product_id
+          // }
+          // productId = '';
+          // let ids;
+          let ids = new Array();
+          let quantity;
+          response.data.data.forEach(function(key, value) {
+              // ids = key.product_id;
+              ids.push(key.product_id);
+              quantity = key.quantity
+              store_cart.number = key.quantity
+              // state.number = key.quantity
+          })
+          let productId = response.data ? ids : '';
+          // let productId = response.data ? response.data.product_id : '';
+          // console.log(response.data.data[0].product_id)
+          axios
+          .get(`http://localhost:3000/api/products/productslist?array=[${productId}]`)
+          .then(response => {
+            console.log('products', response.data)
+            // state.items = response.data.data;
+            // state.length = response.data.length
+            store_cart.items = response.data.data
+            store_cart.length = response.data.length
+            // this.items = response;
+          })
+          // console.log(products)
+          // columns.value = response.data.data ? Object.keys(response.data.data[0]) : '';
+          // totalProducts.value = response.data;
+          // totalProductsLimit.value = response.data.limit
+          // total.value = response.data.total;
+          // console.log('items.value', this.items)
+          // length = response.data.value.length;
+          // max_price.value = check_max_price(response.data.products._rawValue)
+          // max_price.value = check_max_price(products)
+        });
+    }
     return true
 }
 const nbr_likes = inject('nbr_likes')

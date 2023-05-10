@@ -40,8 +40,21 @@ export const check_max_price = (tab) => {
 export const element_index_in_array = (array, element) => {
     /* console.log(array) */
     // console.log('export', array)
+
     const array_mapped = array.map(e => e.item.id)
     return array_mapped.indexOf(element.item.id)
+
+    // if (!sessionStorage.jwtToken) {
+    //     const array_mapped = array.map(e => e.item.id)
+    //     return array_mapped.indexOf(element.item.id)
+    // } else {
+    //     console.log('e_', array)
+    //     console.log('e_e', element)
+    //     console.log('a_', array.map(e => e.id))
+    //     console.log('a_i', array.map(e => e.id).indexOf(element.id))
+    //     const array_mapped = array.map(e => e.id)
+    //     return array_mapped.indexOf(element.id)
+    // }
 }
 
 export const hide_long_text = (text) => {

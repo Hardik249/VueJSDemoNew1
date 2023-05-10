@@ -36,7 +36,7 @@
             </div>
             <hr>
             <!-- {{store_cart.getItems}} -->
-            <div class="empty" v-if="store_cart.getItems.length === 0">
+            <div class="empty" v-if="store_cart.items.length === 0">
                 <img src="@/assets/empty.svg" alt="Empty cart">
                 <h4 style="color: var(--secondary);"> Your cart is empty </h4>
                 <small> Add somthing to make me happy for real :-) </small>
@@ -62,8 +62,16 @@
                 </template>
             </modalCard> -->
             <!-- {{store_cart}} -->
+            <!-- v-if="store_cart.getItems ? " -->
+            <!-- {{ store_cart.items.length }} -->
+            <!-- {{ store_cart.number }} -->
             <modalCard v-for="item_in_cart in store_cart.items" :image="item_in_cart.item ? item_in_cart.item.thumbnail : item_in_cart.thumbnail"
-                :quantity="item_in_cart.number" :computedPrice="item_in_cart.item ? item_in_cart.number * item_in_cart.item.price : item_in_cart.price">
+                :quantity="item_in_cart.number ? item_in_cart.number : store_cart.number" :computedPrice="item_in_cart.item ? item_in_cart.number * item_in_cart.item.price : item_in_cart.price">
+                <!-- {{ item_in_cart }} -->
+                <!-- {{ store_cart }} -->
+                <!-- {{ item_in_cart.number }} -->
+                {{ store_cart.number }}
+                <!-- {{ number }} -->
                 <div v-if="item_in_cart.item">
                     {{ item_in_cart.item.title }}
                 </div>
@@ -87,16 +95,17 @@
                     </svg>
                 </template>
             </modalCard>
-            <div class="total" v-if="store_cart.getItems.length !== 0">
+            <div class="total" v-if="store_cart.items.length !== 0">
                 <h5> Total <span class="amount"> {{ total }}€ </span> </h5>
             </div>
-            <div class="promo" v-if="store_cart.getItems.length !== 0">
+            <div class="promo" v-if="store_cart.items.length !== 0">
+                <!-- <input type="checkbox" class="isActive" id="ring" name="ring" value="ring" @click="fetchData('ring')"> <label for="ring">Rings</label><br> -->
                 <span><input type="checkbox" v-model="have_promo"> I have a promo code </span><br>
                 <input type="text" v-if="have_promo" placeholder="Code promo" v-model="promo_value"
                     @input="check_promo_code">
             </div>
 
-            <button class="pay" @click="goPayement" v-if="store_cart.getItems.length !== 0">
+            <button class="pay" @click="goPayement" v-if="store_cart.items.length !== 0">
                 <svg class="iconLock" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" clip-rule="evenodd"
@@ -134,32 +143,109 @@ const total = ref(0)
 const promo_value = ref("")
 
 const deleteItem = (e) => {
-      console.log('add_itemif', !sessionStorage.jwtToken)
-      console.log('add_itemif', !sessionStorage.jwtToken && sessionStorage.jwtToken == '')
+      console.log('deleteItemif', !sessionStorage.jwtToken)
+      console.log('deleteItemif', !sessionStorage.jwtToken && sessionStorage.jwtToken == '')
       if (!sessionStorage.jwtToken) {
-        store_cart.delete_item(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).getItems, e))
+        store_cart.delete_item(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e))
       } else {
-        alert('e')
+        console.log('store_cart.length', store_cart.length)
+        // alert('e')
         axios
         .delete(`http://localhost:3000/api/carts/removefromcart/${e.id}`)
         .then(function(response) {
-            store_cart.getItems.map(e => e.item.id)
+            store_cart.items.map(e => e.id)
+            console.log('store_cart.getItems.length', response)
+            store_cart.length = store_cart.items.length;
         })
-        .catch(function(error) {})
+        .catch(function(error) {
+            console.error(error)
+        })
       }
 }
-const reduceQuantity = (e) => {
-    store_cart.decrease_number(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).getItems, e))
-}
 const addQuantity = (e) => {
-    store_cart.increase_number(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).getItems, e))
-    total.value = store_cart.total_amount()
+    console.log('q0', JSON.parse(JSON.stringify(store_cart)).items)
+    console.log('q1', e)
+    // store_cart.increase_number(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e))
+    if (!sessionStorage.jwtToken) {
+        store_cart.increase_number(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e))
+        total.value = store_cart.total_amount()
+    } else {
+        console.log('t_', e)
+        console.log('t_', JSON.parse(JSON.stringify(store_cart)).items)
+        axios
+        .get('http://localhost:3000/api/carts/viewcarts')
+        .then(response => {
+            console.log('t_', response.data.data)
+            console.log('o_', e)
+            let qty;
+            response.data.data.forEach(function(key, value) {
+                console.log(`key ${key} value ${value}`)
+                if (key.product_id = e.id) {
+                    qty = key.product_id;
+                }
+            })
+            store_cart.number = qty;
+            // alert(e.id)
+            // store_cart.number = response.data.data[e.id].quantity;
+            console.log('t_', store_cart.number)
+            let data = {
+                'id': e.id,
+                'number': store_cart.number,
+            }
+            console.log('dt_', data)
+            store_cart.increase_number(data)
+            // length = response.data.value.length;
+            // max_price.value = check_max_price(response.data.products._rawValue)
+            // max_price.value = check_max_price(products)
+        });
+    }
+}
+const reduceQuantity = (e) => {
+    // store_cart.decrease_number(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e))
+    if (!sessionStorage.jwtToken) {
+        store_cart.decrease_number(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e))
+    } else {
+        console.log('reduceQuantity', e)
+        console.log('reduceQuantitye', JSON.parse(JSON.stringify(store_cart)).items)
+        axios
+        .get('http://localhost:3000/api/carts/viewcarts')
+        .then(response => {
+            console.log('t_', response.data.data)
+            // products.value = response.data.products
+            let qty;
+            response.data.data.forEach(function(key, value) {
+                console.log('k_', key)
+                // console.log(`key ${key} value ${value}`)
+                if (key.product_id = e.id) {
+                    qty = key.product_id;
+                }
+            })
+            // store_cart.number = response.data.data[e.id].quantity;
+            store_cart.number = qty;
+            console.log('t_', store_cart.number)
+            let data = {
+                'id': e.id,
+                'number': store_cart.number,
+            }
+            console.log('dt_', data)
+            store_cart.decrease_number(data)
+            // length = response.data.value.length;
+            // max_price.value = check_max_price(response.data.products._rawValue)
+            // max_price.value = check_max_price(products)
+        });
+    }
 }
 const check_promo_code = () => {
     //if(promo_value.length ==)
     // Checker' l'exactiture du code promo 3 secondes eprès l'entree ... en attendant, faire apparaitre un loader.... 
     console.log(promo_value)
 }
+
+
+cart_products.value = store_cart.getItems ? store_cart.getItems : store_cart.items;
+// console.log('t', cart_products.value);
+// this.cart_products = store_cart.getItems ? store_cart.getItems : store_cart.items;
+// console.log('t', this.cart_products);
 
 // onMounted(async () => {
 //     await axios
@@ -195,7 +281,8 @@ const check_promo_code = () => {
 
 watchEffect(() => {
     console.log(`store_cart.total_amount() ${store_cart.total_amount()}`)
-    total.value = store_cart.total_amount() != 0 ? store_cart.total_amount().toFixed(2) : ''
+    total.value = store_cart.total_amount() != 0 ? store_cart.total_amount().toFixed(2) : store_cart.total_amount()
+    // total.value = store_cart.total_amount().toFixed(2) 
     console.log(isOpen + "zfzfzefzefez")
 })
 const goPayement = () => {}
