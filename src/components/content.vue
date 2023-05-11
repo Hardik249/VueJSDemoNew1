@@ -183,7 +183,7 @@ const add_item = (e) => {
     //     formData.append('product_id', product_id)
     //     formData.append('user_id', user_id)
     //     axios
-    //     .post(`http://localhost:3000/api/carts/addtocart`, {
+    //     .post(`http://localhost:3001/api/carts/addtocart`, {
     //         'product_id': product_id,
     //         'user_id': user_id
     //     })
@@ -217,23 +217,32 @@ const send_to_home = defineEmits('send_like', 'send_item')
 
 onMounted(async () => {
     await axios
-        .get('https://dummyjson.com/products?limit=6')
-        .then(response => {
-            console.log('djp', response.data.limit)
-            products.value = response.data.products
-            initial_products.value = products.value
-            console.log(products)
-            limit.value = 6;
-            items.value = response;
-            columns.value = Object.keys(response.data.products[0]);
-            totalProducts.value = response.data;
-            totalProductsLimit.value = response.data.limit
-            total.value = response.data.total;
-            console.log('total', total)
-            length = products.value.length;
-            max_price.value = check_max_price(products._rawValue)
-            // max_price.value = check_max_price(products)
-        });
+    .get('https://dummyjson.com/products?limit=6')
+    .then(response => {
+        console.log('djp', response.data.limit)
+        products.value = response.data.products
+        initial_products.value = products.value
+        console.log(products)
+        limit.value = 6;
+        items.value = response;
+        columns.value = Object.keys(response.data.products[0]);
+        totalProducts.value = response.data;
+        totalProductsLimit.value = response.data.limit
+        total.value = response.data.total;
+        console.log('total', total)
+        length = products.value.length;
+        max_price.value = check_max_price(products._rawValue)
+        // max_price.value = check_max_price(products)
+    });
+    await axios
+    .get('http://localhost:3001/api/carts/viewcarts')
+    .then(response => {
+    console.log('gsvcp', response.data.data)
+    // console.log('st', store_cart.total_amount())
+    // store_cart.state.length = response.data.data.length;
+    store_cart.length = response.data.data.length;
+    store_cart.total_amount();
+    })
     if (store_categories.getAllCategories.length === 0) {
         await axios
             .get('https://dummyjson.com/products/categories')

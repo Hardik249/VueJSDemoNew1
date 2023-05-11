@@ -62,6 +62,7 @@
                 </template>
             </modalCard> -->
             <!-- {{store_cart}} -->
+            <!-- {{store_cart}} -->
             <!-- v-if="store_cart.getItems ? " -->
             <!-- {{ store_cart.items.length }} -->
             <!-- {{ store_cart.number }} -->
@@ -70,7 +71,7 @@
                 <!-- {{ item_in_cart }} -->
                 <!-- {{ store_cart }} -->
                 <!-- {{ item_in_cart.number }} -->
-                {{ store_cart.number }}
+                <!-- {{ store_cart.number }} -->
                 <!-- {{ number }} -->
                 <div v-if="item_in_cart.item">
                     {{ item_in_cart.item.title }}
@@ -151,11 +152,15 @@ const deleteItem = (e) => {
         console.log('store_cart.length', store_cart.length)
         // alert('e')
         axios
-        .delete(`http://localhost:3000/api/carts/removefromcart/${e.id}`)
+        .delete(`http://localhost:3001/api/carts/removefromcart/${e.id}`)
         .then(function(response) {
             store_cart.items.map(e => e.id)
-            console.log('store_cart.getItems.length', response)
             store_cart.length = store_cart.items.length;
+            console.log('store_cart.getItems.length', store_cart.length)
+            console.log('sid', JSON.parse(JSON.stringify(store_cart)).items)
+            console.log('sit', e)
+            // store_cart.delete_item()
+            store_cart.delete_item(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e.id))
         })
         .catch(function(error) {
             console.error(error)
@@ -173,15 +178,19 @@ const addQuantity = (e) => {
         console.log('t_', e)
         console.log('t_', JSON.parse(JSON.stringify(store_cart)).items)
         axios
-        .get('http://localhost:3000/api/carts/viewcarts')
+        .get('http://localhost:3001/api/carts/viewcarts')
         .then(response => {
             console.log('t_', response.data.data)
             console.log('o_', e)
+            let productId;
             let qty;
+            let cartId;
             response.data.data.forEach(function(key, value) {
                 console.log(`key ${key} value ${value}`)
                 if (key.product_id = e.id) {
-                    qty = key.product_id;
+                    productId = key.product_id;
+                    qty = key.quantity;
+                    cartId = key.id
                 }
             })
             store_cart.number = qty;
@@ -189,8 +198,10 @@ const addQuantity = (e) => {
             // store_cart.number = response.data.data[e.id].quantity;
             console.log('t_', store_cart.number)
             let data = {
-                'id': e.id,
-                'number': store_cart.number,
+                'productId': productId,
+                'id': cartId,
+                'number': qty,
+                // 'number': store_cart.number,
             }
             console.log('dt_', data)
             store_cart.increase_number(data)
@@ -208,7 +219,7 @@ const reduceQuantity = (e) => {
         console.log('reduceQuantity', e)
         console.log('reduceQuantitye', JSON.parse(JSON.stringify(store_cart)).items)
         axios
-        .get('http://localhost:3000/api/carts/viewcarts')
+        .get('http://localhost:3001/api/carts/viewcarts')
         .then(response => {
             console.log('t_', response.data.data)
             // products.value = response.data.products
@@ -249,7 +260,7 @@ cart_products.value = store_cart.getItems ? store_cart.getItems : store_cart.ite
 
 // onMounted(async () => {
 //     await axios
-//         .get('http://localhost:3000/api/carts/viewcarts')
+//         .get('http://localhost:3001/api/carts/viewcarts')
 //         .then(response => {
 //             console.log('vcp', response.data.data)
 //             // products.value = response.data.products

@@ -84,7 +84,7 @@ const open = () => {
     } else {
     // console.log('state', state);
         axios
-        .get('http://localhost:3000/api/carts/viewcarts')
+        .get('http://localhost:3001/api/carts/viewcarts')
         .then(response => {
           console.log('gsvcp', response.data.data)
           // products.value = response.data.products
@@ -110,7 +110,7 @@ const open = () => {
           // let productId = response.data ? response.data.product_id : '';
           // console.log(response.data.data[0].product_id)
           axios
-          .get(`http://localhost:3000/api/products/productslist?array=[${productId}]`)
+          .get(`http://localhost:3001/api/products/productslist?array=[${productId}]`)
           .then(response => {
             console.log('products', response.data)
             // state.items = response.data.data;

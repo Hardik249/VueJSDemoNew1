@@ -22,7 +22,7 @@ export const useCart = defineStore("cart_items", {
       // } else {
       //   console.log('state', state);
       //   axios
-      //   .get('http://localhost:3000/api/carts/viewcarts')
+      //   .get('http://localhost:3001/api/carts/viewcarts')
       //   .then(response => {
       //     console.log('gsvcp', response.data.data)
       //     // products.value = response.data.products
@@ -47,7 +47,7 @@ export const useCart = defineStore("cart_items", {
       //     // let productId = response.data ? response.data.product_id : '';
       //     // console.log(response.data.data[0].product_id)
       //     axios
-      //     .get(`http://localhost:3000/api/products/productslist?array=[${productId}]`)
+      //     .get(`http://localhost:3001/api/products/productslist?array=[${productId}]`)
       //     .then(response => {
       //       console.log('products', response.data)
       //       state.items = response.data.data;
@@ -68,7 +68,18 @@ export const useCart = defineStore("cart_items", {
           console.log('items.value', state.items)
     },
     nbr_items : (state) => {
-      return state.items.length
+      // return state.items.length
+      if (!sessionStorage.jwtToken) {
+        return state.items.length
+      } else {
+        console.log('state', state)
+        console.log('state-items', state.length)
+        // state.items.length = state.items.length;
+        // state.length = state.items.length;
+        // return state.items.length
+        // return state.items ? state.items.length : state.length;
+        return state.length ? state.length : state.items.length;
+      }
     }
   },
   actions: {
@@ -94,7 +105,7 @@ export const useCart = defineStore("cart_items", {
         formData.append('quantity', quantity)
         formData.append('user_id', user_id)
         axios
-        .post(`http://localhost:3000/api/carts/addtocart`, {
+        .post(`http://localhost:3001/api/carts/addtocart`, {
             'product_id': product_id,
             'quantity': quantity,
             'user_id': user_id,
@@ -112,12 +123,19 @@ export const useCart = defineStore("cart_items", {
             this.number = response.data.data.quantity ? response.data.data.quantity : '';
             // console.log(response.data.data[0].product_id)
             axios
-            .get(`http://localhost:3000/api/products/productslist?array=[${productId}]`)
+            .get(`http://localhost:3001/api/products/productslist?array=[${productId}]`)
             .then(response => {
                 console.log('products', response);
                 // cart_products.value = response.data
                 // length.value= response.data.length
-                this.items.push(response.data.data);
+
+                // alert(number)
+                alert(this.number)
+
+                // this.items.push(response.data.data);
+                let item = { 'item': response.data.data, 'number': this.number }
+                this.items.push(item);
+
                 // this.number = new_item.number
                 // this.number = this.items.length;
                 // console.log('length', this.items.length)
@@ -140,7 +158,8 @@ export const useCart = defineStore("cart_items", {
       // if (!sessionStorage.jwtToken) {
       //   this.items.splice(position, 1)
       // } else {
-      //   alert('else')
+      //   console.log('d', position)
+      //   console.log('di', this.items.splice(position, 1))
       // }
     },
     increase_number(position) {
@@ -148,13 +167,28 @@ export const useCart = defineStore("cart_items", {
         this.items[position].number++
         console.log(this.items)
       } else {
-        console.log('products', position)
+        console.log('p-', position)
+        // console.log('products0', this.items)
+        // console.log('productsi', position.id)
+        // console.log('productsn', position.number)
+        // let product;
+        // this.items.forEach(function(key, value) {
+        //   if (key.id == position.id) {
+        //     product = position.id;
+        //   }
+        // })
+        // console.log('product', product)
+        // console.log('products1', this.items[position.id])
+        // console.log('products2', this.items[position].number)
+        // console.log('products3', this.items[position].number++)
+        // console.log('products4', this.items[position].number)
+        // this.items[position].number++
         position.number++
         // position.number+
         alert(position.number);
         // console.log('in_', position)
         axios
-        .put(`http://localhost:3000/api/carts/updatequantity/${position.id}`, {
+        .put(`http://localhost:3001/api/carts/updatequantity/${position.productId}`, {
           'quantity': position.number,
           // 'product_id': product_id,
           // 'user_id': user_id,
@@ -205,7 +239,7 @@ export const useCart = defineStore("cart_items", {
           alert(position.number);
           console.log(this.items)
           axios
-          .put(`http://localhost:3000/api/carts/updatequantity/${position.id}`, {
+          .put(`http://localhost:3001/api/carts/updatequantity/${position.id}`, {
             'quantity': position.number,
             // 'product_id': product_id,
             // 'user_id': user_id,
@@ -258,7 +292,7 @@ export const useCart = defineStore("cart_items", {
 });
 onMounted(async () => {
   await axios
-  .get('http://localhost:3000/api/carts/viewcarts')
+  .get('http://localhost:3001/api/carts/viewcarts')
   .then(response => {
     console.log('vcp', response.data.data)
     // products.value = response.data.products
