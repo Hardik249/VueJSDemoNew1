@@ -8,6 +8,7 @@ export const useCart = defineStore("cart_items", {
       items: [],
       length: '',
       number: '',
+      productId: '',
     };
   },
   getters: {
@@ -22,7 +23,7 @@ export const useCart = defineStore("cart_items", {
       // } else {
       //   console.log('state', state);
       //   axios
-      //   .get('http://localhost:3001/api/carts/viewcarts')
+      //   .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
       //   .then(response => {
       //     console.log('gsvcp', response.data.data)
       //     // products.value = response.data.products
@@ -168,7 +169,9 @@ export const useCart = defineStore("cart_items", {
         console.log(this.items)
       } else {
         console.log('p-', position)
-        // console.log('products0', this.items)
+        let id = position.id
+        console.log('products0', this.items)
+        console.log('product0', this.items)
         // console.log('productsi', position.id)
         // console.log('productsn', position.number)
         // let product;
@@ -184,8 +187,9 @@ export const useCart = defineStore("cart_items", {
         // console.log('products4', this.items[position].number)
         // this.items[position].number++
         position.number++
+          position.quantity++
         // position.number+
-        alert(position.number);
+        alert(position.quantity);
         // console.log('in_', position)
         axios
         .put(`http://localhost:3001/api/carts/updatequantity/${position.productId}`, {
@@ -195,7 +199,19 @@ export const useCart = defineStore("cart_items", {
         })
         .then(response => {
           console.log('r_', response.data)
-          this.number = response.data.data.quantity;
+          // position.number = response.data.data.quantity
+          // this.number = response.data.data.quantity;
+          console.log('quantity', this.items)
+          // let qty;
+          // this.items.forEach(function(key, value) {
+          //     console.log(`key ${key.productId} value ${position.productId}`)
+          //     if (key.productId = position.productId) {
+          //         // productId = key.productId;
+          //         qty = key.quantity;
+          //         // cartId = key.id
+          //     }
+          // })
+          // this.number = qty;
 
           
           // let cartProducts = JSON.parse(JSON.stringify(response.data.data))
@@ -231,22 +247,35 @@ export const useCart = defineStore("cart_items", {
           console.log(this.items)
         }
       } else {
-        console.log('dn', this.items)
+        console.log('dn', position)
         console.log('if', position.number >= 2)
         if (position.number >= 2) {
-          // position.number--
-          position.number-
-          alert(position.number);
-          console.log(this.items)
+          position.number--
+          position.quantity--
+          // position.number-
+          alert(position.quantity);
+          console.log(position)
           axios
-          .put(`http://localhost:3001/api/carts/updatequantity/${position.id}`, {
+          .put(`http://localhost:3001/api/carts/updatequantity/${position.productId}`, {
             'quantity': position.number,
             // 'product_id': product_id,
             // 'user_id': user_id,
           })
           .then(response => {
             console.log('t_', response.data.data)
-            this.number = response.data.data.quantity;
+            // position.number = response.data.data.quantity
+            // this.number = response.data.data.quantity;
+            console.log('quantity', this.items)
+            // let qty;
+            // this.items.forEach(function(key, value) {
+            //     console.log(`key ${key.productId} value ${position.id}`)
+            //     if (key.productId = position.productId) {
+            //         // productId = key.productId;
+            //         qty = key.quantity;
+            //         // cartId = key.id
+            //     }
+            // })
+            // this.number = qty;
             
 
             // let qty;
@@ -292,7 +321,7 @@ export const useCart = defineStore("cart_items", {
 });
 // onMounted(async () => {
 //   await axios
-//   .get('http://localhost:3001/api/carts/viewcarts')
+//   .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
 //   .then(response => {
 //     console.log('vcp', response.data.data)
 //     // products.value = response.data.products

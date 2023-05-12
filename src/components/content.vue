@@ -235,7 +235,7 @@ onMounted(async () => {
         // max_price.value = check_max_price(products)
     });
     await axios
-    .get('http://localhost:3001/api/carts/viewcarts')
+    .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
     .then(response => {
     console.log('gsvcp', response.data.data)
     // console.log('st', store_cart.total_amount())

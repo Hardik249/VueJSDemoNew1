@@ -84,10 +84,12 @@ const open = () => {
     } else {
     // console.log('state', state);
         axios
-        .get('http://localhost:3001/api/carts/viewcarts')
+        .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
         .then(response => {
           console.log('gsvcp', response.data.data)
           store_cart.items = response.data.data
+          store_cart.productId = response.data.data.productId
+          store_cart.number = response.data.data.quantity
           console.log('o_', store_cart.items);
           // products.value = response.data.products
           // cart_products.value = response.data

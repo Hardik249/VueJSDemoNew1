@@ -67,7 +67,10 @@
             <!-- {{ store_cart.items.length }} -->
             <!-- {{ store_cart.number }} -->
             <modalCard v-for="item_in_cart in store_cart.items" :image="item_in_cart.item ? item_in_cart.item.thumbnail : item_in_cart.product.thumbnail"
-                :quantity="item_in_cart.number ? item_in_cart.number : item_in_cart.quantity" :computedPrice="item_in_cart.item ? item_in_cart.number * item_in_cart.item.price : item_in_cart.quantity * item_in_cart.product.price">
+                :quantity="item_in_cart.number ? item_in_cart.number : item_in_cart.quantity" :computedPrice="item_in_cart.item ? item_in_cart.number * item_in_cart.item.price : item_in_cart.quantity * item_in_cart.product.price" :id="'product-'+item_in_cart.productId">
+                <!-- {{ productId }} -->
+                <!-- {{ item_in_cart.productId }} -->
+                <!-- {{ store_cart.productId }} -->
                 <!-- {{ item_in_cart }} -->
                 <!-- {{ item_in_cart.item }} -->
                 <!-- {{ item_in_cart.product }} -->
@@ -131,7 +134,7 @@ import { element_index_in_array } from '@/services/utils/utils'
 import axios from 'axios';
 
 let limit = ref(0);
-// let total = ref(0);
+// let productId = ref(0);
 let totalProducts = ref(0);
 let length = ref(0);
 let items = ref([]);
@@ -141,6 +144,7 @@ let totalProductsLimit = ref(0);
 let cart_products = ref([]);
 const store_cart = useCart()
 const isOpen = inject('dataModalCart')
+// let productId = store_cart.productId;
 
 const have_promo = ref(false)
 const total = ref(0)
@@ -181,7 +185,7 @@ const addQuantity = (e) => {
         console.log('t_', e)
         console.log('t_', JSON.parse(JSON.stringify(store_cart)).items)
         axios
-        .get('http://localhost:3001/api/carts/viewcarts')
+        .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
         .then(response => {
             console.log('t_', response.data.data)
             console.log('o_', e)
@@ -191,7 +195,7 @@ const addQuantity = (e) => {
             response.data.data.forEach(function(key, value) {
                 console.log(`key ${key} value ${value}`)
                 if (key.product_id = e.id) {
-                    productId = key.product_id;
+                    productId = key.productId;
                     qty = key.quantity;
                     cartId = key.id
                 }
@@ -203,6 +207,7 @@ const addQuantity = (e) => {
             let data = {
                 'productId': productId,
                 'id': cartId,
+                'quantity': qty,
                 'number': qty,
                 // 'number': store_cart.number,
             }
@@ -222,24 +227,31 @@ const reduceQuantity = (e) => {
         console.log('reduceQuantity', e)
         console.log('reduceQuantitye', JSON.parse(JSON.stringify(store_cart)).items)
         axios
-        .get('http://localhost:3001/api/carts/viewcarts')
+        .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
         .then(response => {
             console.log('t_', response.data.data)
             // products.value = response.data.products
+            let productId;
             let qty;
+            let cartId;
             response.data.data.forEach(function(key, value) {
-                console.log('k_', key)
-                // console.log(`key ${key} value ${value}`)
+                console.log(`key ${key} value ${value}`)
                 if (key.product_id = e.id) {
-                    qty = key.product_id;
+                    productId = key.productId;
+                    qty = key.quantity;
+                    cartId = key.id
                 }
             })
-            // store_cart.number = response.data.data[e.id].quantity;
             store_cart.number = qty;
+            // alert(e.id)
+            // store_cart.number = response.data.data[e.id].quantity;
             console.log('t_', store_cart.number)
             let data = {
-                'id': e.id,
-                'number': store_cart.number,
+                'productId': productId,
+                'id': cartId,
+                'quantity': qty,
+                'number': qty,
+                // 'number': store_cart.number,
             }
             console.log('dt_', data)
             store_cart.decrease_number(data)
@@ -263,7 +275,7 @@ cart_products.value = store_cart.getItems ? store_cart.getItems : store_cart.ite
 
 // onMounted(async () => {
 //     await axios
-//         .get('http://localhost:3001/api/carts/viewcarts')
+//         .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
 //         .then(response => {
 //             console.log('vcp', response.data.data)
 //             // products.value = response.data.products
