@@ -62,13 +62,16 @@
                 </template>
             </modalCard> -->
             <!-- {{store_cart}} -->
-            <!-- {{store_cart}} -->
+            <!-- {{store_cart.items}} -->
             <!-- v-if="store_cart.getItems ? " -->
             <!-- {{ store_cart.items.length }} -->
             <!-- {{ store_cart.number }} -->
-            <modalCard v-for="item_in_cart in store_cart.items" :image="item_in_cart.item ? item_in_cart.item.thumbnail : item_in_cart.thumbnail"
-                :quantity="item_in_cart.number ? item_in_cart.number : store_cart.number" :computedPrice="item_in_cart.item ? item_in_cart.number * item_in_cart.item.price : item_in_cart.price">
+            <modalCard v-for="item_in_cart in store_cart.items" :image="item_in_cart.item ? item_in_cart.item.thumbnail : item_in_cart.product.thumbnail"
+                :quantity="item_in_cart.number ? item_in_cart.number : item_in_cart.quantity" :computedPrice="item_in_cart.item ? item_in_cart.number * item_in_cart.item.price : item_in_cart.quantity * item_in_cart.product.price">
                 <!-- {{ item_in_cart }} -->
+                <!-- {{ item_in_cart.item }} -->
+                <!-- {{ item_in_cart.product }} -->
+                <!-- {{ item_in_cart.product.title }} -->
                 <!-- {{ store_cart }} -->
                 <!-- {{ item_in_cart.number }} -->
                 <!-- {{ store_cart.number }} -->
@@ -77,7 +80,7 @@
                     {{ item_in_cart.item.title }}
                 </div>
                 <div v-else>
-                    {{ item_in_cart.title }}
+                    {{ item_in_cart.product.title }}
                 </div>
                 <template v-slot:reduceQuantity>
                     <button class="handleQuantity" @click="reduceQuantity(item_in_cart)"> - </button>

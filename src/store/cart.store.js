@@ -276,13 +276,13 @@ export const useCart = defineStore("cart_items", {
     total_amount() {
       let total = 0
       let length = this.getItems ? this.getItems.length : ''
-      console.log('total_amount', this.number)
+      console.log('total_amount0', length)
       // alert(this.length)
       for (let i = 0; i < this.items.length; i++) {
-      console.log('total_amountif', this.items[i])
+      console.log('total_amountif', this.number)
         // alert(this.items[i].number)
         // total = !sessionStorage.jwtToken ? total + this.getItems[i].item.price*this.getItems[i].number : ''
-        total = !sessionStorage.jwtToken ? total + this.items[i].item.price*this.items[i].number : total + this.items[i].price*this.number
+        total = !sessionStorage.jwtToken ? total + this.items[i].item.price*this.items[i].number : total + this.items[i].product.price*this.items[i].quantity
         // total = total + this.getItems[i].item.price*this.getItems[i].number
         // total = total + this.items[i].item.price*this.items[i].number
       } 
@@ -290,24 +290,24 @@ export const useCart = defineStore("cart_items", {
     }
   },
 });
-onMounted(async () => {
-  await axios
-  .get('http://localhost:3001/api/carts/viewcarts')
-  .then(response => {
-    console.log('vcp', response.data.data)
-    // products.value = response.data.products
-    cart_products.value = response.data
-    limit.value = 6;
-    items.value = response;
-    // columns.value = response.data.data ? Object.keys(response.data.data[0]) : '';
-    totalProducts.value = response.data;
-    totalProductsLimit.value = response.data.limit
-    total.value = response.data.total;
-    // number.value = response.data.data.quantity;
-    // this.number = response.data.data.quantity ? response.data.data.quantity : '';
-    // console.log('total', this.number)
-    // length = response.data.value.length;
-    // max_price.value = check_max_price(response.data.products._rawValue)
-    // max_price.value = check_max_price(products)
-  });
-})
+// onMounted(async () => {
+//   await axios
+//   .get('http://localhost:3001/api/carts/viewcarts')
+//   .then(response => {
+//     console.log('vcp', response.data.data)
+//     // products.value = response.data.products
+//     cart_products.value = response.data
+//     limit.value = 6;
+//     items.value = response;
+//     // columns.value = response.data.data ? Object.keys(response.data.data[0]) : '';
+//     totalProducts.value = response.data;
+//     totalProductsLimit.value = response.data.limit
+//     total.value = response.data.total;
+//     // number.value = response.data.data.quantity;
+//     // this.number = response.data.data.quantity ? response.data.data.quantity : '';
+//     // console.log('total', this.number)
+//     // length = response.data.value.length;
+//     // max_price.value = check_max_price(response.data.products._rawValue)
+//     // max_price.value = check_max_price(products)
+//   });
+// })

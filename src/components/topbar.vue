@@ -87,6 +87,8 @@ const open = () => {
         .get('http://localhost:3001/api/carts/viewcarts')
         .then(response => {
           console.log('gsvcp', response.data.data)
+          store_cart.items = response.data.data
+          console.log('o_', store_cart.items);
           // products.value = response.data.products
           // cart_products.value = response.data
           // limit.value = 6;
@@ -97,29 +99,33 @@ const open = () => {
           // }
           // productId = '';
           // let ids;
-          let ids = new Array();
-          let quantity;
-          response.data.data.forEach(function(key, value) {
-              // ids = key.product_id;
-              ids.push(key.product_id);
-              quantity = key.quantity
-              store_cart.number = key.quantity
-              // state.number = key.quantity
-          })
-          let productId = response.data ? ids : '';
+
+          // let ids = new Array();
+          // let quantity;
+          // response.data.data.forEach(function(key, value) {
+          //     // ids = key.product_id;
+          //     ids.push(key.product_id);
+          //     quantity = key.quantity
+          //     store_cart.number = key.quantity
+          //     // state.number = key.quantity
+          // })
+          // let productId = response.data ? ids : '';
+
           // let productId = response.data ? response.data.product_id : '';
           // console.log(response.data.data[0].product_id)
-          axios
-          .get(`http://localhost:3001/api/products/productslist?array=[${productId}]`)
-          .then(response => {
-            console.log('products', response.data)
-            // state.items = response.data.data;
-            // state.length = response.data.length
-            store_cart.items = response.data.data
-            store_cart.length = response.data.length
-            // this.items = response;
-          })
+
+          // axios
+          // .get(`http://localhost:3001/api/products/productslist?array=[${productId}]`)
+          // .then(response => {
+          //   console.log('products', response.data)
+          //   // state.items = response.data.data;
+          //   // state.length = response.data.length
+          //   store_cart.items = response.data.data
+          //   store_cart.length = response.data.length
+          //   // this.items = response;
+          // })
           // console.log(products)
+
           // columns.value = response.data.data ? Object.keys(response.data.data[0]) : '';
           // totalProducts.value = response.data;
           // totalProductsLimit.value = response.data.limit
