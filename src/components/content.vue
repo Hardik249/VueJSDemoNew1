@@ -30,7 +30,7 @@
             <div class="products">
                 <card v-for="product in filtered_products" :key="product.id" :url="product.thumbnail" :alt="product.title"
                     :title="product.title" :price="product.price" :category="product.category"
-                    @handle_like="handle_like" @dis_like="remove_like" @item_clicked="add_item(product)" @click="moreDetails(product)">
+                    @handle_like="handle_like" @dis_like="remove_like" @item_clicked="add_item(product)" :id="product.id">
                 </card>
             </div>
             <div v-if="limit >= 6 && limit <= total" style="margin-bottom: 10%;margin-left: 50%;">
@@ -52,6 +52,8 @@ import { useCart } from '@/store/cart.store.js'
 import { useSort } from '@/store/sort.store.js'
 import categoriesList from './Filter/categories.vue'
 import titleFilter from './Filter/titleFilter.vue';
+import modal from './modal.vue'
+import moreDetails from './moreDetails.vue'
 
 const selected_category = ref('')
 const products = ref([])
@@ -206,12 +208,12 @@ const add_item = (e) => {
 //     console.log(store_cart.getItems)
 // }
 
-const moreDetails = (e) => {
-    const currentProduct = JSON.parse(JSON.stringify(e))
-    console.log(currentProduct)
+// const moreDetails = (e) => {
+//     const currentProduct = JSON.parse(JSON.stringify(e))
+//     console.log(currentProduct)
     
-    provide('seeDetails', {product : currentProduct, openModal: true, nameComponent: ''})
-}
+//     provide('seeDetails', {product : currentProduct, openModal: true, nameComponent: ''})
+// }
 
 const send_to_home = defineEmits('send_like', 'send_item')
 

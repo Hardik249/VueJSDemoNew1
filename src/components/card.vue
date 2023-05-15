@@ -7,7 +7,8 @@
                 <small> {{ category }} </small>
                 <average></average>
             </div>
-            <p><strong> {{ title }} </strong> </p>
+            <a :href="'#/product/'+id"><p><strong> {{ title }} </strong> </p></a>
+            <!-- <moreDetails :product="product"></moreDetails> -->
             <!-- <p style="color: gray;"> PRICE : </p> -->
             <div class="prices">
                 <span> {{ price }} € </span>
@@ -40,6 +41,7 @@
 <script setup>
 import { ref } from 'vue';
 import average from './average.vue';
+import moreDetails from './moreDetails.vue'
 
 defineProps({
     url: {
@@ -65,6 +67,14 @@ defineProps({
     strikeprice: {
         type: Number,
         default: 0,
+    },
+    id: {
+        type: Number,
+        default: 0,
+    },
+    href: {
+        type: String,
+        required: true,
     },
 })
 

@@ -40,6 +40,13 @@ export const routes = [
     component: () => import("@/views/auth.vue"),
   },
   {
+    path: "/product/:id",
+    name: "Product",
+    component: () => import("@/components/moreDetails.vue"),
+    meta: { breadCrumb: 'Product' },
+    // props: () => {default : true}
+  },
+  {
     path: "/dashboard",
     component: () => import("@/views/dashboard.vue"),
     children: [
