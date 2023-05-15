@@ -165,13 +165,15 @@ export const useCart = defineStore("cart_items", {
     },
     increase_number(position) {
       if (!sessionStorage.jwtToken) {
+        console.log('p0-', position)
         this.items[position].number++
         console.log(this.items)
       } else {
+        this.items[position].quantity++
         console.log('p-', position)
         let id = position.id
-        console.log('products0', this.items)
-        console.log('product0', this.items)
+        console.log('products0', this.items[position].quantity)
+        console.log('product0', this.items[position].product.id)
         // console.log('productsi', position.id)
         // console.log('productsn', position.number)
         // let product;
@@ -186,14 +188,15 @@ export const useCart = defineStore("cart_items", {
         // console.log('products3', this.items[position].number++)
         // console.log('products4', this.items[position].number)
         // this.items[position].number++
-        position.number++
-          position.quantity++
+        // position.number++
+        //   position.quantity++
         // position.number+
-        alert(position.quantity);
+        // alert(position.quantity);
         // console.log('in_', position)
         axios
-        .put(`http://localhost:3001/api/carts/updatequantity/${position.productId}`, {
-          'quantity': position.number,
+        .put(`http://localhost:3001/api/carts/updatequantity/${this.items[position].product.id}`, {
+          // 'quantity': position.number,
+          'quantity': this.items[position].quantity,
           // 'product_id': product_id,
           // 'user_id': user_id,
         })
@@ -248,16 +251,21 @@ export const useCart = defineStore("cart_items", {
         }
       } else {
         console.log('dn', position)
-        console.log('if', position.number >= 2)
-        if (position.number >= 2) {
-          position.number--
-          position.quantity--
+        console.log('if', this.items[position].quantity >= 2)
+        if (this.items[position].quantity >= 2) {
+          console.log('p0', this.items[position])
+          console.log('products0', this.items[position].quantity)
+          console.log('product0', this.items[position].product.id)
+          this.items[position].quantity--
+          // position.number--
+          // position.quantity--
           // position.number-
-          alert(position.quantity);
+          // alert(position.quantity);
           console.log(position)
           axios
-          .put(`http://localhost:3001/api/carts/updatequantity/${position.productId}`, {
-            'quantity': position.number,
+          .put(`http://localhost:3001/api/carts/updatequantity/${this.items[position].product.id}`, {
+            // 'quantity': position.number,
+            'quantity': this.items[position].quantity,
             // 'product_id': product_id,
             // 'user_id': user_id,
           })

@@ -177,89 +177,91 @@ const deleteItem = (e) => {
 const addQuantity = (e) => {
     console.log('q0', JSON.parse(JSON.stringify(store_cart)).items)
     console.log('q1', e)
-    // store_cart.increase_number(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e))
-    if (!sessionStorage.jwtToken) {
-        store_cart.increase_number(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e))
-        total.value = store_cart.total_amount()
-    } else {
-        console.log('t_', e)
-        console.log('t_', JSON.parse(JSON.stringify(store_cart)).items)
-        axios
-        .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
-        .then(response => {
-            console.log('t_', response.data.data)
-            console.log('o_', e)
-            let productId;
-            let qty;
-            let cartId;
-            response.data.data.forEach(function(key, value) {
-                console.log(`key ${key} value ${value}`)
-                if (key.product_id = e.id) {
-                    productId = key.productId;
-                    qty = key.quantity;
-                    cartId = key.id
-                }
-            })
-            store_cart.number = qty;
-            // alert(e.id)
-            // store_cart.number = response.data.data[e.id].quantity;
-            console.log('t_', store_cart.number)
-            let data = {
-                'productId': productId,
-                'id': cartId,
-                'quantity': qty,
-                'number': qty,
-                // 'number': store_cart.number,
-            }
-            console.log('dt_', data)
-            store_cart.increase_number(data)
-            // length = response.data.value.length;
-            // max_price.value = check_max_price(response.data.products._rawValue)
-            // max_price.value = check_max_price(products)
-        });
-    }
+    store_cart.increase_number(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e))
+    // if (!sessionStorage.jwtToken) {
+    //     store_cart.increase_number(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e))
+    //     total.value = store_cart.total_amount()
+    // } else {
+    //     store_cart.increase_number(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e))
+    //     console.log('t_', e)
+    //     console.log('t_', JSON.parse(JSON.stringify(store_cart)).items)
+    //     axios
+    //     .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
+    //     .then(response => {
+    //         console.log('t_', response.data.data)
+    //         console.log('o_', e)
+    //         let productId;
+    //         let qty;
+    //         let cartId;
+    //         response.data.data.forEach(function(key, value) {
+    //             console.log(`key ${key} value ${value}`)
+    //             if (key.product_id = e.id) {
+    //                 productId = key.productId;
+    //                 qty = key.quantity;
+    //                 cartId = key.id
+    //             }
+    //         })
+    //         store_cart.number = qty;
+    //         // alert(e.id)
+    //         // store_cart.number = response.data.data[e.id].quantity;
+    //         console.log('t_', store_cart.number)
+    //         let data = {
+    //             'productId': productId,
+    //             'id': cartId,
+    //             'quantity': qty,
+    //             'number': qty,
+    //             // 'number': store_cart.number,
+    //         }
+    //         console.log('dt_', data)
+    //         // store_cart.increase_number(data)
+    //         // length = response.data.value.length;
+    //         // max_price.value = check_max_price(response.data.products._rawValue)
+    //         // max_price.value = check_max_price(products)
+    //     });
+    // }
 }
 const reduceQuantity = (e) => {
-    // store_cart.decrease_number(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e))
-    if (!sessionStorage.jwtToken) {
-        store_cart.decrease_number(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e))
-    } else {
-        console.log('reduceQuantity', e)
-        console.log('reduceQuantitye', JSON.parse(JSON.stringify(store_cart)).items)
-        axios
-        .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
-        .then(response => {
-            console.log('t_', response.data.data)
-            // products.value = response.data.products
-            let productId;
-            let qty;
-            let cartId;
-            response.data.data.forEach(function(key, value) {
-                console.log(`key ${key} value ${value}`)
-                if (key.product_id = e.id) {
-                    productId = key.productId;
-                    qty = key.quantity;
-                    cartId = key.id
-                }
-            })
-            store_cart.number = qty;
-            // alert(e.id)
-            // store_cart.number = response.data.data[e.id].quantity;
-            console.log('t_', store_cart.number)
-            let data = {
-                'productId': productId,
-                'id': cartId,
-                'quantity': qty,
-                'number': qty,
-                // 'number': store_cart.number,
-            }
-            console.log('dt_', data)
-            store_cart.decrease_number(data)
-            // length = response.data.value.length;
-            // max_price.value = check_max_price(response.data.products._rawValue)
-            // max_price.value = check_max_price(products)
-        });
-    }
+    store_cart.decrease_number(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e))
+    // if (!sessionStorage.jwtToken) {
+    //     store_cart.decrease_number(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e))
+    // } else {
+    //     console.log('reduceQuantity', e)
+    //     console.log('reduceQuantitye', JSON.parse(JSON.stringify(store_cart)).items)
+    //     store_cart.decrease_number(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e))
+    //     axios
+    //     .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
+    //     .then(response => {
+    //         console.log('t_', response.data.data)
+    //         // products.value = response.data.products
+    //         let productId;
+    //         let qty;
+    //         let cartId;
+    //         response.data.data.forEach(function(key, value) {
+    //             console.log(`key ${key} value ${value}`)
+    //             if (key.product_id = e.id) {
+    //                 productId = key.productId;
+    //                 qty = key.quantity;
+    //                 cartId = key.id
+    //             }
+    //         })
+    //         store_cart.number = qty;
+    //         // alert(e.id)
+    //         // store_cart.number = response.data.data[e.id].quantity;
+    //         console.log('t_', store_cart.number)
+    //         let data = {
+    //             'productId': productId,
+    //             'id': cartId,
+    //             'quantity': qty,
+    //             'number': qty,
+    //             // 'number': store_cart.number,
+    //         }
+    //         console.log('dt_', data)
+    //         // store_cart.decrease_number(data)
+    //         // length = response.data.value.length;
+    //         // max_price.value = check_max_price(response.data.products._rawValue)
+    //         // max_price.value = check_max_price(products)
+    //     });
+    // }
 }
 const check_promo_code = () => {
     //if(promo_value.length ==)
