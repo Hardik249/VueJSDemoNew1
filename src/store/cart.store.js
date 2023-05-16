@@ -9,6 +9,8 @@ export const useCart = defineStore("cart_items", {
       length: '',
       number: '',
       productId: '',
+      count: '',
+      quantity: '',
     };
   },
   getters: {
@@ -74,12 +76,19 @@ export const useCart = defineStore("cart_items", {
         return state.items.length
       } else {
         console.log('state', state)
-        console.log('state-items', state.length)
+        console.log('state-items', state.items.length)
+        axios
+          .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
+          .then(response => {
+            console.log('state-', response.data.data);
+        })
         // state.items.length = state.items.length;
         // state.length = state.items.length;
-        // return state.items.length
+        // return state.length
+        return state.items.length
         // return state.items ? state.items.length : state.length;
-        return state.length ? state.length : state.items.length;
+
+        // return state.length ? state.length : state.items.length;
       }
     }
   },
@@ -96,59 +105,103 @@ export const useCart = defineStore("cart_items", {
           this.items.push(new_item);
         }
       } else {
+        // alert('else')
+        console.log('else')
+        let cartProductIds = [];
         console.log('new_item', new_item);
-        let formData = new FormData();
-        // let product_id = e.id ? e.id : '';
-        let product_id = new_item.item.id ? new_item.item.id : '';
-        let quantity = new_item.number ? new_item.number : '';
-        let user_id = sessionStorage.id ? sessionStorage.id : '';
-        formData.append('product_id', product_id)
-        formData.append('quantity', quantity)
-        formData.append('user_id', user_id)
         axios
-        .post(`http://localhost:3001/api/carts/addtocart`, {
-            'product_id': product_id,
-            'quantity': quantity,
-            'user_id': user_id,
-        })
+        .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
         .then(response => {
-            console.log('response', response);
-            // items.value = response.data
-            // let ids = new Array();
-            // response.data.data.forEach(function(key, value) {
-            //     // ids = key.product_id;
-            //     ids.push(key.product_id);
-            // })
-            // let productId = response.data ? ids : '';
-            let productId = response.data ? response.data.data.product_id : '';
-            this.number = response.data.data.quantity ? response.data.data.quantity : '';
-            // console.log(response.data.data[0].product_id)
+          console.log('elsegsvcp', response.data.data)
+          // response.data.data.forEach(function(key, value) {
+          //   // console.log(`elsekey ${key}`)
+          //   console.log('elsekey', key)
+          //   this.items.push(key);
+          // })
+          this.items = response.data.data
+          // console.log('else', this.items)
+          response.data.data.forEach(function(key, value) {
+            cartProductIds.push(key.productId)
+            // cartProductId = key;
+            // if ($('#cart-'+key)) {
+            //   $('#cart-'+key).empty();
+            //   $('#cart-'+key).append('Added to Cart');
+            // }
+          })
+          console.log('elseic0', cartProductIds.find((element) => element))
+          console.log('elseic1', cartProductIds.find((element) => element === new_item.item.id))
+          console.log('elseconditioncrt0', new_item.item.id)
+          console.log('elseconditioncrt1', cartProductIds)
+          console.log('elsefcondition0', cartProductIds.includes(new_item.item.id))
+          console.log('elsefcondition1', cartProductIds.includes(new_item.item.id) === true)
+          console.log('elsei1', new_item.item.id)
+
+          // console.log('st', store_cart.total_amount())
+          // store_cart.state.length = response.data.data.length;
+          // store_cart.length = response.data.data.length;
+          // store_cart.total_amount();
+          if (cartProductIds.find((element) => element === new_item.item.id)) {
+            // alert('elseif')
+            console.log('condition if')
+            alert("Item already added to the cart")
+          } else {
+            console.log('condition else')
+            // alert('elseelse')
+            let formData = new FormData();
+            // let product_id = e.id ? e.id : '';
+            let product_id = new_item.item.id ? new_item.item.id : '';
+            let quantity = new_item.number ? new_item.number : '';
+            let user_id = sessionStorage.id ? sessionStorage.id : '';
+            formData.append('product_id', product_id)
+            formData.append('quantity', quantity)
+            formData.append('user_id', user_id)
             axios
-            .get(`http://localhost:3001/api/products/productslist?array=[${productId}]`)
-            .then(response => {
-                console.log('products', response);
-                // cart_products.value = response.data
-                // length.value= response.data.length
-
-                // alert(number)
-                alert(this.number)
-
-                // this.items.push(response.data.data);
-                let item = { 'item': response.data.data, 'number': this.number }
-                this.items.push(item);
-
-                // this.number = new_item.number
-                // this.number = this.items.length;
-                // console.log('length', this.items.length)
-                console.log('items', this.items)
-                console.log('getItems', this.getItems)
-                // this.items.push(new_item);
+            .post(`http://localhost:3001/api/carts/addtocart/${sessionStorage.id}`, {
+                'productId': product_id,
+                'quantity': quantity,
+                'user_id': user_id,
             })
-            // store_categories.add_all_categories(JSON.parse(JSON.stringify(response.data)))
-            // categories.value = store_categories.getAllCategories
-        })
-        .catch(error => {
-            console.log(error)
+            .then(response => {
+                console.log('response', response);
+                // items.value = response.data
+                // let ids = new Array();
+                // response.data.data.forEach(function(key, value) {
+                //     // ids = key.product_id;
+                //     ids.push(key.product_id);
+                // })
+                // let productId = response.data ? ids : '';
+                let productId = response.data ? response.data.data.productId : '';
+                this.number = response.data.data.quantity ? response.data.data.quantity : '';
+                // console.log(response.data.data[0].product_id)
+                axios
+                .get(`http://localhost:3001/api/products/productslist?array=[${productId}]`)
+                .then(response => {
+                    console.log('products', response.data.data[0].price);
+                    // cart_products.value = response.data
+                    // length.value= response.data.length
+
+                    // alert(number)
+                    // alert(this.number)
+
+                    // this.items.push(response.data.data);
+                    let item = { 'product': response.data.data, 'number': this.number }
+                    this.items.push(item);
+
+                    // this.number = new_item.number
+                    // this.number = this.items.length;
+                    // console.log('length', this.items.length)
+                    console.log('items', this.items)
+                    console.log('getItems', this.getItems)
+                    this.total_amount();
+                    // this.items.push(new_item);
+                })
+                // store_categories.add_all_categories(JSON.parse(JSON.stringify(response.data)))
+                // categories.value = store_categories.getAllCategories
+            })
+            .catch(error => {
+                console.log(error)
+            })
+          }
         })
       }
     },
@@ -313,13 +366,20 @@ export const useCart = defineStore("cart_items", {
     total_amount() {
       let total = 0
       let length = this.getItems ? this.getItems.length : ''
-      console.log('total_amount0', length)
+      console.log('total_amount0', this.items)
       // alert(this.length)
       for (let i = 0; i < this.items.length; i++) {
-      console.log('total_amountif', this.number)
+        let price = this.items[i].product[0] ? this.items[i].product[0].price : this.items[i].product.price;
+        // console.log('this.items[i].quantity-', this.items[i].quantity)
+        console.log('total', total)
+        console.log('price', price)
+        console.log('this.items[i].number', this.items[i].number)
+        console.log('total + this.items[i].product.price*this.items[i].quantity', total + this.items[i].product.price*this.items[i].quantity)
+        // console.log('', )
+        console.log('total + price*this.items[i].number', total + price*this.items[i].number)
         // alert(this.items[i].number)
         // total = !sessionStorage.jwtToken ? total + this.getItems[i].item.price*this.getItems[i].number : ''
-        total = !sessionStorage.jwtToken ? total + this.items[i].item.price*this.items[i].number : total + this.items[i].product.price*this.items[i].quantity
+        total = !sessionStorage.jwtToken ? total + this.items[i].item.price*this.items[i].number : total + price*this.items[i].number
         // total = total + this.getItems[i].item.price*this.getItems[i].number
         // total = total + this.items[i].item.price*this.items[i].number
       } 

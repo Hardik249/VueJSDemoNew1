@@ -157,10 +157,12 @@ const deleteItem = (e) => {
         store_cart.delete_item(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e))
       } else {
         console.log('store_cart.length', store_cart.length)
+        console.log('e-', e)
         // alert('e')
         axios
         .delete(`http://localhost:3001/api/carts/removefromcart/${e.id}`)
         .then(function(response) {
+            console.log('e-deleteItem', response)
             store_cart.items.map(e => e.id)
             store_cart.length = store_cart.items.length;
             console.log('store_cart.getItems.length', store_cart.length)
@@ -309,8 +311,8 @@ cart_products.value = store_cart.getItems ? store_cart.getItems : store_cart.ite
 
 watchEffect(() => {
     console.log(`store_cart.total_amount() ${store_cart.total_amount()}`)
-    total.value = store_cart.total_amount() != 0 ? store_cart.total_amount().toFixed(2) : store_cart.total_amount()
-    // total.value = store_cart.total_amount().toFixed(2) 
+    // total.value = store_cart.total_amount() != 0 ? store_cart.total_amount().toFixed(2) : store_cart.total_amount()
+    total.value = store_cart.total_amount().toFixed(2)
     console.log(isOpen + "zfzfzefzefez")
 })
 const goPayement = () => {}
