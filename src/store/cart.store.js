@@ -379,7 +379,7 @@ export const useCart = defineStore("cart_items", {
         console.log('total + price*this.items[i].number', total + price*this.items[i].number)
         // alert(this.items[i].number)
         // total = !sessionStorage.jwtToken ? total + this.getItems[i].item.price*this.getItems[i].number : ''
-        total = !sessionStorage.jwtToken ? total + this.items[i].item.price*this.items[i].number : total + price*this.items[i].number
+        total = !sessionStorage.jwtToken ? total + this.items[i].item.price*this.items[i].number : total + this.items[i].product.price*this.items[i].quantity
         // total = total + this.getItems[i].item.price*this.getItems[i].number
         // total = total + this.items[i].item.price*this.items[i].number
       } 
