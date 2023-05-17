@@ -21,7 +21,7 @@
                     <span class="text"> Compare products </span>
                 </span>
             </router-link>
-            <router-link to="/">
+            <router-link to="">
                 <span>
                     <span class="icon">
                         <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -42,8 +42,11 @@
                                 fill="white" />
                         </svg>
                     </span>
-                    <span class="text" @click="openCart = true"> {{ store_cart.nbr_items }} {{
-                    check_plural(store_cart.nbr_items, 'Item') }} ~ {{ store_cart.total_amount() }} € </span>
+                    <span class="text" @click="openCart = true">
+                        {{ store_cart.nbr_items }} {{
+                        check_plural(store_cart.nbr_items, 'Item') }}
+                        <!-- ~ {{ store_cart.total_amount() }} €  -->
+                    </span>
                 </span>
             </router-link>
         </div>

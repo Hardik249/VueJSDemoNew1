@@ -80,15 +80,17 @@ export const useCart = defineStore("cart_items", {
         axios
           .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
           .then(response => {
-            console.log('state-', response.data.data);
+            console.log('state-', response.data.data.length);
+            state.length = response.data.data.length;
+            // state.items.length = response.data.length;
         })
         // state.items.length = state.items.length;
         // state.length = state.items.length;
         // return state.length
-        return state.items.length
+        // return state.items.length
         // return state.items ? state.items.length : state.length;
 
-        // return state.length ? state.length : state.items.length;
+        return state.length ? state.length : state.items.length;
       }
     }
   },
