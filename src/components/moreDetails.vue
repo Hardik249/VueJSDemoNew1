@@ -5,14 +5,35 @@
     <div class="main">
         <main class="container">
 
-          <!-- Left Column / Headphones Image -->
-          <div class="left-column">
-            <img data-image="black" src="images/black.png" alt="">
-            <img data-image="blue" src="images/blue.png" alt="">
-            <img data-image="red" class="active" :src="product.thumbnail" :alt="product.title">
-            <!-- <img data-image="red" class="active" src="https://designmodo.com/wp-content/uploads/2017/03/screenshot-1920x1010.png" alt=""> -->
+          <div class="container-space">
+              <div class="row">
+                  <div class="col-md-6">
+                    <img class="img-fluid" :src="bannerImage" alt="" />
+                    <div class="product-thumbnails">
+                      <!-- {{ productImages.length}}  -->
+                      <!-- {{ productImages.length >= 4 }} -->
+                      <ul>
+                        <li v-for="(image, index) in productImages.slice(0, 4)" :key="index">
+                          <!-- {{ image == null }} -->
+                          <img :class="[activeClass == index ? 'thumbnail-active': '']" @click="currentThumnail(image, index)" :src="image ? image : bannerImage" alt=""  style="margin-right: 10px;"/>
+                        </li>
+                      </ul>
+                    </div>
+                    <!-- {{ productImages }} -->
+                    <!-- {{ productImages.slice(5, -1)}}  -->
+                    <!-- {{ productImages.slice(4, -1)}}  -->
+                    <!-- {{ productImages.slice(5, -1)}}  -->
+                    <!-- {{ productImages.length >= 4 }} -->
+                    <div class="product-thumbnails">
+                      <ul>
+                        <li v-for="(image, index) in productImages.slice(5, -1)" :class="[activeClass == index ? 'thumbnail-active': '']" :key="index">
+                          <img @click="currentThumnail(image, index)" :src="image" alt=""  style="margin-right: 10px;"/>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+              </div>
           </div>
-
 
           <!-- Right Column -->
           <div class="right-column">
@@ -50,6 +71,19 @@ import { useCart } from '@/store/cart.store.js'
 
 const product = ref({})
 const store_cart = useCart()
+let bannerImage = ref();
+let activeClass = ref();
+const productImages = ref([])
+// const productImages = [
+//   {
+//     id: 3435,
+//     imageUrl: "https://i.imgur.com/Nmuu6Jh.jpg"
+//   },
+//   {
+//     id: 3436,
+//     imageUrl: "https://i.imgur.com/VFcTYyU.jpg"
+//   }
+// ]
 
 // console.log(this.$route.params)
 
@@ -68,11 +102,14 @@ onMounted(async () => {
     await axios
     .get(`http://localhost:3001/api/products/product/${id}`)
     .then(response => {
-        console.log('djp', response.data);
+        console.log('djp', response.data.images);
         // products.value = response.data.products
         // initial_products.value = products.value
         product.value = response.data.data;
         console.log(product.value);
+        bannerImage.value = response.data.data.thumbnail;
+        productImages.value = response.data.images;
+        console.log(productImages.value);
         // let images = product.images
         // console.log(products)
         // limit.value = 6;
@@ -87,6 +124,12 @@ onMounted(async () => {
         // max_price.value = check_max_price(products)
     });
 })
+
+const currentThumnail = (image, index) => {
+  console.log('bannerImage', bannerImage.value)
+  bannerImage.value = image ? image : bannerImage.value;
+  activeClass.value = index;
+}
 $(document).ready(function() {
 
   $('.color-choose input').on('click', function() {
@@ -107,6 +150,33 @@ $(document).ready(function() {
     margin-top: 140px;
     display: grid;
 }
+
+
+/* imgs */
+.container-space {
+  margin-top: 2rem;
+}
+.product-thumbnails {
+  display: flex;
+  margin-top: 2rem;
+}
+.product-thumbnails > ul {
+  display: flex;
+  list-style: none;
+  padding-left: 0;
+}
+.product-thumbnails > li {
+  margin-right: 10px;
+}
+.product-thumbnails > ul > li > img {
+  width: 100px;
+  cursor: pointer;
+  height: 75%;
+}
+.thumbnail-active {
+  border: 2px solid #000;
+}
+
 
 /* Basic Styling */
 html, body {

@@ -8,7 +8,11 @@
                 {{ category }} </categoriesList> -->
 
                 <button class="btn" id="clearAll" @click="clearAll" style="float: inline-end;">Clear All</button><br>
-                <span id="selectedCategory" style="margin-left: 0;">{{ selected_category }}</span><br>
+                <div style="margin-left: 0px;background-color: lightgray;color: black;width: 45%;" v-if="selected_category ? selected_category : ''">
+                    <span id="selectedCategory" @click="clearAll" style="cursor: pointer;">
+                        {{ mark }} {{ selected_category }}
+                    </span><br>
+                </div>
                 <input type="checkbox" class="isActive" id="phone" name="phone" value="phone" @click="fetchData('phone')"> <label for="phone">Smartphones</label><br>
                 <input type="checkbox" class="isActive" id="Laptop" name="Laptop" value="Laptop" @click="fetchData('Laptop')"> <label for="Laptop">Laptops</label><br>
                 <input type="checkbox" class="isActive" id="sunglasses" name="sunglasses" value="sunglasses" @click="fetchData('sunglasses')"> <label for="sunglasses">Sunglasses</label><br>
@@ -74,6 +78,7 @@ let columns = ref([]);
 let totalProductsLimit = ref(0);
 let isActive = false;
 let queries = ref(['products', 'phone', 'Laptop', 'sunglasses', 'furniture', 'home', 'motorcycle', 'lighting', 'watch', 'bags', 'handbags', 'ring']);
+let mark = ref('')
 
 
 const sort_by_category = (e) => {
@@ -317,6 +322,7 @@ const fetchData = (query) => {
           $("#"+key).addClass('active');
         $("#"+key).prop('checked', true); // Checks it
         selected_category.value = key;
+        mark.value = ' x '
           // isActive.value = false;
         }
         // $('.isActive').prop('checked', false); // Unchecks it
