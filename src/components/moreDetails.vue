@@ -15,7 +15,7 @@
                       <ul>
                         <li v-for="(image, index) in productImages.slice(0, 4)" :key="index">
                           <!-- {{ image == null }} -->
-                          <img :class="[activeClass == index ? 'thumbnail-active': '']" @click="currentThumnail(image, index)" :src="image ? image : bannerImage" alt=""  style="margin-right: 10px;"/>
+                          <img :class="[activeClass == index ? 'thumbnail-active': '']" v-if="image != null" @click="currentThumnail(image, index)" :src="image" alt=""  style="margin-right: 10px;"/>
                         </li>
                       </ul>
                     </div>
@@ -27,7 +27,7 @@
                     <div class="product-thumbnails">
                       <ul>
                         <li v-for="(image, index) in productImages.slice(5, -1)" :class="[activeClass == index ? 'thumbnail-active': '']" :key="index">
-                          <img @click="currentThumnail(image, index)" :src="image" alt=""  style="margin-right: 10px;"/>
+                          <img v-if="image != null" @click="currentThumnail(image, index)" :src="image" alt=""  style="margin-right: 10px;"/>
                         </li>
                       </ul>
                     </div>
@@ -92,24 +92,24 @@ const add_item = (e) => {
     /* JSON.parse(JSON.stringify(e)) to get de target in a proxy */
     // send_to_home('send_item', element)
     store_cart.add_item({ 'item': element, 'number': 1 })
-    console.log(store_cart.getItems)
+ // console.log(store_cart.getItems)
 }
 
 onMounted(async () => {
    const route = useRoute();
    const id = route.params.id;
-   console.log(useRoute().params.id)
+// console.log(useRoute().params.id)
     await axios
     .get(`http://localhost:3001/api/products/product/${id}`)
     .then(response => {
-        console.log('djp', response.data.images);
+     // console.log('djp', response.data.images);
         // products.value = response.data.products
         // initial_products.value = products.value
         product.value = response.data.data;
-        console.log(product.value);
+     // console.log(product.value);
         bannerImage.value = response.data.data.thumbnail;
         productImages.value = response.data.images;
-        console.log(productImages.value);
+     // console.log(productImages.value);
         // let images = product.images
         // console.log(products)
         // limit.value = 6;
@@ -126,8 +126,7 @@ onMounted(async () => {
 })
 
 const currentThumnail = (image, index) => {
-  console.log('bannerImage', bannerImage.value)
-  bannerImage.value = image ? image : bannerImage.value;
+  bannerImage.value = image;
   activeClass.value = index;
 }
 $(document).ready(function() {

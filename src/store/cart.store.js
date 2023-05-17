@@ -15,19 +15,22 @@ export const useCart = defineStore("cart_items", {
   },
   getters: {
     getItems : (state) => {
-      console.log(`state.items ${state.items}`)
-      console.log('add_itemif', !sessionStorage.jwtToken)
-      console.log('add_itemif', !sessionStorage.jwtToken && sessionStorage.jwtToken == '')
+      // state.items = JSON.parse(JSON.stringify(state.items))
+      // state.length = state.items.length
+
+   // console.log(`state.items ${state.items}`)
+   // console.log('add_itemif', !sessionStorage.jwtToken)
+   // console.log('add_itemif', !sessionStorage.jwtToken && sessionStorage.jwtToken == '')
       // if (!sessionStorage.jwtToken) {
       //   state.items = JSON.parse(JSON.stringify(state.items))
       //   state.length = state.items.length
       //   // return JSON.parse(JSON.stringify(state.items))
       // } else {
-      //   console.log('state', state);
+      //// console.log('state', state);
       //   axios
       //   .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
       //   .then(response => {
-      //     console.log('gsvcp', response.data.data)
+      //  // console.log('gsvcp', response.data.data)
       //     // products.value = response.data.products
       //     // cart_products.value = response.data
       //     // limit.value = 6;
@@ -52,7 +55,7 @@ export const useCart = defineStore("cart_items", {
       //     axios
       //     .get(`http://localhost:3001/api/products/productslist?array=[${productId}]`)
       //     .then(response => {
-      //       console.log('products', response.data)
+      //    // console.log('products', response.data)
       //       state.items = response.data.data;
       //       state.length = response.data.length
       //       // this.items = response;
@@ -68,20 +71,20 @@ export const useCart = defineStore("cart_items", {
       //     // max_price.value = check_max_price(products)
       //   });
       // }
-          console.log('items.value', state.items)
+       // console.log('items.value', state.items)
     },
     nbr_items : (state) => {
       // return state.items.length
       if (!sessionStorage.jwtToken) {
         return state.items.length
       } else {
-        console.log('state', state)
-        console.log('state-items', state.items.length)
+     // console.log('state', state)
+     // console.log('state-items', state.items.length)
         axios
           .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
           .then(response => {
-            console.log('state-', response.data.data.length);
-            state.length = response.data.data.length;
+         // console.log('state-', response.data.data.length);
+            // state.length = response.data.data.length;
             // state.items.length = response.data.length;
         })
         // state.items.length = state.items.length;
@@ -96,9 +99,9 @@ export const useCart = defineStore("cart_items", {
   },
   actions: {
     add_item(new_item) {
-      console.log('new_item', new_item);
-      console.log('add_itemif', !sessionStorage.jwtToken)
-      console.log('add_itemif', !sessionStorage.jwtToken && sessionStorage.jwtToken == '')
+   // console.log('new_item', new_item);
+   // console.log('add_itemif', !sessionStorage.jwtToken)
+   // console.log('add_itemif', !sessionStorage.jwtToken && sessionStorage.jwtToken == '')
       if (!sessionStorage.jwtToken) {
         if (this.items.find((element) => element.item.id === new_item.item.id)) {
           alert("Item already added to the cart")
@@ -108,16 +111,16 @@ export const useCart = defineStore("cart_items", {
         }
       } else {
         // alert('else')
-        console.log('else')
+     // console.log('else')
         let cartProductIds = [];
-        console.log('new_item', new_item);
+     // console.log('new_item', new_item);
         axios
         .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
         .then(response => {
-          console.log('elsegsvcp', response.data.data)
+       // console.log('elsegsvcp', response.data.data)
           // response.data.data.forEach(function(key, value) {
           //   // console.log(`elsekey ${key}`)
-          //   console.log('elsekey', key)
+          //// console.log('elsekey', key)
           //   this.items.push(key);
           // })
           this.items = response.data.data
@@ -130,13 +133,13 @@ export const useCart = defineStore("cart_items", {
             //   $('#cart-'+key).append('Added to Cart');
             // }
           })
-          console.log('elseic0', cartProductIds.find((element) => element))
-          console.log('elseic1', cartProductIds.find((element) => element === new_item.item.id))
-          console.log('elseconditioncrt0', new_item.item.id)
-          console.log('elseconditioncrt1', cartProductIds)
-          console.log('elsefcondition0', cartProductIds.includes(new_item.item.id))
-          console.log('elsefcondition1', cartProductIds.includes(new_item.item.id) === true)
-          console.log('elsei1', new_item.item.id)
+       // console.log('elseic0', cartProductIds.find((element) => element))
+       // console.log('elseic1', cartProductIds.find((element) => element === new_item.item.id))
+       // console.log('elseconditioncrt0', new_item.item.id)
+       // console.log('elseconditioncrt1', cartProductIds)
+       // console.log('elsefcondition0', cartProductIds.includes(new_item.item.id))
+       // console.log('elsefcondition1', cartProductIds.includes(new_item.item.id) === true)
+       // console.log('elsei1', new_item.item.id)
 
           // console.log('st', store_cart.total_amount())
           // store_cart.state.length = response.data.data.length;
@@ -144,10 +147,10 @@ export const useCart = defineStore("cart_items", {
           // store_cart.total_amount();
           if (cartProductIds.find((element) => element === new_item.item.id)) {
             // alert('elseif')
-            console.log('condition if')
+         // console.log('condition if')
             alert("Item already added to the cart")
           } else {
-            console.log('condition else')
+         // console.log('condition else')
             // alert('elseelse')
             let formData = new FormData();
             // let product_id = e.id ? e.id : '';
@@ -164,7 +167,7 @@ export const useCart = defineStore("cart_items", {
                 'user_id': user_id,
             })
             .then(response => {
-                console.log('response', response);
+             // console.log('response', response);
                 // items.value = response.data
                 // let ids = new Array();
                 // response.data.data.forEach(function(key, value) {
@@ -178,7 +181,7 @@ export const useCart = defineStore("cart_items", {
                 axios
                 .get(`http://localhost:3001/api/products/productslist?array=[${productId}]`)
                 .then(response => {
-                    console.log('products', response.data.data[0].price);
+                 // console.log('products', response.data.data[0].price);
                     // cart_products.value = response.data
                     // length.value= response.data.length
 
@@ -192,8 +195,8 @@ export const useCart = defineStore("cart_items", {
                     // this.number = new_item.number
                     // this.number = this.items.length;
                     // console.log('length', this.items.length)
-                    console.log('items', this.items)
-                    console.log('getItems', this.getItems)
+                 // console.log('items', this.items)
+                 // console.log('getItems', this.getItems)
                     this.total_amount();
                     // this.items.push(new_item);
                 })
@@ -201,34 +204,34 @@ export const useCart = defineStore("cart_items", {
                 // categories.value = store_categories.getAllCategories
             })
             .catch(error => {
-                console.log(error)
+             // console.log(error)
             })
           }
         })
       }
     },
     delete_item(position) {
-      console.log('delete_itemif', !sessionStorage.jwtToken)
-      console.log('delete_itemif', !sessionStorage.jwtToken && sessionStorage.jwtToken == '')
+   // console.log('delete_itemif', !sessionStorage.jwtToken)
+   // console.log('delete_itemif', !sessionStorage.jwtToken && sessionStorage.jwtToken == '')
       this.items.splice(position, 1)
       // if (!sessionStorage.jwtToken) {
       //   this.items.splice(position, 1)
       // } else {
-      //   console.log('d', position)
-      //   console.log('di', this.items.splice(position, 1))
+      //// console.log('d', position)
+      //// console.log('di', this.items.splice(position, 1))
       // }
     },
     increase_number(position) {
       if (!sessionStorage.jwtToken) {
-        console.log('p0-', position)
+     // console.log('p0-', position)
         this.items[position].number++
-        console.log(this.items)
+     // console.log(this.items)
       } else {
         this.items[position].quantity++
-        console.log('p-', position)
+     // console.log('p-', position)
         let id = position.id
-        console.log('products0', this.items[position].quantity)
-        console.log('product0', this.items[position].product.id)
+     // console.log('products0', this.items[position].quantity)
+     // console.log('product0', this.items[position].product.id)
         // console.log('productsi', position.id)
         // console.log('productsn', position.number)
         // let product;
@@ -256,13 +259,13 @@ export const useCart = defineStore("cart_items", {
           // 'user_id': user_id,
         })
         .then(response => {
-          console.log('r_', response.data)
+       // console.log('r_', response.data)
           // position.number = response.data.data.quantity
           // this.number = response.data.data.quantity;
-          console.log('quantity', this.items)
+       // console.log('quantity', this.items)
           // let qty;
           // this.items.forEach(function(key, value) {
-          //     console.log(`key ${key.productId} value ${position.productId}`)
+          //  // console.log(`key ${key.productId} value ${position.productId}`)
           //     if (key.productId = position.productId) {
           //         // productId = key.productId;
           //         qty = key.quantity;
@@ -276,7 +279,7 @@ export const useCart = defineStore("cart_items", {
           // console.log('console', cartProducts)
           // let qty;
           // JSON.parse(JSON.stringify(response.data.data)).forEach(function(key, value) {
-          //     console.log(`key ${key} value ${value}`)
+          //  // console.log(`key ${key} value ${value}`)
           //     if (key.product_id = e.id) {
           //         qty = key.product_id;
           //     }
@@ -302,21 +305,21 @@ export const useCart = defineStore("cart_items", {
       if (!sessionStorage.jwtToken) {
         if (this.items[position].number >= 2) {
           this.items[position].number--
-          console.log(this.items)
+       // console.log(this.items)
         }
       } else {
-        console.log('dn', position)
-        console.log('if', this.items[position].quantity >= 2)
+     // console.log('dn', position)
+     // console.log('if', this.items[position].quantity >= 2)
         if (this.items[position].quantity >= 2) {
-          console.log('p0', this.items[position])
-          console.log('products0', this.items[position].quantity)
-          console.log('product0', this.items[position].product.id)
+       // console.log('p0', this.items[position])
+       // console.log('products0', this.items[position].quantity)
+       // console.log('product0', this.items[position].product.id)
           this.items[position].quantity--
           // position.number--
           // position.quantity--
           // position.number-
           // alert(position.quantity);
-          console.log(position)
+       // console.log(position)
           axios
           .put(`http://localhost:3001/api/carts/updatequantity/${this.items[position].product.id}`, {
             // 'quantity': position.number,
@@ -325,13 +328,13 @@ export const useCart = defineStore("cart_items", {
             // 'user_id': user_id,
           })
           .then(response => {
-            console.log('t_', response.data.data)
+         // console.log('t_', response.data.data)
             // position.number = response.data.data.quantity
             // this.number = response.data.data.quantity;
-            console.log('quantity', this.items)
+         // console.log('quantity', this.items)
             // let qty;
             // this.items.forEach(function(key, value) {
-            //     console.log(`key ${key.productId} value ${position.id}`)
+            //  // console.log(`key ${key.productId} value ${position.id}`)
             //     if (key.productId = position.productId) {
             //         // productId = key.productId;
             //         qty = key.quantity;
@@ -343,7 +346,7 @@ export const useCart = defineStore("cart_items", {
 
             // let qty;
             // response.data.data.forEach(function(key, value) {
-            //     console.log(`key ${key} value ${value}`)
+            //  // console.log(`key ${key} value ${value}`)
             //     if (key.product_id = e.id) {
             //         qty = key.product_id;
             //     }
@@ -368,17 +371,18 @@ export const useCart = defineStore("cart_items", {
     total_amount() {
       let total = 0
       let length = this.getItems ? this.getItems.length : ''
-      console.log('total_amount0', this.items)
+   // console.log('total_amount0', this.items)
       // alert(this.length)
       for (let i = 0; i < this.items.length; i++) {
-        let price = this.items[i].product[0] ? this.items[i].product[0].price : this.items[i].product.price;
+        // let price = this.items[i].product[0] ? this.items[i].product[0].price : this.items[i].product.price;
+
         // console.log('this.items[i].quantity-', this.items[i].quantity)
-        console.log('total', total)
-        console.log('price', price)
-        console.log('this.items[i].number', this.items[i].number)
-        console.log('total + this.items[i].product.price*this.items[i].quantity', total + this.items[i].product.price*this.items[i].quantity)
+     // console.log('total', total)
+     // console.log('price', price)
+     // console.log('this.items[i].number', this.items[i].number)
+     // console.log('total + this.items[i].product.price*this.items[i].quantity', total + this.items[i].product.price*this.items[i].quantity)
         // console.log('', )
-        console.log('total + price*this.items[i].number', total + price*this.items[i].number)
+     // console.log('total + price*this.items[i].number', total + price*this.items[i].number)
         // alert(this.items[i].number)
         // total = !sessionStorage.jwtToken ? total + this.getItems[i].item.price*this.getItems[i].number : ''
         total = !sessionStorage.jwtToken ? total + this.items[i].item.price*this.items[i].number : total + this.items[i].product.price*this.items[i].quantity
@@ -393,7 +397,7 @@ export const useCart = defineStore("cart_items", {
 //   await axios
 //   .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
 //   .then(response => {
-//     console.log('vcp', response.data.data)
+//  // console.log('vcp', response.data.data)
 //     // products.value = response.data.products
 //     cart_products.value = response.data
 //     limit.value = 6;

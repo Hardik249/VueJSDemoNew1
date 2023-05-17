@@ -165,24 +165,24 @@ const handle_search = (e) => {
 }
 
 const add_item = (e) => {
-    console.log('e', e.id);
-    console.log('if', sessionStorage.jwtToken != undefined)
-    console.log('if0', !sessionStorage.jwtToken && sessionStorage.jwtToken == '')
+ // console.log('e', e.id);
+ // console.log('if', sessionStorage.jwtToken != undefined)
+ // console.log('if0', !sessionStorage.jwtToken && sessionStorage.jwtToken == '')
 
     const element = JSON.parse(JSON.stringify(e))
     /* JSON.parse(JSON.stringify(e)) to get de target in a proxy */
     send_to_home('send_item', element)
     store_cart.add_item({ 'item': element, 'number': 1 })
-    console.log(store_cart.getItems)
+ // console.log(store_cart.getItems)
 
     // if (!sessionStorage.jwtToken) {
     //     const element = JSON.parse(JSON.stringify(e))
     //     /* JSON.parse(JSON.stringify(e)) to get de target in a proxy */
     //     send_to_home('send_item', element)
     //     store_cart.add_item({ 'item': element, 'number': 1 })
-    //     console.log(store_cart.getItems)
+    //  // console.log(store_cart.getItems)
     // } else {
-    //     console.log('else')
+    //  // console.log('else')
     //     send_to_home('send_item', e)
     //     let formData = new FormData();
     //     let product_id = e.id ? e.id : '';
@@ -195,12 +195,12 @@ const add_item = (e) => {
     //         'user_id': user_id
     //     })
     //     .then(response => {
-    //         console.log('response', response);
+    //      // console.log('response', response);
     //         // store_categories.add_all_categories(JSON.parse(JSON.stringify(response.data)))
     //         // categories.value = store_categories.getAllCategories
     //     })
     //     .catch(error => {
-    //         console.log(error)
+    //      // console.log(error)
     //     })
     // }
 }
@@ -210,12 +210,12 @@ const add_item = (e) => {
 //     /* JSON.parse(JSON.stringify(e)) to get de target in a proxy */
 //     send_to_home('send_item', element)
 //     store_cart.add_item({ 'item': element, 'number': 1 })
-//     console.log(store_cart.getItems)
+//  // console.log(store_cart.getItems)
 // }
 
 // const moreDetails = (e) => {
 //     const currentProduct = JSON.parse(JSON.stringify(e))
-//     console.log(currentProduct)
+//  // console.log(currentProduct)
     
 //     provide('seeDetails', {product : currentProduct, openModal: true, nameComponent: ''})
 // }
@@ -226,17 +226,17 @@ onMounted(async () => {
     await axios
     .get('https://dummyjson.com/products?limit=6')
     .then(response => {
-        console.log('djp', response.data.limit)
+     // console.log('djp', response.data.limit)
         products.value = response.data.products
         initial_products.value = products.value
-        console.log(products)
+     // console.log(products)
         limit.value = 6;
         items.value = response;
         columns.value = Object.keys(response.data.products[0]);
         totalProducts.value = response.data;
         totalProductsLimit.value = response.data.limit
         total.value = response.data.total;
-        console.log('total', total)
+     // console.log('total', total)
         length = products.value.length;
         max_price.value = check_max_price(products._rawValue)
         // max_price.value = check_max_price(products)
@@ -244,7 +244,7 @@ onMounted(async () => {
     await axios
     .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
     .then(response => {
-    console.log('gsvcp', response.data.data)
+ // console.log('gsvcp', response.data.data)
     // console.log('st', store_cart.total_amount())
     // store_cart.state.length = response.data.data.length;
     store_cart.length = response.data.data.length;
@@ -309,11 +309,11 @@ const loadMoreData = () => {
 const fetchData = (query) => {
       // console.log('selectedCategory', selected_categories.value)
     store_categories.add_or_remove_selected(query)
-    console.log(JSON.parse(JSON.stringify(store_categories.selected_categories)).length !== 0)
+ // console.log(JSON.parse(JSON.stringify(store_categories.selected_categories)).length !== 0)
     if (JSON.parse(JSON.stringify(store_categories.selected_categories)).length !== 0) {
       isActive = true;
       $('.isActive').removeClass('active');
-      console.log('', store_categories.selected_categories)
+   // console.log('', store_categories.selected_categories)
         // $('.isActive').prop('checked', false); // Unchecks it
 
         $('.isActive').prop('checked', false); // Unchecks it

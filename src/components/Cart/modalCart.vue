@@ -151,23 +151,23 @@ const total = ref(0)
 const promo_value = ref("")
 
 const deleteItem = (e) => {
-      console.log('deleteItemif', !sessionStorage.jwtToken)
-      console.log('deleteItemif', !sessionStorage.jwtToken && sessionStorage.jwtToken == '')
+   // console.log('deleteItemif', !sessionStorage.jwtToken)
+   // console.log('deleteItemif', !sessionStorage.jwtToken && sessionStorage.jwtToken == '')
       if (!sessionStorage.jwtToken) {
         store_cart.delete_item(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e))
       } else {
-        console.log('store_cart.length', store_cart.length)
-        console.log('e-', e)
+     // console.log('store_cart.length', store_cart.length)
+     // console.log('e-', e)
         // alert('e')
         axios
         .delete(`http://localhost:3001/api/carts/removefromcart/${e.id}`)
         .then(function(response) {
-            console.log('e-deleteItem', response)
+         // console.log('e-deleteItem', response)
             store_cart.items.map(e => e.id)
             store_cart.length = store_cart.items.length;
-            console.log('store_cart.getItems.length', store_cart.length)
-            console.log('sid', JSON.parse(JSON.stringify(store_cart)).items)
-            console.log('sit', e)
+         // console.log('store_cart.getItems.length', store_cart.length)
+         // console.log('sid', JSON.parse(JSON.stringify(store_cart)).items)
+         // console.log('sit', e)
             // store_cart.delete_item()
             store_cart.delete_item(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e.id))
         })
@@ -177,26 +177,26 @@ const deleteItem = (e) => {
       }
 }
 const addQuantity = (e) => {
-    console.log('q0', JSON.parse(JSON.stringify(store_cart)).items)
-    console.log('q1', e)
+ // console.log('q0', JSON.parse(JSON.stringify(store_cart)).items)
+ // console.log('q1', e)
     store_cart.increase_number(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e))
     // if (!sessionStorage.jwtToken) {
     //     store_cart.increase_number(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e))
     //     total.value = store_cart.total_amount()
     // } else {
     //     store_cart.increase_number(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e))
-    //     console.log('t_', e)
-    //     console.log('t_', JSON.parse(JSON.stringify(store_cart)).items)
+    //  // console.log('t_', e)
+    //  // console.log('t_', JSON.parse(JSON.stringify(store_cart)).items)
     //     axios
     //     .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
     //     .then(response => {
-    //         console.log('t_', response.data.data)
-    //         console.log('o_', e)
+    //      // console.log('t_', response.data.data)
+    //      // console.log('o_', e)
     //         let productId;
     //         let qty;
     //         let cartId;
     //         response.data.data.forEach(function(key, value) {
-    //             console.log(`key ${key} value ${value}`)
+    //          // console.log(`key ${key} value ${value}`)
     //             if (key.product_id = e.id) {
     //                 productId = key.productId;
     //                 qty = key.quantity;
@@ -206,7 +206,7 @@ const addQuantity = (e) => {
     //         store_cart.number = qty;
     //         // alert(e.id)
     //         // store_cart.number = response.data.data[e.id].quantity;
-    //         console.log('t_', store_cart.number)
+    //      // console.log('t_', store_cart.number)
     //         let data = {
     //             'productId': productId,
     //             'id': cartId,
@@ -214,7 +214,7 @@ const addQuantity = (e) => {
     //             'number': qty,
     //             // 'number': store_cart.number,
     //         }
-    //         console.log('dt_', data)
+    //      // console.log('dt_', data)
     //         // store_cart.increase_number(data)
     //         // length = response.data.value.length;
     //         // max_price.value = check_max_price(response.data.products._rawValue)
@@ -227,19 +227,19 @@ const reduceQuantity = (e) => {
     // if (!sessionStorage.jwtToken) {
     //     store_cart.decrease_number(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e))
     // } else {
-    //     console.log('reduceQuantity', e)
-    //     console.log('reduceQuantitye', JSON.parse(JSON.stringify(store_cart)).items)
+    //  // console.log('reduceQuantity', e)
+    //  // console.log('reduceQuantitye', JSON.parse(JSON.stringify(store_cart)).items)
     //     store_cart.decrease_number(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e))
     //     axios
     //     .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
     //     .then(response => {
-    //         console.log('t_', response.data.data)
+    //      // console.log('t_', response.data.data)
     //         // products.value = response.data.products
     //         let productId;
     //         let qty;
     //         let cartId;
     //         response.data.data.forEach(function(key, value) {
-    //             console.log(`key ${key} value ${value}`)
+    //          // console.log(`key ${key} value ${value}`)
     //             if (key.product_id = e.id) {
     //                 productId = key.productId;
     //                 qty = key.quantity;
@@ -249,7 +249,7 @@ const reduceQuantity = (e) => {
     //         store_cart.number = qty;
     //         // alert(e.id)
     //         // store_cart.number = response.data.data[e.id].quantity;
-    //         console.log('t_', store_cart.number)
+    //      // console.log('t_', store_cart.number)
     //         let data = {
     //             'productId': productId,
     //             'id': cartId,
@@ -257,7 +257,7 @@ const reduceQuantity = (e) => {
     //             'number': qty,
     //             // 'number': store_cart.number,
     //         }
-    //         console.log('dt_', data)
+    //      // console.log('dt_', data)
     //         // store_cart.decrease_number(data)
     //         // length = response.data.value.length;
     //         // max_price.value = check_max_price(response.data.products._rawValue)
@@ -268,7 +268,7 @@ const reduceQuantity = (e) => {
 const check_promo_code = () => {
     //if(promo_value.length ==)
     // Checker' l'exactiture du code promo 3 secondes eprès l'entree ... en attendant, faire apparaitre un loader.... 
-    console.log(promo_value)
+ // console.log(promo_value)
 }
 
 
@@ -281,7 +281,7 @@ cart_products.value = store_cart.getItems ? store_cart.getItems : store_cart.ite
 //     await axios
 //         .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
 //         .then(response => {
-//             console.log('vcp', response.data.data)
+//          // console.log('vcp', response.data.data)
 //             // products.value = response.data.products
 //             cart_products.value = response.data
 //             limit.value = 6;
@@ -290,7 +290,7 @@ cart_products.value = store_cart.getItems ? store_cart.getItems : store_cart.ite
 //             totalProducts.value = response.data;
 //             totalProductsLimit.value = response.data.limit
 //             total.value = response.data.total;
-//             console.log('total', total)
+//          // console.log('total', total)
 //             // length = response.data.value.length;
 //             // max_price.value = check_max_price(response.data.products._rawValue)
 //             // max_price.value = check_max_price(products)
@@ -310,10 +310,10 @@ cart_products.value = store_cart.getItems ? store_cart.getItems : store_cart.ite
 
 
 watchEffect(() => {
-    console.log(`store_cart.total_amount() ${store_cart.total_amount()}`)
+ // console.log(`store_cart.total_amount() ${store_cart.total_amount()}`)
     // total.value = store_cart.total_amount() != 0 ? store_cart.total_amount().toFixed(2) : store_cart.total_amount()
     total.value = store_cart.total_amount().toFixed(2)
-    console.log(isOpen + "zfzfzefzefez")
+ // console.log(isOpen + "zfzfzefzefez")
 })
 const goPayement = () => {}
 </script>

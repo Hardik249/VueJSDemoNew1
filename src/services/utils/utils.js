@@ -48,10 +48,10 @@ export const element_index_in_array = (array, element) => {
         const array_mapped = array.map(e => e.item.id)
         return array_mapped.indexOf(element.item.id)
     } else {
-        console.log('e_', array)
-        console.log('e_e', element)
-        console.log('a_', array.map(e => e.id))
-        console.log('a_i', array.map(e => e.id).indexOf(element.id))
+     // console.log('e_', array)
+     // console.log('e_e', element)
+     // console.log('a_', array.map(e => e.id))
+     // console.log('a_i', array.map(e => e.id).indexOf(element.id))
         const array_mapped = array.map(e => e.id)
         return array_mapped.indexOf(element.id)
     }

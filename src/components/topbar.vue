@@ -65,10 +65,10 @@ import { check_plural } from '@/services/utils/utils'
 /* const get_current_user = async () => {
     await axios.get('http://localhost:8000/api/user')
         .then((response) => {
-            console.log(response)
+         // console.log(response)
         })
         .catch((error) => {
-            console.log(error);
+         // console.log(error);
         })
 } */
 /* 
@@ -82,18 +82,18 @@ const open = () => {
     if (!sessionStorage.jwtToken) {
         // state.items = JSON.parse(JSON.stringify(state.items))
         store_cart.items = JSON.parse(JSON.stringify(store_cart.items))
-        store_cart.length = state.items.length
+        store_cart.length = store_cart.items.length
     // return JSON.parse(JSON.stringify(state.items))
     } else {
     // console.log('state', state);
         axios
         .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
         .then(response => {
-          console.log('gsvcp', response.data.data)
+       // console.log('gsvcp', response.data.data)
           store_cart.items = response.data.data
           store_cart.productId = response.data.data.productId
           store_cart.number = response.data.data.quantity
-          console.log('o_', store_cart.items);
+       // console.log('o_', store_cart.items);
           // products.value = response.data.products
           // cart_products.value = response.data
           // limit.value = 6;
@@ -122,7 +122,7 @@ const open = () => {
           // axios
           // .get(`http://localhost:3001/api/products/productslist?array=[${productId}]`)
           // .then(response => {
-          //   console.log('products', response.data)
+          //// console.log('products', response.data)
           //   // state.items = response.data.data;
           //   // state.length = response.data.length
           //   store_cart.items = response.data.data
