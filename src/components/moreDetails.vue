@@ -64,11 +64,14 @@
 import modal from '@/components/modal.vue';
 import navbar from '@/components/navbar.vue';
 import topbar from '@/components/topbar.vue';
-import { onMounted, ref, provide } from 'vue';
+import { onMounted, ref, provide, watchEffect } from 'vue';
 import axios from "axios";
 import {useRoute} from "vue-router";
 import { useCart } from '@/store/cart.store.js'
+import { check_plural } from '@/services/utils/utils.js'
 
+const count_likes = ref(0)
+const words_favorite = ref('Favorite')
 const product = ref({})
 const store_cart = useCart()
 let bannerImage = ref();
@@ -129,6 +132,22 @@ const currentThumnail = (image, index) => {
   bannerImage.value = image;
   activeClass.value = index;
 }
+
+
+const handle_like = (e) => {
+    /* console.log(e) */
+    count_likes.value = e
+    words_favorite.value = check_plural(e, 'Favorite')
+}
+
+
+/* Watcheffect to do the change just one time ... increase performance */
+watchEffect(() => {
+    provide('mot', words_favorite)
+});
+
+provide('nbr_likes', count_likes)
+
 $(document).ready(function() {
 
   $('.color-choose input').on('click', function() {

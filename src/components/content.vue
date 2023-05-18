@@ -34,7 +34,7 @@
             <div class="products">
                 <card v-for="product in filtered_products" :key="product.id" :url="product.thumbnail" :alt="product.title"
                     :title="product.title" :price="product.price" :category="product.category"
-                    @handle_like="handle_like" @dis_like="remove_like" @item_clicked="add_item(product)" :id="product.id">
+                    @handle_like="handle_like" @dis_like="remove_like" @item_clicked="add_item(product)" @product_clicked="add_wish(product)" :id="product.id">
                 </card>
             </div>
             <div v-if="limit >= 6 && limit <= total" style="margin-bottom: 10%;margin-left: 50%;">
@@ -53,11 +53,13 @@ import card from './card.vue';
 import range from './Filter/range.vue';
 import { check_max_price, hide_long_text } from '../services/utils/utils';
 import { useCart } from '@/store/cart.store.js'
+import { useWish } from '@/store/wish.store.js'
 import { useSort } from '@/store/sort.store.js'
 import categoriesList from './Filter/categories.vue'
 import titleFilter from './Filter/titleFilter.vue';
 import modal from './modal.vue'
 import moreDetails from './moreDetails.vue'
+import { element_index_in_array } from '@/services/utils/utils'
 
 const selected_category = ref('')
 const products = ref([])
@@ -67,6 +69,7 @@ const filtered_products = ref(products)
 const nbr_favorites = ref(0)
 const max_price = ref(0)
 const store_cart = useCart()
+const store_wish = useWish()
 const store_categories = useSort()
 const categories = ref([])
 let limit = ref(0);
@@ -219,6 +222,28 @@ const add_item = (e) => {
     
 //     provide('seeDetails', {product : currentProduct, openModal: true, nameComponent: ''})
 // }
+
+
+const add_wish = (e) => {
+    // alert(store_wish.isProduct.value)
+    // console.log(store_wish.items)
+    // console.log(store_wish.items.find((element) => element.item.id === e.id))
+    // console.log(store_wish.isProduct.value)
+    // console.log(store_wish.isProduct.value == false)
+    // store_wish.isProduct.value == true ? store_wish.delete_item({ 'item': element, 'number': 1 })
+    if (store_wish.items.find((element) => element.item.id === e.id)) {
+        store_wish.delete_item(element_index_in_array(JSON.parse(JSON.stringify(store_wish)).items, e))
+        // store_wish.delete_item(e)
+        // store_wish.delete_item({ 'item': e, 'number': 1 })
+    } else {
+        console.log('', store_wish.isProduct)
+        const element = JSON.parse(JSON.stringify(e))
+        console.log(element)
+        /* JSON.parse(JSON.stringify(e)) to get de target in a proxy */
+        send_to_home('send_item', element)
+        store_wish.add_item({ 'item': element, 'number': 1 })
+    }
+}
 
 const send_to_home = defineEmits('send_like', 'send_item')
 

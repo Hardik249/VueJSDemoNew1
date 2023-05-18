@@ -46,7 +46,9 @@ export const element_index_in_array = (array, element) => {
 
     if (!sessionStorage.jwtToken) {
         const array_mapped = array.map(e => e.item.id)
-        return array_mapped.indexOf(element.item.id)
+        // return array_mapped.indexOf(element.item.id)
+        let item = element.item ? element.item.id : element.id;
+        return array_mapped.indexOf(item)
     } else {
      // console.log('e_', array)
      // console.log('e_e', element)

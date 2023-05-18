@@ -22,15 +22,15 @@
                 </span>
             </router-link>
             <router-link to="">
-                <span>
+                <span @click="open">
                     <span class="icon">
                         <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" clip-rule="evenodd"
+                            <path id="deleteItem" fill-rule="evenodd" clip-rule="evenodd"
                                 d="M12.0122 5.57169L10.9252 4.48469C8.77734 2.33681 5.29493 2.33681 3.14705 4.48469C0.999162 6.63258 0.999162 10.115 3.14705 12.2629L11.9859 21.1017L11.9877 21.0999L12.014 21.1262L20.8528 12.2874C23.0007 10.1395 23.0007 6.65711 20.8528 4.50923C18.705 2.36134 15.2226 2.36134 13.0747 4.50923L12.0122 5.57169ZM11.9877 18.2715L16.9239 13.3352L18.3747 11.9342L18.3762 11.9356L19.4386 10.8732C20.8055 9.50635 20.8055 7.29028 19.4386 5.92344C18.0718 4.55661 15.8557 4.55661 14.4889 5.92344L12.0133 8.39904L12.006 8.3918L12.005 8.39287L9.51101 5.89891C8.14417 4.53207 5.92809 4.53207 4.56126 5.89891C3.19442 7.26574 3.19442 9.48182 4.56126 10.8487L7.10068 13.3881L7.10248 13.3863L11.9877 18.2715Z"
                                 fill="white" />
                         </svg>
                     </span>
-                    <span class="text"> Wish list - {{ nbr_likes }} {{ mot }} </span>
+                    <span class="text" @click="isOpen(openWish = true, 0)"> Wish list - {{ nbr_likes }} {{ mot }} </span>
                 </span>
             </router-link>
             <router-link to="">
@@ -42,7 +42,7 @@
                                 fill="white" />
                         </svg>
                     </span>
-                    <span class="text" @click="openCart = true">
+                    <span class="text" @click="isOpen(openCart = true, 1)">
                         {{ store_cart.nbr_items }} {{
                         check_plural(store_cart.nbr_items, 'Item') }}
                         <!-- ~ {{ store_cart.total_amount() }} €  -->
@@ -50,7 +50,7 @@
                 </span>
             </router-link>
         </div>
-        <modal></modal>
+        <modal :id="1"></modal>
     </div>
 </template>
     
@@ -59,6 +59,7 @@
 import { inject, ref, provide } from 'vue';
 import modal from './modal.vue';
 import { useCart } from '@/store/cart.store.js'
+import { useWish } from '@/store/wish.store.js'
 import { check_plural } from '@/services/utils/utils'
 // import modalCart from '@/Cart/modalCart.vue'
 
@@ -77,6 +78,7 @@ onMounted(() => {
 }) */
 
 const store_cart = useCart()
+const store_wish = useWish()
 
 const open = () => {
     if (!sessionStorage.jwtToken) {
@@ -146,10 +148,27 @@ const open = () => {
 const nbr_likes = inject('nbr_likes')
 const mot = inject('mot')
 const openCart = ref(false)
+const openWish = ref(false)
 
 const cat = localStorage.getItem('myCat');
-//provide('modalCart', {open: openCart.value, nameComponent: 'modalCart'})
+// provide('modalCart', {open: openCart.value, nameComponent: 'modalCart'})
+// provide('modalWish', {open: openWish.value, nameComponent: 'modalWish'})
+
 provide('dataModalCart', openCart)
+provide('dataModalWish', openWish)
+
+// console.log(openWish)
+
+let isOpen = (openA, index) => {
+    // alert(openA)
+    // alert(index)
+    // console.log(openA)
+    // console.log(index)
+    // localStorage.setItem('dataModal', index)
+    provide('dataModal', index);
+    // return index == 0 ? provide('dataModalCart', openA) : provide('dataModalWish', openA);
+    // return index == 0 ? provide('openA', openCart) : provide('openA', openWish);
+}
 
 </script>
     

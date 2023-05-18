@@ -2,7 +2,7 @@
     <div class="root">
         <teleport to="body">
             <!-- v-if="isOpen.visible" -->
-            <component :is="currentComponent" ></component>
+            <component :is="currentComponent" :id="id"></component>
         </teleport>
     </div>
 </template>
@@ -11,11 +11,25 @@
 import { inject } from 'vue';
 
 import modalCart from './Cart/modalCart.vue';
+import modalWish from './Wish/modalWish.vue';
 import moreDetails from './moreDetails.vue'
 
 /* Inject to take currentComponent */
 //const isOpen = inject('modalCart')
+defineProps({
+    id: {
+        type: Number,
+        default: 0,
+    },
+})
 
-const currentComponent = modalCart;
+const components = {
+    modalCart,
+    modalWish
+}
+const isOpen = inject('dataModal')
+// let isOpen = localStorage.getItem('dataModal')
+console.log(isOpen)
+const currentComponent = modalWish;
 
 </script>
