@@ -50,7 +50,8 @@
                 </span>
             </router-link>
         </div>
-        <modal :id="1"></modal>
+        <modal :id="1" :is="openCart"></modal>
+        <modal :id="2" :is="openWish"></modal>
     </div>
 </template>
     

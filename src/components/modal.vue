@@ -16,11 +16,15 @@ import moreDetails from './moreDetails.vue'
 
 /* Inject to take currentComponent */
 //const isOpen = inject('modalCart')
-defineProps({
+const props = defineProps({
     id: {
         type: Number,
         default: 0,
     },
+    // currentComponent: {
+    //     type: String,
+    //     default: '',
+    // },
 })
 
 const components = {
@@ -29,7 +33,10 @@ const components = {
 }
 const isOpen = inject('dataModal')
 // let isOpen = localStorage.getItem('dataModal')
+console.log(props.id)
+console.log(props.currentComponent)
 console.log(isOpen)
-const currentComponent = modalWish;
+// const currentComponent = modalWish;
+const currentComponent = props.id == 1 ? modalCart : modalWish;
 
 </script>
