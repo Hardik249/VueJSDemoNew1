@@ -83,12 +83,15 @@ const store_wish = useWish()
 
 const open = () => {
     if (!sessionStorage.jwtToken) {
+        // alert('if')
+        // console.log('items', store_wish.items)
         // state.items = JSON.parse(JSON.stringify(state.items))
         store_cart.items = JSON.parse(JSON.stringify(store_cart.items))
         store_cart.length = store_cart.items.length
-    // return JSON.parse(JSON.stringify(state.items))
+        // return JSON.parse(JSON.stringify(state.items))
     } else {
-    // console.log('state', state);
+        // alert('else')
+        // console.log('state', state);
         axios
         .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
         .then(response => {

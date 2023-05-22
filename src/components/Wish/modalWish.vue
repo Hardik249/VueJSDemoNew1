@@ -82,20 +82,25 @@
                     </svg>
                 </template>
             </modalCard> -->
+            <!-- {{ item_in_wish.items.product }} -->
+            <!-- {{ item_in_wish.items }} -->
+            {{ item_in_wish }}
             <modalCard v-for="item_in_wish in store_wish.items" :image="item_in_wish.item ? item_in_wish.item.thumbnail : item_in_wish.product.thumbnail"
-                :quantity="item_in_wish.number ? item_in_wish.number : item_in_wish.quantity" :computedPrice="item_in_wish.item ? item_in_wish.number * item_in_wish.item.price : item_in_wish.quantity * item_in_wish.product.price" :id="'product-'+item_in_wish.productId">
+                :quantity="item_in_wish.number ? item_in_wish.number : item_in_wish.quantity" :computedPrice="item_in_wish.product.price" :id="'product-'+item_in_wish.productId">
+                <!-- {{ item_in_wish.product }} -->
+                <!-- {{ item_in_wish.item.title }} -->
                 <div v-if="item_in_wish.item">
                     {{ item_in_wish.item.title }}
                 </div>
                 <div v-else>
                     {{ item_in_wish.product.title }}
                 </div>
-                <template v-slot:reduceQuantity>
+                <!-- <template v-slot:reduceQuantity>
                     <button class="handleQuantity" @click="reduceQuantity(item_in_wish)"> - </button>
                 </template>
                 <template v-slot:addQuantity>
                     <button class="handleQuantity" @click="addQuantity(item_in_wish)"> + </button>
-                </template>
+                </template> -->
                 <template v-slot:btnDelete>
                     <svg @click="deleteItem(item_in_wish)" class="trashIcon" width="24" height="24" viewBox="0 0 24 24"
                         fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -156,24 +161,27 @@ const total = ref(0)
 const promo_value = ref("")
 
 const deleteItem = (e) => {
-      if (!sessionStorage.jwtToken) {
-        store_wish.delete_item(element_index_in_array(JSON.parse(JSON.stringify(store_wish)).items, e))
-        $('#wish-'+e.id).trigger();
-        console.log($('#wish'))
-        console.log($('#deleteItem').attr('fill'))
-        console.log($('#deleteItem').attr('fillsvg'))
-      } else {
-        axios
-        .delete(`http://localhost:3001/api/carts/removefromcart/${e.id}`)
-        .then(function(response) {
-            store_wish.items.map(e => e.id)
-            store_wish.length = store_wish.items.length;
-            store_wish.delete_item(element_index_in_array(JSON.parse(JSON.stringify(store_wish)).items, e.id))
-        })
-        .catch(function(error) {
-            console.error(error)
-        })
-      }
+    // console.log(e)
+    // console.log(e.id)
+    // let id = e.product[0].id;
+  if (!sessionStorage.jwtToken) {
+    store_wish.delete_item(element_index_in_array(JSON.parse(JSON.stringify(store_wish)).items, e))
+    $('#wish-'+e.id).trigger();
+    // console.log($('#wish'))
+    // console.log($('#deleteItem').attr('fill'))
+    // console.log($('#deleteItem').attr('fillsvg'))
+  } else {
+    axios
+    .delete(`http://localhost:3001/api/wishes/removefromwishes/${e.id}`)
+    .then(function(response) {
+        store_wish.items.map(e => e.id)
+        store_wish.length = store_wish.items.length;
+        store_wish.delete_item(element_index_in_array(JSON.parse(JSON.stringify(store_wish)).items, e.id))
+    })
+    .catch(function(error) {
+        console.error(error)
+    })
+  }
 }
 
 wish_products.value = store_wish.getItems ? store_wish.getItems : store_wish.items;

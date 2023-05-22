@@ -4,14 +4,15 @@
             <img :src="image" :alt="alt">
         </div>
         <div class="center">
-            <p><strong>
+            <p><strong class="center">
                     <slot></slot>
-                </strong></p>
-            <div class="quantity">
+                </strong>
+            </p>
+            <!-- <div class="quantity">
                 <slot name="reduceQuantity"></slot>
                 <span :id="'product-' + productId"> x {{ quantity }} </span>
                 <slot name="addQuantity"></slot>
-            </div>
+            </div> -->
         </div>
         <div class="right">
             <p> <strong>{{ computedPrice }}</strong> €</p>

@@ -225,24 +225,29 @@ const add_item = (e) => {
 
 
 const add_wish = (e) => {
+    // console.log(!sessionStorage.jwtToken)
+    if (!sessionStorage.jwtToken) {
+        window.location = '#/auth';
+    } else {
+        if (store_wish.items.find((element) => element.id === e.id)) {
+            store_wish.delete_item(element_index_in_array(JSON.parse(JSON.stringify(store_wish)).items, e))
+            // store_wish.delete_item(e)
+            // store_wish.delete_item({ 'item': e, 'number': 1 })
+        } else {
+            // console.log('', store_wish.isProduct)
+            const element = JSON.parse(JSON.stringify(e))
+            // console.log(element)
+            /* JSON.parse(JSON.stringify(e)) to get de target in a proxy */
+            send_to_home('send_item', element)
+            store_wish.add_item({ 'item': element, 'number': 1 })
+        }
+    }
     // alert(store_wish.isProduct.value)
     // console.log(store_wish.items)
     // console.log(store_wish.items.find((element) => element.item.id === e.id))
     // console.log(store_wish.isProduct.value)
     // console.log(store_wish.isProduct.value == false)
     // store_wish.isProduct.value == true ? store_wish.delete_item({ 'item': element, 'number': 1 })
-    if (store_wish.items.find((element) => element.item.id === e.id)) {
-        store_wish.delete_item(element_index_in_array(JSON.parse(JSON.stringify(store_wish)).items, e))
-        // store_wish.delete_item(e)
-        // store_wish.delete_item({ 'item': e, 'number': 1 })
-    } else {
-        console.log('', store_wish.isProduct)
-        const element = JSON.parse(JSON.stringify(e))
-        console.log(element)
-        /* JSON.parse(JSON.stringify(e)) to get de target in a proxy */
-        send_to_home('send_item', element)
-        store_wish.add_item({ 'item': element, 'number': 1 })
-    }
 }
 
 const send_to_home = defineEmits('send_like', 'send_item')
