@@ -108,7 +108,7 @@ export default {
 </script>
 
 <template>
-	<div class="container align-items-center center" style="margin-left: 25%;">
+	<div class="container align-items-center center auth" style="margin-left: 25%;">
 		<div class="row justify-content-center">
 			<div class="card" style="margin-right: 0%;margin-left: 100%;margin-top: 75%;">
 				<h2 class="card-title text-center">
@@ -120,15 +120,15 @@ export default {
 					</div>
 
 		      		<form @submit.prevent="fetchData">
-		      			<input type="hidden" class="form-control" id="id" placeholder="id" v-model="id">
+		      			<input type="hidden" class="form-control input" id="id" placeholder="id" v-model="id">
 	          			<div class="form-group mb-2">
 				          	<label>Name : </label>
-				            <input type="text" class="form-control" id="name" placeholder="Name" v-model="name">
+				            <input type="text" class="form-control input" id="name" placeholder="Name" v-model="name">
 			              	<span class="error" id="nameError"></span>
 			        	</div>
 			        	<div class="form-group mb-2">
 				          	<label>Email : </label>
-			             	<input type="text" class="form-control" id="email" placeholder="Email" v-model="email">
+			             	<input type="text" class="form-control input" id="email" placeholder="Email" v-model="email">
 			              <span class="error" id="emailError"></span>
 			            </div>       
 	   					<div class="d-flex flex-row align-items-center justify-content-between">
@@ -149,5 +149,20 @@ export default {
 
 .error{
   color: red;
+}
+
+.input {
+    margin: 10px 0px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+}
+input {
+    padding: 0px 20px;
+    border: 0px;
+    border-radius: 5px;
+    outline: none;
+    height: 50px;
 }
 </style>

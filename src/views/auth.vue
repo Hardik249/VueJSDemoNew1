@@ -74,7 +74,7 @@
                         <forminput class="login_input" :svg_value="inputs.login.password.svg"
                                 :placeholder="inputs.login.password.placeholder" :type="inputs.login.password.type" :id="inputs.login.password.id">
                         </forminput>
-                        <span class="error" id="password_confirmationError"></span><br>
+                        <span class="error" id="passwordError"></span><br>
                         <small :onclick="forgot"> Forgot my password ? </small><br><br>
                         <formbutton> Login </formbutton>
                         <br><br>
@@ -142,7 +142,7 @@ const try_login = async () => {
         let inputs = window.document.getElementsByClassName('login_input');
         // const data_login = { email: inputs[0].childNodes[1].value, password: inputs[1].childNodes[1].value }
         // console.log('data_login', data_login)
-        console.log(inputs)
+        // console.log(inputs)
       const formData = new FormData()
       let email = inputs[0].childNodes[1].value ? inputs[0].childNodes[1].value : ''
       let password = inputs[1].childNodes[1].value ? inputs[1].childNodes[1].value : ''
@@ -160,7 +160,7 @@ const try_login = async () => {
                         // body: JSON.stringify(data_login)
                 })
                 .then(response => {
-                        console.log('response', response)
+                        // console.log('response', response)
                         // localStorage.name = 
                         sessionStorage.jwtToken = response.data.access_token
                         localStorage.jwtToken = response.data.access_token
@@ -173,8 +173,8 @@ const try_login = async () => {
                         // response.json().then(res => console.log(res));
                 })                
                 .catch(error => {
-                        console.log('erc', error.code);
-                        console.log('error response', error.response);
+                        // console.log('erc', error.code);
+                        // console.log('error response', error.response);
                         inputs[1].childNodes[1].value = '';
                         // password = '';
                         $('#password').val('');
@@ -182,24 +182,31 @@ const try_login = async () => {
                         if (error.response != undefined) {
                           if (error.response.status == 422) {
                             // alert('t')
-                            console.log('error response name', error.response.data);
+                            // console.log('error response name', error.response.data);
                             // let messages = JSON.parse(error.response.data)
                             // errors = JSON.parse(error.response.data)
                             // document.getElementById('password').text('');
                             // alert()
                             let emailError = error.response.data.email ? error.response.data.email : ''
                             let passwordError = error.response.data.password ? error.response.data.password : ''
+                            // console.log('messages', passwordError);
+                            // console.log('messages', document.getElementById('passwordError').append(passwordError));
                             $('.error').html('')
-                            document.getElementById('emailError').append(emailError)
-                            document.getElementById('passwordError').append(passwordError)
+                            document.getElementById('emailError').append(emailError);
+                            document.getElementById('passwordError').append(passwordError);
+
+                            // $('#emailError').append(emailError)
+                            // $('#passwordError').append(passwordError)
+
                             // this.nameError.append(error.response.data.name)
                             // console.log('messages', messages);
                           } else if (error.response.status == 401) {
-                            alert('Unauthorized')
+                            // alert('Unauthorized')
                             // document.getElementByClassName('error').remove()
                             // document.getElementsByClassName('error').html('')
                             $('.error').html('')
-                            document.getElementById('allErrors').append(error.response.data.error)
+                            // document.getElementById('allErrors').append(error.response.data.error)
+                            $('#allErrors').append(error.response.data.error)
                           }
                         }
                         console.log(error);

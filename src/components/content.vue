@@ -189,13 +189,13 @@ const add_item = (e) => {
     //     send_to_home('send_item', e)
     //     let formData = new FormData();
     //     let product_id = e.id ? e.id : '';
-    //     let user_id = sessionStorage.id ? sessionStorage.id : '';
+    //     let userId = sessionStorage.id ? sessionStorage.id : '';
     //     formData.append('product_id', product_id)
-    //     formData.append('user_id', user_id)
+    //     formData.append('userId', userId)
     //     axios
     //     .post(`http://localhost:3001/api/carts/addtocart`, {
     //         'product_id': product_id,
-    //         'user_id': user_id
+    //         'userId': userId
     //     })
     //     .then(response => {
     //      // console.log('response', response);
@@ -230,10 +230,39 @@ const add_wish = (e) => {
         // window.location = '#/auth';
         alert('you are not logged in, can you please log in ?');
     } else {
-        if (store_wish.items.find((element) => element.id === e.id)) {
-            store_wish.delete_item(element_index_in_array(JSON.parse(JSON.stringify(store_wish)).items, e))
-            // store_wish.delete_item(e)
-            // store_wish.delete_item({ 'item': e, 'number': 1 })
+        let productsId;
+        // console.log('s', store_wish.items)
+        // console.log('e', e.id)
+        // alert(e.id)
+        if (store_wish.items.find((element) => element.productId === e.id)) {
+            // console.log('e', e)
+            // alert(e.id)
+            let wishProductIds = [];
+            axios
+            .get(`http://localhost:3001/api/wishes/viewwishes/${sessionStorage.id}`)
+            .then(response => {
+                store_wish.items = response.data.data
+                console.log(store_wish.items)
+                store_wish.items.forEach(function(key, value) {
+                    if (key.productId == e.id) {
+                        // alert(key.productId)
+                        productsId = key.id;
+                    }
+                    wishProductIds.push(key.productId)
+                })
+                // console.log('p', productsId)
+                // alert(productsId)
+                axios
+                .delete(`http://localhost:3001/api/wishes/removefromwishes/${productsId}`)
+                .then(function(response) {
+                    store_wish.items.map(e => e.id)
+                    store_wish.length = store_wish.items.length;
+                    store_wish.delete_item(element_index_in_array(JSON.parse(JSON.stringify(store_wish)).items, e))
+                })
+                .catch(function(error) {
+                    console.error(error)
+                })
+            })
         } else {
             // console.log('', store_wish.isProduct)
             const element = JSON.parse(JSON.stringify(e))
@@ -253,6 +282,8 @@ const add_wish = (e) => {
 
 const send_to_home = defineEmits('send_like', 'send_item')
 
+let productsId;
+let wishProductIds = [];
 onMounted(async () => {
     await axios
     .get('https://dummyjson.com/products?limit=6')
@@ -275,12 +306,35 @@ onMounted(async () => {
     await axios
     .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
     .then(response => {
- // console.log('gsvcp', response.data.data)
-    // console.log('st', store_cart.total_amount())
-    // store_cart.state.length = response.data.data.length;
-    store_cart.length = response.data.data.length;
-    store_cart.total_amount();
-    })
+        // console.log('gsvcp', response.data.data)
+        // console.log('st', store_cart.total_amount())
+        // store_cart.state.length = response.data.data.length;
+        store_cart.length = response.data.data.length;
+        store_cart.total_amount();
+    });
+    await axios
+    .get(`http://localhost:3001/api/wishes/viewwishes/${sessionStorage.id}`)
+    .then(response => {
+        // console.log('gsvcp', response.data.data)
+        // console.log('st', store_cart.total_amount())
+        // store_cart.state.length = response.data.data.length;
+        store_wish.length = response.data.data.length;
+        store_wish.items.forEach(function(key, value) {
+            // if (key.productId == e.id) {
+            //     // alert(key.productId)
+            //     productsId = key.id;
+            // }
+            productsId = key.productId;
+            wishProductIds.push(key.productId)
+            // $('body'). attr('data-body','');
+        })
+        console.log('props', productsId)
+        $('wish-'+productsId).attr('fill-rule', '')
+        // $('wish-'+productsId).click()
+        // $('wish-'+productsId).trigger()
+        console.log('props$', $('wish-'+productsId))
+        // store_wish.total_amount();
+    });
     if (store_categories.getAllCategories.length === 0) {
         await axios
             .get('https://dummyjson.com/products/categories')

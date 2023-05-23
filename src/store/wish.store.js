@@ -40,7 +40,7 @@ export const useWish = defineStore("wish_items", {
     add_item(new_item) {
       if (!sessionStorage.jwtToken) {
         if (this.items.find((element) => element.item.id === new_item.item.id)) {
-          alert("Item already added to the cart")
+          alert("Item already added to the wishlist")
           this.isProduct = true;
         }
         else {
@@ -57,7 +57,7 @@ export const useWish = defineStore("wish_items", {
             cartProductIds.push(key.productId)
           })
           if (cartProductIds.find((element) => element === new_item.item.id)) {
-            alert("Item already added to the cart")
+            alert("Item already added to the wishlist")
           } else {
             let formData = new FormData();
             let productId = new_item.item.id ? new_item.item.id : '';

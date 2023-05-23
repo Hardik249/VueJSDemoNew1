@@ -45,7 +45,7 @@ import { ref } from 'vue';
 import average from './average.vue';
 import moreDetails from './moreDetails.vue'
 
-defineProps({
+const props = defineProps({
     url: {
         type: String,
         required: true,
@@ -81,6 +81,7 @@ defineProps({
 })
 
 const like = ref('evenodd')
+
 const fillsvg = () => {
     if (sessionStorage.jwtToken) {
         if (like.value === '' ) {
@@ -100,6 +101,8 @@ const add_to_wish = () => {
     send_something_to_content('product_clicked')
 }
 const send_something_to_content = defineEmits(['handle_like', 'dis_like', 'item_clicked', 'product_clicked'])
+
+
 
 </script>
     

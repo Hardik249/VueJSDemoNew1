@@ -156,18 +156,18 @@ export const useCart = defineStore("cart_items", {
             // let product_id = e.id ? e.id : '';
             let product_id = new_item.item.id ? new_item.item.id : '';
             let quantity = new_item.number ? new_item.number : '';
-            let user_id = sessionStorage.id ? sessionStorage.id : '';
+            let userId = sessionStorage.id ? sessionStorage.id : '';
             formData.append('product_id', product_id)
             formData.append('quantity', quantity)
-            formData.append('user_id', user_id)
+            formData.append('userId', userId)
             axios
             .post(`http://localhost:3001/api/carts/addtocart/${sessionStorage.id}`, {
                 'productId': product_id,
                 'quantity': quantity,
-                'user_id': user_id,
+                'userId': userId,
             })
             .then(response => {
-             // console.log('response', response);
+             console.log('response', response);
                 // items.value = response.data
                 // let ids = new Array();
                 // response.data.data.forEach(function(key, value) {
@@ -204,7 +204,7 @@ export const useCart = defineStore("cart_items", {
                 // categories.value = store_categories.getAllCategories
             })
             .catch(error => {
-             // console.log(error)
+             console.log(error)
             })
           }
         })
@@ -256,7 +256,7 @@ export const useCart = defineStore("cart_items", {
           // 'quantity': position.number,
           'quantity': this.items[position].quantity,
           // 'product_id': product_id,
-          // 'user_id': user_id,
+          // 'userId': userId,
         })
         .then(response => {
        // console.log('r_', response.data)
@@ -325,7 +325,7 @@ export const useCart = defineStore("cart_items", {
             // 'quantity': position.number,
             'quantity': this.items[position].quantity,
             // 'product_id': product_id,
-            // 'user_id': user_id,
+            // 'userId': userId,
           })
           .then(response => {
          // console.log('t_', response.data.data)

@@ -171,12 +171,13 @@ const deleteItem = (e) => {
     // console.log($('#deleteItem').attr('fill'))
     // console.log($('#deleteItem').attr('fillsvg'))
   } else {
+    // alert(e.id)
     axios
     .delete(`http://localhost:3001/api/wishes/removefromwishes/${e.id}`)
     .then(function(response) {
         store_wish.items.map(e => e.id)
         store_wish.length = store_wish.items.length;
-        store_wish.delete_item(element_index_in_array(JSON.parse(JSON.stringify(store_wish)).items, e.id))
+        store_wish.delete_item(element_index_in_array(JSON.parse(JSON.stringify(store_wish)).items, e))
     })
     .catch(function(error) {
         console.error(error)
