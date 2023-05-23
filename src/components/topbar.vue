@@ -30,7 +30,11 @@
                                 fill="white" />
                         </svg>
                     </span>
-                    <span class="text" @click="isOpen(openWish = true, 0)"> Wish list - {{ nbr_likes }} {{ mot }} </span>
+                    <span class="text" @click="isOpen(openWish = true, 0)">
+                        Wish list -
+                        <!-- {{ nbr_likes }} {{ mot }}  -->
+                        {{ store_wish.nbr_items }} {{ mot }}
+                    </span>
                 </span>
             </router-link>
             <router-link to="">
