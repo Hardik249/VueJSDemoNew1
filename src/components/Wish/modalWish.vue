@@ -84,7 +84,7 @@
             </modalCard> -->
             <!-- {{ item_in_wish.items.product }} -->
             <!-- {{ item_in_wish.items }} -->
-            {{ item_in_wish }}
+            <!-- {{ item_in_wish }} -->
             <modalCard v-for="item_in_wish in store_wish.items" :image="item_in_wish.item ? item_in_wish.item.thumbnail : item_in_wish.product.thumbnail"
                 :quantity="item_in_wish.number ? item_in_wish.number : item_in_wish.quantity" :computedPrice="item_in_wish.product.price" :id="'product-'+item_in_wish.productId">
                 <!-- {{ item_in_wish.product }} -->

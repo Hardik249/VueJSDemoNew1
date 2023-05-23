@@ -227,7 +227,8 @@ const add_item = (e) => {
 const add_wish = (e) => {
     // console.log(!sessionStorage.jwtToken)
     if (!sessionStorage.jwtToken) {
-        window.location = '#/auth';
+        // window.location = '#/auth';
+        alert('you are not logged in, can you please log in ?');
     } else {
         if (store_wish.items.find((element) => element.id === e.id)) {
             store_wish.delete_item(element_index_in_array(JSON.parse(JSON.stringify(store_wish)).items, e))
