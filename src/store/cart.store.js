@@ -74,6 +74,7 @@ export const useCart = defineStore("cart_items", {
        // console.log('items.value', state.items)
     },
     nbr_items : (state) => {
+      let length;
       // return state.items.length
       if (!sessionStorage.jwtToken) {
         return state.items.length
@@ -84,16 +85,22 @@ export const useCart = defineStore("cart_items", {
           .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
           .then(response => {
          // console.log('state-', response.data.data.length);
-            // state.length = response.data.data.length;
+            state.items = response.data.data;
+            state.length = response.data.data.length;
+            length = state.length;
             // state.items.length = response.data.length;
+            // return state.length;
         })
         // state.items.length = state.items.length;
         // state.length = state.items.length;
         // return state.length
         // return state.items.length
         // return state.items ? state.items.length : state.length;
-
-        return state.length ? state.length : state.items.length;
+          // console.log('s0', state.length)
+          // console.log('s1', state.items.length)
+        // return state.length;
+        return state.items.length;
+        // return state.length ? state.length : state.items.length;
       }
     }
   },

@@ -169,7 +169,8 @@ const deleteItem = (e) => {
          // console.log('sid', JSON.parse(JSON.stringify(store_cart)).items)
          // console.log('sit', e)
             // store_cart.delete_item()
-            store_cart.delete_item(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e.id))
+            // store_cart.delete_item(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e.id))
+            store_cart.delete_item(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e))
         })
         .catch(function(error) {
             console.error(error)
