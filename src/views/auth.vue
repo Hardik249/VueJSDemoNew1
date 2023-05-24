@@ -144,35 +144,58 @@ const try_login = async () => {
         // console.log('data_login', data_login)
         // console.log(inputs)
       const formData = new FormData()
-      let email = inputs[0].childNodes[1].value ? inputs[0].childNodes[1].value : ''
-      let password = inputs[1].childNodes[1].value ? inputs[1].childNodes[1].value : ''
+      let email = inputs[0].childNodes[1].value ? inputs[0].childNodes[1].value : '';
+      let password = inputs[1].childNodes[1].value ? inputs[1].childNodes[1].value : '';
       formData.append('email', email)
       formData.append('password', password)
       let resp;
-      console.log('formData', formData)
+      let urlFormData = new URLSearchParams({
+                email: email, //gave the values directly for testing
+                password: password,
+                // email: 'user-client'
+        })
+      console.log('urlFormData', urlFormData)
+      console.log('email', email)
                 // alert('login')
         // if (check_mail(data_login.email)) {
                 // const response = await fetch('http://localhost:3005/api/login', {
-                axios.post('http://127.0.0.1:8000/api/auth/login', formData, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        // headers: { 'Content-Type': 'application/json' },
-                        // body: JSON.stringify(data_login)
-                })
+                // axios.post('http://127.0.0.1:8000/api/auth/login', formData, {
+                axios.post('http://localhost:3001/api/users/login', urlFormData)
                 .then(response => {
-                        // console.log('response', response)
+                        $('.error').html('')
+                        console.log('response', response.data)
+                        if (response.data.status == 'login Validation Fail') {
+                                let emailError = response.data.path == 'email' ? response.data.message : '';
+                                console.log(response.data.path == 'email')
+                                let passError = response.data.path == 'password' ? response.data.message : '';
+                                console.log(passError)
+
+                                document.getElementById('emailError').append(emailError);
+                                document.getElementById('passwordError').append(passError);
+
+                                // $('emailError').append(emailError);
+                                // $('passwordError').append(passError);
+                        }
+                        if (response.data.status == 'fail users login') {
+                                // document.getElementById('allErrors').append(error.response.data.error)
+                                $('#allErrors').append(response.data.message)
+                        }
+                        if (response.data.status == 'success users') {
+                                sessionStorage.name = response.data.name
+                                sessionStorage.email = response.data.email
+                                window.location = '/'
+                        }
                         // localStorage.name = 
-                        sessionStorage.jwtToken = response.data.access_token
-                        localStorage.jwtToken = response.data.access_token
-                        sessionStorage.name = response.data.user.name
-                        sessionStorage.email = response.data.user.email
-                        sessionStorage.id = response.data.user.id
-                        resp = response;
-                        window.location = '/'
+                        // sessionStorage.jwtToken = response.data.access_token
+                        // localStorage.jwtToken = response.data.access_token
+                        // sessionStorage.id = response.data.user.id
+                        // resp = response;
+                        // window.location = '/'
                         // this.$router.push("/");
                         // response.json().then(res => console.log(res));
                 })                
                 .catch(error => {
+                        console.log('error', error);
                         // console.log('erc', error.code);
                         // console.log('error response', error.response);
                         inputs[1].childNodes[1].value = '';
@@ -187,13 +210,14 @@ const try_login = async () => {
                             // errors = JSON.parse(error.response.data)
                             // document.getElementById('password').text('');
                             // alert()
-                            let emailError = error.response.data.email ? error.response.data.email : ''
-                            let passwordError = error.response.data.password ? error.response.data.password : ''
+
+                            // let emailError = error.response.data.email ? error.response.data.email : ''
+                            // let passwordError = error.response.data.password ? error.response.data.password : ''
+
                             // console.log('messages', passwordError);
                             // console.log('messages', document.getElementById('passwordError').append(passwordError));
-                            $('.error').html('')
-                            document.getElementById('emailError').append(emailError);
-                            document.getElementById('passwordError').append(passwordError);
+                            // document.getElementById('emailError').append(emailError);
+                            // document.getElementById('passwordError').append(passwordError);
 
                             // $('#emailError').append(emailError)
                             // $('#passwordError').append(passwordError)
