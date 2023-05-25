@@ -23,10 +23,6 @@
                                 :placeholder="inputs.register.email.placeholder" :type="inputs.register.email.type">
                         </forminput>
                         <span class="error" id="emailError"></span>
-                        <!-- <forminput class="register_input" :svg_value="inputs.register.telephone.svg"
-                                :placeholder="inputs.register.telephone.placeholder"
-                                :type="inputs.register.telephone.type">
-                        </forminput> -->
                         <!-- <vue-tel-input v-model="phone"></vue-tel-input> -->
                         <!-- <forminput class="register_input" :svg_value="inputs.register.addresse.svg"
                                 :placeholder="inputs.register.addresse.placeholder"
@@ -44,11 +40,19 @@
                                 :type="inputs.register.password.type" :id="inputs.register.password.id">
                         </forminput>
                         <span class="error" id="passwordError"></span>
+
                         <forminput class="register_input" :svg_value="inputs.register.password_confirmation.svg"
                                 :placeholder="inputs.register.password_confirmation.placeholder"
                                 :type="inputs.register.password_confirmation.type" :id="inputs.register.password_confirmation.id">
                         </forminput>
-                        <span class="error" id="nameError"></span>
+                        <span class="error" id="confirmPassError"></span>
+
+                        <forminput class="register_input" :svg_value="inputs.register.contact.svg"
+                                :placeholder="inputs.register.contact.placeholder"
+                                :type="inputs.register.contact.type">
+                        </forminput>
+                        <span class="error" id="contactError"></span>
+
                         <formbutton> Register </formbutton>
                 </form>
                 <form v-if="action === 'forgot_password'">
@@ -180,9 +184,16 @@ const try_login = async () => {
                                 // document.getElementById('allErrors').append(error.response.data.error)
                                 $('#allErrors').append(response.data.message)
                         }
-                        if (response.data.status == 'success users') {
-                                sessionStorage.name = response.data.name
-                                sessionStorage.email = response.data.email
+                        if (response.data.status == 'jwt Login Succeed!') {
+                                // console.log('d', response.data)
+                                // console.log('n', response.data.data.name)
+                                // console.log('e', response.data.data.email)
+                                console.log('a', response.data.auth)
+                                // console.log(response.data)
+                                sessionStorage.jwtToken = response.data.auth
+                                sessionStorage.id = response.data.data.id
+                                sessionStorage.name = response.data.data.name
+                                sessionStorage.email = response.data.data.email
                                 window.location = '/'
                         }
                         // localStorage.name = 
@@ -260,6 +271,7 @@ const try_login = async () => {
 }
 
 const fetchData = async(event) => {
+        sessionStorage.clear();
         // alert('a')
         // let inputs = window.document.getElementsByClassName('login_input');
         let inputs = window.document.getElementsByClassName('register_input');
@@ -272,29 +284,77 @@ const fetchData = async(event) => {
         let email = inputs[1].childNodes[1].value ? inputs[1].childNodes[1].value : ''
         let password = inputs[2].childNodes[1].value ? inputs[2].childNodes[1].value : ''
         let password_confirmation = inputs[3].childNodes[1].value ? inputs[3].childNodes[1].value : ''
+        let contact = inputs[4].childNodes[1].value ? inputs[4].childNodes[1].value : ''
         formData.append('name', name)
         formData.append('email', email)
         formData.append('password', password)
+        formData.append('contact', contact)
         formData.append('password_confirmation', password_confirmation)
+        let urlFormData = new URLSearchParams({
+                name: name,
+                email: email, //gave the values directly for testing
+                password: password,
+                password_confirmation: password_confirmation,
+                contact: contact,
+        })
+        console.log('urlFormData', urlFormData)
         let errors;
         // axios.get('http://127.0.0.1:8000/api/get_all_user', {
-        axios.post('http://127.0.0.1:8000/api/auth/register', formData, {
-                // method: 'GET',
-                method: 'POST',
-                mode: 'no-cors',
-                // headers: {
-                //   'Access-Control-Allow-Origin':'*',
-                  // 'Allow-Origin':'*',
-                  //   'x-rapidapi-host': 'random-facts2.p.rapidapi.com',
-                  //   'x-rapidapi-key': 'Your -RapidAPI-Hub-Key'
-                // }
-        })
+        // axios.post('http://127.0.0.1:8000/api/auth/register', formData, {
+        //         // method: 'GET',
+        //         method: 'POST',
+        //         mode: 'no-cors',
+        //         // headers: {
+        //         //   'Access-Control-Allow-Origin':'*',
+        //           // 'Allow-Origin':'*',
+        //           //   'x-rapidapi-host': 'random-facts2.p.rapidapi.com',
+        //           //   'x-rapidapi-key': 'Your -RapidAPI-Hub-Key'
+        //         // }
+        // })
+        axios.post('http://localhost:3001/api/users/register', urlFormData)
         .then(response => {
                 console.log('response', response);
+
+                $('.error').html('')
+                console.log('response', response.data)
+                if (response.data.status == 'register Validation Fail') {
+                        let nameError = response.data.path == 'name' ? response.data.message : '';
+                        console.log(response.data.path == 'name')
+                        let emailError = response.data.path == 'email' ? response.data.message : '';
+                        console.log(response.data.path == 'email')
+                        let passError = response.data.path == 'password' ? response.data.message : '';
+                        console.log(passError)
+                        let confirmPassError = response.data.path == 'password_confirmation' ? response.data.message : '';
+                        console.log(confirmPassError)
+                        let contactError = response.data.path == 'contact' ? response.data.message : '';
+                        console.log(response.data.path == 'contact')
+
+                        document.getElementById('nameError').append(nameError);
+                        document.getElementById('emailError').append(emailError);
+                        document.getElementById('passwordError').append(passError);
+                        document.getElementById('confirmPassError').append(confirmPassError);
+                        document.getElementById('contactError').append(contactError);
+
+                        // $('emailError').append(emailError);
+                        // $('passwordError').append(passError);
+                }
+                if (response.data.status == 'fail users register') {
+                        // document.getElementById('allErrors').append(error.response.data.error)
+                        $('#allErrors').append(response.data.message)
+                }
+                if (response.data.status == 'success users') {
+                        localStorage.email = response.data.data.email
+                        localStorage.password = response.data.myPlaintextPassword
+                        // window.location = '#/auth'
+                        window.location.reload();
+                }
+
                 // sessionStorage.name = response.data.user.name
                 // window.location = '#/auth'
-                window.location.reload() 
-                response.json().then(res => console.log(res));
+
+                // window.location.reload()
+                // response.json().then(res => console.log(res));
+
                 // if (err.code == 'ERR_BAD_REQUEST') {
                 //   alert('t')
                 //   this.nameError = response.name
@@ -303,7 +363,7 @@ const fetchData = async(event) => {
                 // console.log('erc', err.code);
                 // console.log('err', err);
                 // console.log('ercnf', err.config);
-                alert('er', err);
+                // alert('er', err);
         })
         .catch(error => {
                 if (error.code == 'ERR_BAD_REQUEST') {
@@ -401,6 +461,11 @@ const inputs = ref({
                 telephone: {
                         type: 'tel',
                         placeholder: 'Tel number',
+                        svg: 'M13.372,1.781H6.628c-0.696,0-1.265,0.569-1.265,1.265v13.91c0,0.695,0.569,1.265,1.265,1.265h6.744c0.695,0,1.265-0.569,1.265-1.265V3.045C14.637,2.35,14.067,1.781,13.372,1.781 M13.794,16.955c0,0.228-0.194,0.421-0.422,0.421H6.628c-0.228,0-0.421-0.193-0.421-0.421v-0.843h7.587V16.955z M13.794,15.269H6.207V4.731h7.587V15.269z M13.794,3.888H6.207V3.045c0-0.228,0.194-0.421,0.421-0.421h6.744c0.228,0,0.422,0.194,0.422,0.421V3.888z'
+                },
+                contact: {
+                        type: 'text',
+                        placeholder: 'Contact number',
                         svg: 'M13.372,1.781H6.628c-0.696,0-1.265,0.569-1.265,1.265v13.91c0,0.695,0.569,1.265,1.265,1.265h6.744c0.695,0,1.265-0.569,1.265-1.265V3.045C14.637,2.35,14.067,1.781,13.372,1.781 M13.794,16.955c0,0.228-0.194,0.421-0.422,0.421H6.628c-0.228,0-0.421-0.193-0.421-0.421v-0.843h7.587V16.955z M13.794,15.269H6.207V4.731h7.587V15.269z M13.794,3.888H6.207V3.045c0-0.228,0.194-0.421,0.421-0.421h6.744c0.228,0,0.422,0.194,0.422,0.421V3.888z'
                 },
                 addresse: {

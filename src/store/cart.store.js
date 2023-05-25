@@ -27,10 +27,11 @@ export const useCart = defineStore("cart_items", {
       //   // return JSON.parse(JSON.stringify(state.items))
       // } else {
       //// console.log('state', state);
-      //   axios
-      //   .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
-      //   .then(response => {
-      //  // console.log('gsvcp', response.data.data)
+        axios
+        .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
+        .then(response => {
+       console.log('gsvcp', response.data.data)
+       state.items = response.data.data
       //     // products.value = response.data.products
       //     // cart_products.value = response.data
       //     // limit.value = 6;
@@ -69,7 +70,7 @@ export const useCart = defineStore("cart_items", {
       //     // length = response.data.value.length;
       //     // max_price.value = check_max_price(response.data.products._rawValue)
       //     // max_price.value = check_max_price(products)
-      //   });
+        });
       // }
        // console.log('items.value', state.items)
     },
@@ -81,16 +82,16 @@ export const useCart = defineStore("cart_items", {
       } else {
      // console.log('state', state)
      // console.log('state-items', state.items.length)
-        axios
-          .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
-          .then(response => {
-         // console.log('state-', response.data.data.length);
-            state.items = response.data.data;
-            state.length = response.data.data.length;
-            length = state.length;
-            // state.items.length = response.data.length;
-            // return state.length;
-        })
+        // axios
+        //   .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
+        //   .then(response => {
+        //  // console.log('state-', response.data.data.length);
+        //     state.items = response.data.data;
+        //     state.length = response.data.data.length;
+        //     length = state.length;
+        //     // state.items.length = response.data.length;
+        //     // return state.length;
+        // })
         // state.items.length = state.items.length;
         // state.length = state.items.length;
         // return state.length
