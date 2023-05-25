@@ -14,29 +14,34 @@ export default {
   },
   mounted () {
     axios
-      .get('http://127.0.0.1:8000/api/auth/user-profile',{
-      	mode: 'no-cors',
-      	headers: {
-      		Authorization : `Bearer ${sessionStorage.jwtToken}` 
-      	}
-      })
-      .then(response => {
-        console.log('response', response)
-        // localStorage.name = 
-        // sessionStorage.jwtToken = response.data.access_token
-        // sessionStorage.name = response.data.user.name
-        // sessionStorage.email = response.data.user.email
-        // sessionStorage.id = response.data.user.id
-        // window.location = '/'
-        // this.$router.push("/");
-        // response.json().then(res => console.log(res));
-      })
+    // .get('http://127.0.0.1:8000/api/auth/user-profile',{
+    .get(`http://localhost:3001/api/users/getprofile/${sessionStorage.id}`,{
+      mode: 'no-cors',
+      headers: {
+        Authorization : `Bearer ${sessionStorage.jwtToken}`
+      }
+    })
+    .then(response => {
+      console.log('response', response.data.data.name)
+      this.name = response.data.data.name
+      this.email = response.data.data.email
+      // sessionStorage.jwtToken = response.data.access_token
+      // sessionStorage.name = response.data.user.name
+      // sessionStorage.email = response.data.user.email
+      // sessionStorage.id = response.data.user.id
+      // window.location = '/'
+      // this.$router.push("/");
+      // response.json().then(res => console.log(res));
+    })
   },
   methods: {
     fetchData() {
+      // let jwtToken = sessionStorage.jwtToken;
+      // localStorage.jwtToken = sessionStorage.jwtToken;
       // alert('f')
 	  // const response = await fetch("http://127.0.0.1:8000/api/auth/user-profile")
-	  // console.log('response', response)
+    // console.log('response', response)
+	  console.log('this.email', this.email)
       const formData = new FormData()
       let name = this.name ? this.name : ''
       let email = this.email ? this.email : ''
@@ -49,28 +54,68 @@ export default {
       // formData.append('password', password)
       // formData.append('roles', roles)
       // axios.get('http://127.0.0.1:8000/api/auth/user-profile', {
-      axios.post(`http://127.0.0.1:8000/api/users/update/${sessionStorage.id}`, formData, {
-        // method: 'GET',
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {
-        //   'Access-Control-Allow-Origin':'*',
-          // Authorization : `Bearer ${sessionStorage.jwtToken}` 
-      		Authorization : `Bearer ${localStorage.jwtToken}` 
-          //   'x-rapidapi-host': 'random-facts2.p.rapidapi.com',
-          //   'x-rapidapi-key': 'Your -RapidAPI-Hub-Key'
-        }
+      // axios.post(`http://127.0.0.1:8000/api/users/update/${sessionStorage.id}`, formData, {
+       // {
+       //    // method: 'GET',
+       //    method: 'PUT',
+       //    mode: 'no-cors',
+       //    headers: {
+       //    //   'Access-Control-Allow-Origin':'*',
+       //      // Authorization : `Bearer ${sessionStorage.jwtToken}`
+       //  		Authorization : `Bearer ${localStorage.jwtToken}`
+       //      //   'x-rapidapi-host': 'random-facts2.p.rapidapi.com',
+       //      //   'x-rapidapi-key': 'Your -RapidAPI-Hub-Key'
+       //    },
+       //  }
+     let urlFormData = new URLSearchParams({
+        name: name, //gave the values directly for testing
+        email: email,
+        // email: 'user-client'
       })
+    console.log('urlFormData', urlFormData)
+     axios.put(`http://localhost:3001/api/users/updateprofile/${sessionStorage.id}`, urlFormData)
       .then(response => {
-        console.log('response', response)
-        // localStorage.name = 
-        let message = response.data.message
-        alert(message)
-        window.location = '/'
-        sessionStorage.jwtToken = response.data.access_token
-        sessionStorage.name = response.data.user.name
-        sessionStorage.email = response.data.user.email
-        sessionStorage.id = response.data.user.id
+          $('.error').html('')
+          console.log('response', response.data)
+          if (response.data.status == 'updateProfile Validation Fail') {
+            let emailError = response.data.path == 'email' ? response.data.message : '';
+            console.log(response.data.path == 'email')
+            let passError = response.data.path == 'password' ? response.data.message : '';
+            console.log(passError)
+
+            document.getElementById('emailError').append(emailError);
+            document.getElementById('passwordError').append(passError);
+
+            // $('emailError').append(emailError);
+            // $('passwordError').append(passError);
+          }
+          if (response.data.status == 'fail users login') {
+            // document.getElementById('allErrors').append(error.response.data.error)
+            $('#allErrors').append(response.data.message)
+          }
+          if (response.data.status == 'success users updateProfile') {
+            // console.log('d', response.data)
+            // console.log('n', response.data.data.name)
+            // console.log('e', response.data.data.email)
+            // alert(sessionStorage.jwtToken);
+            // alert(localStorage.jwtToken);
+            // alert(jwtToken);
+            // console.log('a', sessionStorage.jwtToken);
+            // console.log(response.data)
+            // sessionStorage.jwtToken = response.data.auth
+            // sessionStorage.jwtToken = sessionStorage.jwtToken
+            sessionStorage.id = response.data.data.id
+            sessionStorage.name = response.data.data.name
+            sessionStorage.email = response.data.data.email
+            window.location = '/';
+          }
+        // let message = response.data.message
+        // // alert(message)
+        // // window.location = '/'
+        // sessionStorage.jwtToken = response.data.access_token
+        // sessionStorage.name = response.data.user.name
+        // sessionStorage.email = response.data.user.email
+        // sessionStorage.id = response.data.user.id
         // window.location = '/'
         // this.$router.push("/");
         // response.json().then(res => console.log(res));
