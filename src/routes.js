@@ -47,6 +47,12 @@ export const routes = [
     // props: () => {default : true}
   },
   {
+    path: '/checkout',
+    name: 'Payment',
+    component: import("@/components/payment/payment.vue"),
+    meta: { breadCrumb: 'Payment' },
+  },
+  {
     path: "/dashboard",
     component: () => import("@/views/dashboard.vue"),
     children: [
