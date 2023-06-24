@@ -53,6 +53,18 @@ export const routes = [
     meta: { breadCrumb: 'Payment' },
   },
   {
+    path: '/myorders',
+    name: 'MyOrders',
+    component: import("@/components/myorders/myorders.vue"),
+    meta: { breadCrumb: 'MyOrders' },
+  },
+  {
+    path: '/orderDetails/:id',
+    name: 'OrderDetails',
+    component: import("@/components/orderDetails/orderDetails.vue"),
+    meta: { breadCrumb: 'OrderDetails' },
+  },
+  {
     path: "/dashboard",
     component: () => import("@/views/dashboard.vue"),
     children: [
