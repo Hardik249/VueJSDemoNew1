@@ -154,7 +154,7 @@ const promo_value = ref("")
 const deleteItem = (e) => {
    // console.log('deleteItemif', !sessionStorage.jwtToken)
    // console.log('deleteItemif', !sessionStorage.jwtToken && sessionStorage.jwtToken == '')
-      if (!sessionStorage.jwtToken) {
+      if (!localStorage.jwtToken) {
         store_cart.delete_item(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e))
       } else {
      // console.log('store_cart.length', store_cart.length)
@@ -182,7 +182,7 @@ const addQuantity = (e) => {
  // console.log('q0', JSON.parse(JSON.stringify(store_cart)).items)
  // console.log('q1', e)
     store_cart.increase_number(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e))
-    // if (!sessionStorage.jwtToken) {
+    // if (!localStorage.jwtToken) {
     //     store_cart.increase_number(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e))
     //     total.value = store_cart.total_amount()
     // } else {
@@ -190,7 +190,7 @@ const addQuantity = (e) => {
     //  // console.log('t_', e)
     //  // console.log('t_', JSON.parse(JSON.stringify(store_cart)).items)
     //     axios
-    //     .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
+    //     .get(`http://localhost:3001/api/carts/viewcarts/${localStorage.id}`)
     //     .then(response => {
     //      // console.log('t_', response.data.data)
     //      // console.log('o_', e)
@@ -226,14 +226,14 @@ const addQuantity = (e) => {
 }
 const reduceQuantity = (e) => {
     store_cart.decrease_number(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e))
-    // if (!sessionStorage.jwtToken) {
+    // if (!localStorage.jwtToken) {
     //     store_cart.decrease_number(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e))
     // } else {
     //  // console.log('reduceQuantity', e)
     //  // console.log('reduceQuantitye', JSON.parse(JSON.stringify(store_cart)).items)
     //     store_cart.decrease_number(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e))
     //     axios
-    //     .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
+    //     .get(`http://localhost:3001/api/carts/viewcarts/${localStorage.id}`)
     //     .then(response => {
     //      // console.log('t_', response.data.data)
     //         // products.value = response.data.products
@@ -318,7 +318,7 @@ watchEffect(() => {
  // console.log(isOpen + "zfzfzefzefez")
 })
 const goPayement = () => {
-    if (!sessionStorage.jwtToken) {
+    if (!localStorage.jwtToken) {
         window.location = '#/auth'
     } else {
         window.location = '#/checkout'

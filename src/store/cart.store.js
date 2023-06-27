@@ -28,9 +28,9 @@ export const useCart = defineStore("cart_items", {
       // } else {
       //// console.log('state', state);
         axios
-        .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
+        .get(`http://localhost:3001/api/carts/viewcarts/${localStorage.id}`)
         .then(response => {
-       console.log('gsvcp', response.data.data)
+       // console.log('gsvcp', response.data.data)
        state.items = response.data.data
       //     // products.value = response.data.products
       //     // cart_products.value = response.data
@@ -77,7 +77,7 @@ export const useCart = defineStore("cart_items", {
     nbr_items : (state) => {
       let length;
       // return state.items.length
-      if (!sessionStorage.jwtToken) {
+      if (!localStorage.jwtToken) {
         return state.items.length
       } else {
      // console.log('state', state)
@@ -110,7 +110,7 @@ export const useCart = defineStore("cart_items", {
    // console.log('new_item', new_item);
    // console.log('add_itemif', !sessionStorage.jwtToken)
    // console.log('add_itemif', !sessionStorage.jwtToken && sessionStorage.jwtToken == '')
-      if (!sessionStorage.jwtToken) {
+      if (!localStorage.jwtToken) {
         if (this.items.find((element) => element.item.id === new_item.item.id)) {
           alert("Item already added to the cart")
         }
@@ -123,7 +123,7 @@ export const useCart = defineStore("cart_items", {
         let cartProductIds = [];
      // console.log('new_item', new_item);
         axios
-        .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
+        .get(`http://localhost:3001/api/carts/viewcarts/${localStorage.id}`)
         .then(response => {
        // console.log('elsegsvcp', response.data.data)
           // response.data.data.forEach(function(key, value) {
@@ -164,18 +164,18 @@ export const useCart = defineStore("cart_items", {
             // let product_id = e.id ? e.id : '';
             let product_id = new_item.item.id ? new_item.item.id : '';
             let quantity = new_item.number ? new_item.number : '';
-            let userId = sessionStorage.id ? sessionStorage.id : '';
+            let userId = localStorage.id ? localStorage.id : '';
             formData.append('product_id', product_id)
             formData.append('quantity', quantity)
             formData.append('userId', userId)
             axios
-            .post(`http://localhost:3001/api/carts/addtocart/${sessionStorage.id}`, {
+            .post(`http://localhost:3001/api/carts/addtocart/${localStorage.id}`, {
                 'productId': product_id,
                 'quantity': quantity,
                 'userId': userId,
             })
             .then(response => {
-             console.log('response', response);
+             // console.log('response', response);
                 // items.value = response.data
                 // let ids = new Array();
                 // response.data.data.forEach(function(key, value) {
@@ -230,7 +230,7 @@ export const useCart = defineStore("cart_items", {
       // }
     },
     increase_number(position) {
-      if (!sessionStorage.jwtToken) {
+      if (!localStorage.jwtToken) {
      // console.log('p0-', position)
         this.items[position].number++
      // console.log(this.items)
@@ -310,7 +310,7 @@ export const useCart = defineStore("cart_items", {
     },
     decrease_number(position) {
       // console.log('decrease_number', this.items[position].number)
-      if (!sessionStorage.jwtToken) {
+      if (!localStorage.jwtToken) {
         if (this.items[position].number >= 2) {
           this.items[position].number--
        // console.log(this.items)
@@ -393,7 +393,7 @@ export const useCart = defineStore("cart_items", {
      // console.log('total + price*this.items[i].number', total + price*this.items[i].number)
         // alert(this.items[i].number)
         // total = !sessionStorage.jwtToken ? total + this.getItems[i].item.price*this.getItems[i].number : ''
-        total = !sessionStorage.jwtToken ? total + this.items[i].item.price*this.items[i].number : total + this.items[i].product.price*this.items[i].quantity
+        total = !localStorage.jwtToken ? total + this.items[i].item.price*this.items[i].number : total + this.items[i].product.price*this.items[i].quantity
         // total = total + this.getItems[i].item.price*this.getItems[i].number
         // total = total + this.items[i].item.price*this.items[i].number
       } 

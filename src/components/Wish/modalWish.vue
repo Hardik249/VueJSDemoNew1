@@ -164,7 +164,7 @@ const deleteItem = (e) => {
     // console.log(e)
     // console.log(e.id)
     // let id = e.product[0].id;
-  if (!sessionStorage.jwtToken) {
+  if (!localStorage.jwtToken) {
     store_wish.delete_item(element_index_in_array(JSON.parse(JSON.stringify(store_wish)).items, e))
     $('#wish-'+e.id).trigger();
     // console.log($('#wish'))

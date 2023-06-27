@@ -13,6 +13,14 @@
                         {{ mark }} {{ selected_category }}
                     </span><br>
                 </div>
+                <!-- <div class="categories" v-for="category in categories" :key="category">
+                    <input type="checkbox" class="isActive" :id="category" :name="category" :value="category" @click="productsByCategory(category)"> <label :for="category">{{category}}</label><br>
+                </div> -->
+
+                <!-- <div class="categories" v-for="category in categories" :key="category">
+                    <input type="checkbox" class="isActive" :id="category" :name="category" :value="category" @click="fetchData(category)"> <label :for="category">{{category}}</label><br>
+                </div> -->
+
                 <input type="checkbox" class="isActive" id="phone" name="phone" value="phone" @click="fetchData('phone')"> <label for="phone">Smartphones</label><br>
                 <input type="checkbox" class="isActive" id="Laptop" name="Laptop" value="Laptop" @click="fetchData('Laptop')"> <label for="Laptop">Laptops</label><br>
                 <input type="checkbox" class="isActive" id="sunglasses" name="sunglasses" value="sunglasses" @click="fetchData('sunglasses')"> <label for="sunglasses">Sunglasses</label><br>
@@ -82,7 +90,22 @@ let totalProductsLimit = ref(0);
 let isActive = false;
 let queries = ref(['products', 'phone', 'Laptop', 'sunglasses', 'furniture', 'home', 'motorcycle', 'lighting', 'watch', 'bags', 'handbags', 'ring']);
 let mark = ref('')
+// let categories = ref([]);
 
+let productsByCategory = async (category) => {
+    await axios
+    .get(`https://dummyjson.com/products/category/${category}`)
+    .then(response => {
+        console.log('categories', response.data)
+        // categories.value = response.data.data;
+        // filtered_products.value = response.data.data;
+        products.value = response.data.products;
+        // console.log('st', store_cart.total_amount())
+        // store_cart.state.length = response.data.data.length;
+        // store_cart.length = response.data.data.length;
+        // store_cart.total_amount();
+    });
+}
 
 const sort_by_category = (e) => {
     store_categories.add_or_remove_selected(e)
@@ -169,7 +192,7 @@ const handle_search = (e) => {
 
 const add_item = (e) => {
  // console.log('e', e.id);
- // console.log('if', sessionStorage.jwtToken != undefined)
+ // console.log('if', localStorage.jwtToken != undefined)
  // console.log('if0', !sessionStorage.jwtToken && sessionStorage.jwtToken == '')
 
     const element = JSON.parse(JSON.stringify(e))
@@ -178,7 +201,7 @@ const add_item = (e) => {
     store_cart.add_item({ 'item': element, 'number': 1 })
  // console.log(store_cart.getItems)
 
-    // if (!sessionStorage.jwtToken) {
+    // if (!localStorage.jwtToken) {
     //     const element = JSON.parse(JSON.stringify(e))
     //     /* JSON.parse(JSON.stringify(e)) to get de target in a proxy */
     //     send_to_home('send_item', element)
@@ -189,7 +212,7 @@ const add_item = (e) => {
     //     send_to_home('send_item', e)
     //     let formData = new FormData();
     //     let product_id = e.id ? e.id : '';
-    //     let userId = sessionStorage.id ? sessionStorage.id : '';
+    //     let userId = localStorage.id ? localStorage.id : '';
     //     formData.append('product_id', product_id)
     //     formData.append('userId', userId)
     //     axios
@@ -226,7 +249,7 @@ const add_item = (e) => {
 
 const add_wish = (e) => {
     // console.log(!sessionStorage.jwtToken)
-    if (!sessionStorage.jwtToken) {
+    if (!localStorage.jwtToken) {
         // window.location = '#/auth';
         alert('you are not logged in, can you please log in ?');
     } else {
@@ -239,7 +262,7 @@ const add_wish = (e) => {
             // alert(e.id)
             let wishProductIds = [];
             axios
-            .get(`http://localhost:3001/api/wishes/viewwishes/${sessionStorage.id}`)
+            .get(`http://localhost:3001/api/wishes/viewwishes/${localStorage.id}`)
             .then(response => {
                 store_wish.items = response.data.data
                 console.log(store_wish.items)
@@ -304,7 +327,17 @@ onMounted(async () => {
         // max_price.value = check_max_price(products)
     });
     await axios
-    .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
+    .get(`https://dummyjson.com/products/categories`)
+    .then(response => {
+        console.log('categories', response.data.data)
+        categories.value = response.data.data;
+        // console.log('st', store_cart.total_amount())
+        // store_cart.state.length = response.data.data.length;
+        // store_cart.length = response.data.data.length;
+        // store_cart.total_amount();
+    });
+    await axios
+    .get(`http://localhost:3001/api/carts/viewcarts/${localStorage.id}`)
     .then(response => {
         // console.log('gsvcp', response.data.data)
         // console.log('st', store_cart.total_amount())
@@ -313,7 +346,7 @@ onMounted(async () => {
         store_cart.total_amount();
     });
     await axios
-    .get(`http://localhost:3001/api/wishes/viewwishes/${sessionStorage.id}`)
+    .get(`http://localhost:3001/api/wishes/viewwishes/${localStorage.id}`)
     .then(response => {
         // console.log('gsvcp', response.data.data)
         // console.log('st', store_cart.total_amount())
@@ -328,25 +361,24 @@ onMounted(async () => {
             wishProductIds.push(key.productId)
             // $('body'). attr('data-body','');
         })
-        console.log('props', productsId)
+        // console.log('props', productsId)
         $('wish-'+productsId).attr('fill-rule', '')
         // $('wish-'+productsId).click()
         // $('wish-'+productsId).trigger()
-        console.log('props$', $('wish-'+productsId))
+        // console.log('props$', $('wish-'+productsId))
         // store_wish.total_amount();
     });
     if (store_categories.getAllCategories.length === 0) {
         await axios
-            .get('https://dummyjson.com/products/categories')
-            .then(response => {
-                store_categories.add_all_categories(JSON.parse(JSON.stringify(response.data)))
-                categories.value = store_categories.getAllCategories
-            })
+        .get('https://dummyjson.com/products/categories')
+        .then(response => {
+            store_categories.add_all_categories(JSON.parse(JSON.stringify(response.data)))
+            categories.value = store_categories.getAllCategories
+        })
     }
     else {
         categories.value = store_categories.getAllCategories
     }
-
 })
 
 const loadMoreData = () => {
@@ -372,7 +404,7 @@ const loadMoreData = () => {
       // .get(`https://dummyjson.com/products/search?limit=${this.limit}&q=${query}&skip=${this.limit}`, {
         mode: 'no-cors',
         headers: {
-          // Authorization : `Bearer ${sessionStorage.jwtToken}` 
+          // Authorization : `Bearer ${localStorage.jwtToken}`
         }
       })
       .then(response => {
@@ -417,12 +449,14 @@ const fetchData = (query) => {
       })
       $('#selectedCategory').append(store_categories.value)
       // console.log('selectedCategory1', selected_categories.value)
-      
+      // `https://dummyjson.com/products/category/${category}`
+      // `https://dummyjson.com/products/category/${query}`
       // $('.isActive').addClass('active');
       // if (isActive.value == true) {}
       limit.value = 6;
       let url;
       limit.value == total.value ? url = `https://dummyjson.com/products/search?limit=${limit.value}&q=${query}&skip=${limit.value}` : url = `https://dummyjson.com/products/search?limit=${limit.value}&q=${query}`;
+      // let url = `https://dummyjson.com/products/category/${query}`;
       // axios.get('http://127.0.0.1:8000/api/auth/user-profile', {
       // axios.get(`https://dummyjson.com/products/search?q=${query}`, {
       // axios.get(`https://dummyjson.com/products/search?limit=${limit.value}&q=${query}`, {

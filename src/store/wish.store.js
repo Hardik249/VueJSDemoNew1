@@ -17,7 +17,7 @@ export const useWish = defineStore("wish_items", {
   getters: {
     getItems : (state) => {
       axios
-        .get(`http://localhost:3001/api/wishes/viewwishes/${sessionStorage.id}`)
+        .get(`http://localhost:3001/api/wishes/viewwishes/${localStorage.id}`)
         .then(response => {
           // console.log(response)
           state.items = response.data.data;
@@ -29,7 +29,7 @@ export const useWish = defineStore("wish_items", {
       //   return state.items.length
       // } else {
       //   axios
-      //     .get(`http://localhost:3001/api/wishes/viewwishes/${sessionStorage.id}`)
+      //     .get(`http://localhost:3001/api/wishes/viewwishes/${localStorage.id}`)
       //     .then(response => {
       //   })
       //   return state.length ? state.length : state.items.length;
@@ -38,7 +38,7 @@ export const useWish = defineStore("wish_items", {
   },
   actions: {
     add_item(new_item) {
-      if (!sessionStorage.jwtToken) {
+      if (!localStorage.jwtToken) {
         if (this.items.find((element) => element.item.id === new_item.item.id)) {
           alert("Item already added to the wishlist")
           this.isProduct = true;
@@ -49,7 +49,7 @@ export const useWish = defineStore("wish_items", {
       } else {
         let cartProductIds = [];
         axios
-        .get(`http://localhost:3001/api/wishes/viewwishes/${sessionStorage.id}`)
+        .get(`http://localhost:3001/api/wishes/viewwishes/${localStorage.id}`)
         .then(response => {
           this.items = response.data.data
           // console.log(this.items)
@@ -62,12 +62,12 @@ export const useWish = defineStore("wish_items", {
             let formData = new FormData();
             let productId = new_item.item.id ? new_item.item.id : '';
             let quantity = new_item.number ? new_item.number : '';
-            let userId = sessionStorage.id ? sessionStorage.id : '';
+            let userId = localStorage.id ? localStorage.id : '';
             formData.append('productId', productId)
             formData.append('quantity', quantity)
             formData.append('userId', userId)
             axios
-            .post(`http://localhost:3001/api/wishes/addtowishes/${sessionStorage.id}`, {
+            .post(`http://localhost:3001/api/wishes/addtowishes/${localStorage.id}`, {
                 'productId': productId,
                 // 'userId': userId,
                 // 'userId': sessionStorage.id,

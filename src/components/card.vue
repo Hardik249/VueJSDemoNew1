@@ -83,7 +83,7 @@ const props = defineProps({
 const like = ref('evenodd')
 
 const fillsvg = () => {
-    if (sessionStorage.jwtToken) {
+    if (localStorage.jwtToken) {
         if (like.value === '' ) {
             like.value = 'evenodd'
             send_something_to_content('dis_like')

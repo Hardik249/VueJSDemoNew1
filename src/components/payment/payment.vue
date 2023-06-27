@@ -96,7 +96,7 @@
                                         </div> -->
                                         <button type="button" class="btn" id="saveAddress">save</button>
                                     </div>
-                                        <span class="success" id="successmsg"></span><br>
+                                        <span class="success fade-in" id="successmsg"></span><br>
                                     <button type="button" class="btn" id="addressFormRemove" style="display:none">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
                                           <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
@@ -474,6 +474,17 @@ p {
     width: 100%;
     object-fit: cover
 }
+
+.fade-in {
+  opacity: 1;
+  transition: opacity 0.5s ease-in;
+}
+
+.fade-out {
+  opacity: 0;
+  transition: opacity 0.5s ease-out;
+}
+
 </style>
 
 
@@ -482,408 +493,476 @@ import navbar from '@/components/navbar.vue';
 import topbar from '@/components/topbar.vue';
 import { onMounted, ref, provide } from 'vue';
 import { useCart } from '@/store/cart.store.js'
+import modalCart from '@/components/Cart/modalCart.vue';
+import { element_index_in_array } from '@/services/utils/utils'
 
 let address = ref([]);
 const store_cart = useCart();
 
+
 onMounted(async () => {
+    console.log('o')
     await axios
-    .get(`http://localhost:3001/api/userAddress/userAddressList/${sessionStorage.id}`)
+    .get(`http://localhost:3001/api/userAddress/userAddressList/${localStorage.id}`)
     .then(response => {
         // console.log('pymnt', response.data.data)
         address.value = response.data.data;
     });
 });
-$(document).ready(function(){
 
-    $('#addressAdd').click(function() {
-        // alert('ml')
-        let inputs = window.document.getElementsByClassName('addressForm');
-        inputs[0].childNodes[3].value = inputs[0].childNodes[7].value = inputs[0].childNodes[11].value = inputs[0].childNodes[15].value = inputs[0].childNodes[19].value = '';
-        $('.success').html('')
-        $('#addressForm').css('display', '');
-        $('#addressFormRemove').css('display', '');
-        $(this).css('display', 'none');
-        $('.addressbox').css('display', 'none');
-        // console.log(address)
-        // $('#addressForm').reset();
-        // console.log($('#addressForm'))
-        // inputs[0].childNodes.forEach(function(key, value) {
-        //     // console.log('k', key)
-        //     // console.log('v', value)
-        //     // console.log('kv', key[value].value)
-        //     key[value].value = '';
-        // })
-        // address = country = state = city = zip = '';
+let getUserAddresses = async () => {
+    await axios
+    .get(`http://localhost:3001/api/userAddress/userAddressList/${localStorage.id}`)
+    .then(response => {
+        // console.log('pymnt', response.data.data)
+        address.value = response.data.data;
     });
+}
 
-    $('#addressFormRemove').click(function() {
-        $('.success').html('')
-        $('#addressForm').css('display', 'none');
-        $('#addressFormRemove').css('display', 'none');
-        $(this).css('display', 'none');
-        $('.addressbox').css('display', '');
-        $('.address').css('display', '');
-    });
+// console.log(store_cart.items.length);
+if (store_cart.items.length != 0) {
 
-    $('#saveAddress').click(function() {
-        $('.success').html('')
-        let inputs = window.document.getElementsByClassName('addressForm');
-        // console.log(inputs[0].childNodes)
-        let address = inputs[0].childNodes[3].value ? inputs[0].childNodes[3].value : '';
-        let country = inputs[0].childNodes[7].value ? inputs[0].childNodes[7].value : '';
-        let state = inputs[0].childNodes[11].value ? inputs[0].childNodes[11].value : '';
-        let city = inputs[0].childNodes[15].value ? inputs[0].childNodes[15].value : '';
-        let zip = inputs[0].childNodes[19].value ? inputs[0].childNodes[19].value : '';
-
-        // console.log(zip)
-        // console.log(inputs[0].childNodes[8].childNodes[0].childNodes)
-        // console.log(inputs[0].childNodes[8].childNodes[1].childNodes)
-
-        // let state = inputs[0].childNodes[14].childNodes[0].childNodes[1].value ? inputs[0].childNodes[14].childNodes[0].childNodes[1].value : '';
-        // let zip = inputs[0].childNodes[14].childNodes[1].childNodes[1].value ? inputs[0].childNodes[14].childNodes[1].childNodes[1].value : '';
-        // console.log(address)
-        // console.log(zip)
-        // let email = inputs[0].childNodes[1].value ? inputs[0].childNodes[1].value : '';
-        // let password = inputs[1].childNodes[1].value ? inputs[1].childNodes[1].value : '';
-        let urlFormData = new URLSearchParams({
-            address: address, //gave the values directly for testing
-            country: country, //gave the values directly for testing
-            city: city, //gave the values directly for testing
-            state: state, //gave the values directly for testing
-            zip: zip, //gave the values directly for testing
-            // password: password,
-            // email: 'user-client'
-        });
-
-        // alert('s')
-        axios
-        .post(`http://localhost:3001/api/userAddress/addtouseraddress/${sessionStorage.id}`, urlFormData)
-        .then(response => {
-            $('.error').html('')
-            $('.success').html('')
-            // console.log('pymnt post', response.data)
-            if (response.data.status == "address Validation Fail") {
-                if (response.data.path == "address") {
-                    let addressError = response.data.path == 'address' ? response.data.message : '';
-                    document.getElementById('addressError').append(addressError);
-                }
-                if (response.data.path == "country") {
-                    let countryError = response.data.path == 'country' ? response.data.message : '';
-                    document.getElementById('countryError').append(countryError);
-                }
-                if (response.data.path == "city") {
-                    let cityError = response.data.path == 'city' ? response.data.message : '';
-                    document.getElementById('cityError').append(cityError);
-                }
-                if (response.data.path == "state") {
-                    let stateError = response.data.path == 'state' ? response.data.message : '';
-                    document.getElementById('stateError').append(stateError);
-                }
-                if (response.data.path == "zip") {
-                    let zipError = response.data.path == 'zip' ? response.data.message : '';
-                    document.getElementById('zipError').append(zipError);
-                }
-            } 
-            if (response.data.status == "success user address added") {
-                let successmsg = response.data.message ? response.data.message : '';
-                // console.log('searched', response.data.message);
-                // alert(successmsg)
-                // document.getElementById('successmsg').append(successmsg);
-                setTimeout(function() {
-                    document.getElementById('successmsg').append(successmsg);
-                }, 500);
-                $('#addressFormRemove').click();
-            } 
-            // address.value = response.data.data;
-        });
-    });
-
-    var current_fs, next_fs, previous_fs; //fieldsets
-    var opacity;
-    var current = 1;
-    var steps = $("fieldset").length;
-
-    setProgressBar(current);
-
-    $(".next").click(function(){
-        $('.error').html('')
-
-        current_fs = $(this).parent();
-        next_fs = $(this).parent().next();
-
-        // console.log(store_cart);
-        // console.log(store_cart.productId);
-        // let urlFormDataObj = new URLSearchParams({
-        //     quantity: JSON.stringify(quantity), //gave the values directly for testing
-        //     price: JSON.stringify(price), //gave the values directly for testing
-        //     productId: JSON.stringify(productId), //gave the values directly for testing
-        //     // addressId: addressId,
-        // });
-        // console.log(quantity);
-        let inputs = window.document.getElementsByClassName('personal-details');
-        // console.log(inputs[0].childNodes)
-        let firstName = inputs[0].childNodes[2].value ? inputs[0].childNodes[2].value : '';
-        let lastName = inputs[0].childNodes[6].value ? inputs[0].childNodes[6].value : '';
-        let contact = inputs[0].childNodes[10].value ? inputs[0].childNodes[10].value : '';
-        // let city = inputs[0].childNodes[8].value ? inputs[0].childNodes[8].value : '';
-        let firstNameError, lastNameError, contactError;
-        let id, orderId;
-        // console.log('total', store_cart.total_amount());
-        let total = store_cart.total_amount();
-        address.value.forEach(function(key, value) {
-            // console.log('addif', Object.values($('#address-'+value))[0].checked);
-            // console.log('ad-idval', $('#address-'+value).val());
-            if ($('#address-'+value).val() == key.id) {
-                id = key.id;
-            }
-        });
-        let urlFormData = new URLSearchParams({
-            firstName: firstName, //gave the values directly for testing
-            lastName: lastName, //gave the values directly for testing
-            contact: contact, //gave the values directly for testing
-            addressId: id,
-            total: total,
-        });
-        let form = $('#msform');
-        form.validate({
-            errorElement: 'span',
-            errorClass: 'help-block',
-            highlight: function(element, errorClass, validClass) {
-                $(element).closest('.form-group').addClass("has-error");
-            },
-            unhighlight: function(element, errorClass, validClass) {
-                $(element).closest('.form-group').removeClass("has-error");
-            },
-            rules: {
-                address: {
-                    required: true,
-                    // usernameRegex: true,
-                    // minlength: 6,
-                },
-                firstName: {
-                    required: true,
-                },
-                lastName: {
-                    required: true,
-                },
-                contact: {
-                    required: true,
-                    // length: 10,
-                    minlength: 10,
-                    maxlength: 10,
-                },
-                // payment: $('#selectPaymentError').append('Please Select Payment Method')
-                payment: {
-                    required: true,
-                    // required: $('#selectPaymentError').append('Please Select Payment Method')
-                },
-            },
-            messages: {
-                address: {
-                    required: "Address required",
-                },
-                firstName: {
-                    // required: "First Name required",
-                    // required: $('#firstNameError').val(),
-                    // required: firstNameError,
-                    required: firstNameError ? firstNameError : "First Name required",
-                },
-                lastName: {
-                    // required: "Last Name required",
-                    // required: $('#lastNameError').val(),
-                    // required: lastNameError,
-                    required: lastNameError ? lastNameError : "Last Name required",
-                },
-                contact: {
-                    // required: "Contact No. required",
-                    // required: $('#contactError').val(),
-                    // required: contactError,
-                    required: contactError ? contactError : "Contact No. required",
-                    // length: contactError ? contactError : "Contact No. must be 10 digits length",
-                },
-                // payment: $('#selectPaymentError').append('Please Select Payment Method')
-                payment: {
-                    required: "Please Select Payment Method.",
-                    // required: "",
-                    // required: $('#selectPaymentError').append('Please Select Payment Method'),
-                },
-            },
-            // errorElement : 'div',
-            // errorLabelContainer: '.errorTxt'
-        });
-        let isValid = true;
-        for (var i = 0; i < 3; i++) {
-            // console.log('sm', Object.values($("input[name='payment']"))[i].checked)
-            if (Object.values($("input[name='payment']"))[i].checked == true) {
-                isValid = false;
-            }
-        }
-        if (form.valid() === true) {
-            $("input[name='payment']")
-            // console.log('submit', $("input[name='payment']"))
-            // console.log('error', firstNameError ? firstNameError : "First Name required")
-            // alert(opacity)
-            next_fs.show();
-            //hide the current fieldset with style
-            current_fs.animate({opacity: 0}, {
-                step: function(now) {
-                    // for making fielset appear animation
-                    opacity = 1 - now;
-
-                    current_fs.css({
-                        'display': 'none',
-                        'position': 'relative'
-                    });
-                    next_fs.css({'opacity': opacity});
-                },
-                duration: 500
-            });
-            // alert(current);
-            setProgressBar(++current);
-            // console.log('tv', $(this).val());
-            if ($(this).val() == 'Submit') {
-                let inputsPersonal = window.document.getElementsByClassName('personal-details');
-                // console.log('sbmt', inputsPersonal[0].childNodes)
-                let firstName = inputsPersonal[0].childNodes[2].value ? inputsPersonal[0].childNodes[2].value : '';
-                let lastName = inputsPersonal[0].childNodes[6].value ? inputsPersonal[0].childNodes[6].value : '';
-                let contact = inputsPersonal[0].childNodes[10].value ? inputsPersonal[0].childNodes[10].value : '';
-                // let city = inputs[0].childNodes[8].value ? inputs[0].childNodes[8].value : '';
-                let addressId;
-                address.value.forEach(function(key, value) {
-                    if ($('#address-'+value).val() == key.id) {
-                        addressId = key.id;
-                    }
-                });
-                axios
-                .post(`http://localhost:3001/api/orders/addorder/${sessionStorage.id}`, urlFormData)
-                .then(response => {
-                    $('.error').html('')
-                    // console.log('pymnt post', response.data)
-                    if (response.data.status == "order Validation Fail") {
-                        // console.log('crnt', current_fs);
-                        // current_fs.show();
-                        // previous_fs.show();
-                        // next_fs.hide();
-                        if (response.data.path == "firstName") {
-                            firstNameError = response.data.path == 'firstName' ? response.data.message : '';
-                            document.getElementById('firstNameError').append(firstNameError);
-                        }
-                        if (response.data.path == "lastName") {
-                            lastNameError = response.data.path == 'lastName' ? response.data.message : '';
-                            document.getElementById('lastNameError').append(lastNameError);
-                        }
-                        if (response.data.path == "contact") {
-                            contactError = response.data.path == 'contact' ? response.data.message : '';
-                            document.getElementById('contactError').append(contactError);
-                        }
-                    } 
-                    orderId = response.data.data.id;
-                    // console.log(orderId);
-                    axios
-                    .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
-                    .then(response => {
-                        // console.log('get', response.data.data)
-                        for (var i = 0; i < response.data.data.length; i++) {
-                            // console.log(response.data.data[i])
-                            quantity.push(response.data.data[i].quantity)
-                            productId.push(response.data.data[i].productId)
-                            price.push(response.data.data[i].product.price)
-                        }
-                        axios
-                        .post(`http://localhost:3001/api/orderDetails/addorderDetails/${sessionStorage.id}`,{
-                            'quantity': quantity,
-                            'productId': productId,
-                            'price': price,
-                            'orderId': orderId,
-                        })
-                        .then(response => {
-                            // console.log('pymnt post', response.data)
-                        });
-
-                        // response.data.data.forEach(function(key, value) {
-                        //     // console.log('get', key, value)
-                        //     quantity.push(key.quantity);
-                        //     productId.push(key.productId);
-                        //     price.push(key.product.price);
-                        //     axios
-                        //     .post(`http://localhost:3001/api/orderDetails/addorderDetails/${sessionStorage.id}`,{body:{quantity: key.quantity}})
-                        //     .then(response => {
-                        //         console.log('pymnt post', response.data)
-                        //     });
-                        // })
-                    });
-                });
-                // console.log(formdata);
-                let quantity = [];
-                let productId = [];
-                let price = [];
-            }
-            // i++;
+    const deleteItem = (e) => {
+        if (!localStorage.jwtToken) {
+            store_cart.delete_item(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e))
         } else {
-            // $('#selectAddressError').append('Please Select Address');
-            // console.log(current_fs.prev());
-            // $(this).attr('disabled', true)
-            // current_fs.show();
-            // current_fs.prev().show();
-            // $(".previous").click();
+            console.log(e);
+            axios
+            .delete(`http://localhost:3001/api/carts/removefromcart/${e.id}`)
+            .then(function(response) {
+                store_cart.delete_item(element_index_in_array(JSON.parse(JSON.stringify(store_cart)).items, e))
+            })
+            .catch(function(error) {
+                console.error(error)
+            })
         }
-        // console.log('vldtin', form.valid());
-        previous_fs = $(this).parent().prev();
-        // let index = 0;
-
-        // console.log('prev', previous_fs);
-        // console.log('addval', Object.values($('#address-'+index))[0].checked)
-        // index++;
-        //Add Class Active
-        $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
-        //show the next fieldset
-        // console.log(address.value)
-        // let id = 0;
-        // if (opacity == 1) {
-        // }
-    });
-
-    $(".previous").click(function(){
-
-        current_fs = $(this).parent();
-        previous_fs = $(this).parent().prev();
-
-        //Remove class active
-        $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
-
-        //show the previous fieldset
-        previous_fs.show();
-
-        //hide the current fieldset with style
-        current_fs.animate({opacity: 0}, {
-        step: function(now) {
-        // for making fielset appear animation
-        opacity = 1 - now;
-
-        current_fs.css({
-        'display': 'none',
-        'position': 'relative'
-        });
-        previous_fs.css({'opacity': opacity});
-        },
-        duration: 500
-        });
-        setProgressBar(--current);
-
-    });
-
-    function setProgressBar(curStep){
-    var percent = parseFloat(100 / steps) * curStep;
-    percent = percent.toFixed();
-    $(".progress-bar")
-    .css("width",percent+"%")
     }
 
-    $(".submit").click(function(){
-        return false;
-    })
+    $(document).ready(function(){
 
-});
+        $('#addressAdd').click(function() {
+            // alert('ml')
+            let inputs = window.document.getElementsByClassName('addressForm');
+            inputs[0].childNodes[3].value = inputs[0].childNodes[7].value = inputs[0].childNodes[11].value = inputs[0].childNodes[15].value = inputs[0].childNodes[19].value = '';
+            $('.success').html('')
+            $('#addressForm').css('display', '');
+            $('#addressFormRemove').css('display', '');
+            $(this).css('display', 'none');
+            $('.addressbox').css('display', 'none');
+            // console.log(address)
+            // $('#addressForm').reset();
+            // console.log($('#addressForm'))
+            // inputs[0].childNodes.forEach(function(key, value) {
+            //     // console.log('k', key)
+            //     // console.log('v', value)
+            //     // console.log('kv', key[value].value)
+            //     key[value].value = '';
+            // })
+            // address = country = state = city = zip = '';
+        });
+
+        $('#addressFormRemove').click(function() {
+            $('.success').html('')
+            $('#addressForm').css('display', 'none');
+            $('#addressFormRemove').css('display', 'none');
+            $(this).css('display', 'none');
+            $('.addressbox').css('display', '');
+            $('.address').css('display', '');
+        });
+
+        $('#saveAddress').click(function() {
+            $('.success').html('')
+            let inputs = window.document.getElementsByClassName('addressForm');
+            // console.log(inputs[0].childNodes)
+            let addressLine = inputs[0].childNodes[3].value ? inputs[0].childNodes[3].value : '';
+            let country = inputs[0].childNodes[7].value ? inputs[0].childNodes[7].value : '';
+            let state = inputs[0].childNodes[11].value ? inputs[0].childNodes[11].value : '';
+            let city = inputs[0].childNodes[15].value ? inputs[0].childNodes[15].value : '';
+            let zip = inputs[0].childNodes[19].value ? inputs[0].childNodes[19].value : '';
+
+            // console.log(zip)
+            // console.log(inputs[0].childNodes[8].childNodes[0].childNodes)
+            // console.log(inputs[0].childNodes[8].childNodes[1].childNodes)
+
+            // let state = inputs[0].childNodes[14].childNodes[0].childNodes[1].value ? inputs[0].childNodes[14].childNodes[0].childNodes[1].value : '';
+            // let zip = inputs[0].childNodes[14].childNodes[1].childNodes[1].value ? inputs[0].childNodes[14].childNodes[1].childNodes[1].value : '';
+            // console.log(address)
+            // console.log(zip)
+            // let email = inputs[0].childNodes[1].value ? inputs[0].childNodes[1].value : '';
+            // let password = inputs[1].childNodes[1].value ? inputs[1].childNodes[1].value : '';
+            let urlFormData = new URLSearchParams({
+                address: addressLine, //gave the values directly for testing
+                country: country, //gave the values directly for testing
+                city: city, //gave the values directly for testing
+                state: state, //gave the values directly for testing
+                zip: zip, //gave the values directly for testing
+                // password: password,
+                // email: 'user-client'
+            });
+
+            // alert('s')
+            axios
+            .post(`http://localhost:3001/api/userAddress/addtouseraddress/${localStorage.id}`, urlFormData)
+            .then(response => {
+                $('.error').html('')
+                $('.success').html('')
+                // console.log('pymnt post', response.data)
+                if (response.data.status == "address Validation Fail") {
+                    if (response.data.path == "address") {
+                        let addressError = response.data.path == 'address' ? response.data.message : '';
+                        document.getElementById('addressError').append(addressError);
+                    }
+                    if (response.data.path == "country") {
+                        let countryError = response.data.path == 'country' ? response.data.message : '';
+                        document.getElementById('countryError').append(countryError);
+                    }
+                    if (response.data.path == "city") {
+                        let cityError = response.data.path == 'city' ? response.data.message : '';
+                        document.getElementById('cityError').append(cityError);
+                    }
+                    if (response.data.path == "state") {
+                        let stateError = response.data.path == 'state' ? response.data.message : '';
+                        document.getElementById('stateError').append(stateError);
+                    }
+                    if (response.data.path == "zip") {
+                        let zipError = response.data.path == 'zip' ? response.data.message : '';
+                        document.getElementById('zipError').append(zipError);
+                    }
+                }
+                if (response.data.status == "success user address added") {
+                    let successmsg = response.data.message ? response.data.message : '';
+                    setTimeout(() => {
+                      successMsg.classList.add('fade-out');
+                    }, 2000); // 2000 milliseconds (2 seconds) delay
+
+                    getUserAddresses();
+                    $('#addressFormRemove').click();
+                }
+                // address.value = response.data.data;
+            });
+        });
+
+        var current_fs, next_fs, previous_fs; //fieldsets
+        var opacity;
+        var current = 1;
+        var steps = $("fieldset").length;
+
+        setProgressBar(current);
+
+        $(".next").click(function(){
+            $('.error').html('');
+
+            current_fs = $(this).parent();
+            next_fs = $(this).parent().next();
+
+            // console.log(modalCart);
+            // console.log(store_cart.items);
+            // let urlFormDataObj = new URLSearchParams({
+            //     quantity: JSON.stringify(quantity), //gave the values directly for testing
+            //     price: JSON.stringify(price), //gave the values directly for testing
+            //     productId: JSON.stringify(productId), //gave the values directly for testing
+            //     // addressId: addressId,
+            // });
+            // console.log(quantity);
+            let inputs = window.document.getElementsByClassName('personal-details');
+            // console.log(inputs[0].childNodes)
+            let firstName = inputs[0].childNodes[2].value ? inputs[0].childNodes[2].value : '';
+            let lastName = inputs[0].childNodes[6].value ? inputs[0].childNodes[6].value : '';
+            let contact = inputs[0].childNodes[10].value ? inputs[0].childNodes[10].value : '';
+            // let city = inputs[0].childNodes[8].value ? inputs[0].childNodes[8].value : '';
+            let firstNameError, lastNameError, contactError;
+            let id, orderId;
+            // console.log('total', store_cart.total_amount());
+            let total = store_cart.total_amount();
+            let addressVal;
+            if (address.value != undefined) {
+                address.value.forEach(function(key, value) {
+                    // console.log('addif', Object.values($('#address-'+value))[0].checked);
+                    // console.log('ad-idval', $('#address-'+value).val());
+                    // console.log('ad-idk', key.id);
+                    // console.log(`${$('#address-'+value).val()} ${key.id}`);
+                    addressVal = $('#address-'+value)[0] ? $('#address-'+value)[0] : '';
+                    if (addressVal.checked == true) {
+                        id = $('#address-'+value).val();
+                    }
+                });
+            } else {
+                $('#addressAdd').click();
+            }
+            let urlFormData = new URLSearchParams({
+                firstName: firstName, //gave the values directly for testing
+                lastName: lastName, //gave the values directly for testing
+                contact: contact, //gave the values directly for testing
+                addressId: id,
+                total: total,
+            });
+            // console.log('id', id);
+            // // Define the custom method
+            // $.validator.addMethod(
+            //   "pattern",
+            //   function(value, element, pattern) {
+            //     if (!pattern || !value) {
+            //       return true; // Skip validation if pattern or value is not provided
+            //     }
+            //     var regex = new RegExp(pattern);
+            //     return regex.test(value);
+            //   },
+            //   "Invalid format."
+            // );
+            let form = $('#msform');
+            form.validate({
+                errorElement: 'span',
+                errorClass: 'help-block',
+                highlight: function(element, errorClass, validClass) {
+                    $(element).closest('.form-group').addClass("has-error");
+                },
+                unhighlight: function(element, errorClass, validClass) {
+                    $(element).closest('.form-group').removeClass("has-error");
+                },
+                rules: {
+                    address: {
+                        required: true,
+                        // usernameRegex: true,
+                        // minlength: 6,
+                    },
+                    firstName: {
+                        required: true,
+                    },
+                    lastName: {
+                        required: true,
+                    },
+                    contact: {
+                        required: true,
+                        // length: 10,
+                        minlength: 10,
+                        maxlength: 10,
+                        pattern: /^\d+$/, // Regular expression to match numbers only
+                    },
+                    // payment: $('#selectPaymentError').append('Please Select Payment Method')
+                    payment: {
+                        required: true,
+                        // required: $('#selectPaymentError').append('Please Select Payment Method')
+                    },
+                },
+                messages: {
+                    address: {
+                        // required: "Address required",
+                        required: "Please Select Address",
+                    },
+                    firstName: {
+                        // required: "First Name required",
+                        // required: $('#firstNameError').val(),
+                        // required: firstNameError,
+                        required: firstNameError ? firstNameError : "First Name required",
+                    },
+                    lastName: {
+                        // required: "Last Name required",
+                        // required: $('#lastNameError').val(),
+                        // required: lastNameError,
+                        required: lastNameError ? lastNameError : "Last Name required",
+                    },
+                    contact: {
+                        // required: "Contact No. required",
+                        // required: $('#contactError').val(),
+                        // required: contactError,
+                        required: contactError ? contactError : "Contact No. required",
+                        pattern: contactError ? contactError : 'Please enter numbers only.',
+                        // length: contactError ? contactError : "Contact No. must be 10 digits length",
+                    },
+                    // payment: $('#selectPaymentError').append('Please Select Payment Method')
+                    payment: {
+                        required: "Please Select Payment Method.",
+                        // required: "",
+                        // required: $('#selectPaymentError').append('Please Select Payment Method'),
+                    },
+                },
+                // errorElement : 'div',
+                // errorLabelContainer: '.errorTxt'
+            });
+            let isValid = true;
+            for (var i = 0; i < 3; i++) {
+                // console.log('sm', Object.values($("input[name='payment']"))[i].checked)
+                if (Object.values($("input[name='payment']"))[i].checked == true) {
+                    isValid = false;
+                }
+            }
+            if (form.valid() === true) {
+                $("input[name='payment']")
+                // console.log('submit', $("input[name='payment']"))
+                // console.log('error', firstNameError ? firstNameError : "First Name required")
+                // alert(opacity)
+                next_fs.show();
+                //hide the current fieldset with style
+                current_fs.animate({opacity: 0}, {
+                    step: function(now) {
+                        // for making fielset appear animation
+                        opacity = 1 - now;
+
+                        current_fs.css({
+                            'display': 'none',
+                            'position': 'relative'
+                        });
+                        next_fs.css({'opacity': opacity});
+                    },
+                    duration: 500
+                });
+                // alert(current);
+                setProgressBar(++current);
+                // console.log('tv', $(this).val());
+                if ($(this).val() == 'Submit') {
+                    let inputsPersonal = window.document.getElementsByClassName('personal-details');
+                    // console.log('sbmt', inputsPersonal[0].childNodes)
+                    let firstName = inputsPersonal[0].childNodes[2].value ? inputsPersonal[0].childNodes[2].value : '';
+                    let lastName = inputsPersonal[0].childNodes[6].value ? inputsPersonal[0].childNodes[6].value : '';
+                    let contact = inputsPersonal[0].childNodes[10].value ? inputsPersonal[0].childNodes[10].value : '';
+                    // let city = inputs[0].childNodes[8].value ? inputs[0].childNodes[8].value : '';
+                    let addressId;
+                    address.value.forEach(function(key, value) {
+                        if ($('#address-'+value).val() == key.id) {
+                            addressId = key.id;
+                        }
+                    });
+                    axios
+                    .post(`http://localhost:3001/api/orders/addorder/${localStorage.id}`, urlFormData)
+                    .then(response => {
+                        $('.error').html('')
+                        // console.log('pymnt post', response.data)
+                        if (response.data.status == "order Validation Fail") {
+                            // console.log('crnt', current_fs);
+                            // current_fs.show();
+                            // previous_fs.show();
+                            // next_fs.hide();
+                            if (response.data.path == "firstName") {
+                                firstNameError = response.data.path == 'firstName' ? response.data.message : '';
+                                document.getElementById('firstNameError').append(firstNameError);
+                            }
+                            if (response.data.path == "lastName") {
+                                lastNameError = response.data.path == 'lastName' ? response.data.message : '';
+                                document.getElementById('lastNameError').append(lastNameError);
+                            }
+                            if (response.data.path == "contact") {
+                                contactError = response.data.path == 'contact' ? response.data.message : '';
+                                document.getElementById('contactError').append(contactError);
+                            }
+                        }
+                        orderId = response.data.data.id;
+                        // console.log(orderId);
+                        let quantity = [];
+                        let productId = [];
+                        let price = [];
+                        axios
+                        .get(`http://localhost:3001/api/carts/viewcarts/${localStorage.id}`)
+                        .then(response => {
+                            console.log('get', response.data.data)
+                            for (var i = 0; i < response.data.data.length; i++) {
+                                console.log(response.data.data[i])
+                                quantity.push(response.data.data[i].quantity)
+                                productId.push(response.data.data[i].productId)
+                                price.push(response.data.data[i].product.price)
+                            }
+                            axios
+                            .post(`http://localhost:3001/api/orderDetails/addorderDetails/${localStorage.id}`,{
+                                'quantity': quantity,
+                                'productId': productId,
+                                'price': price,
+                                'orderId': orderId,
+                            })
+                            .then(response => {
+                                console.log('addorderDetails post', response.data)
+                                if (response.data.length != 0) {
+                                    store_cart.items.forEach(function(key, value) {
+                                        // console.log(key);
+                                        deleteItem(key);
+                                    });
+                                }
+                            });
+
+                            // response.data.data.forEach(function(key, value) {
+                            //     // console.log('get', key, value)
+                            //     quantity.push(key.quantity);
+                            //     productId.push(key.productId);
+                            //     price.push(key.product.price);
+                            //     axios
+                            //     .post(`http://localhost:3001/api/orderDetails/addorderDetails/${sessionStorage.id}`,{body:{quantity: key.quantity}})
+                            //     .then(response => {
+                            //         console.log('pymnt post', response.data)
+                            //     });
+                            // })
+                        });
+                    });
+                    // console.log(formdata);
+                    console.log($('input[name="payment"]:checked').val());
+                    localStorage.paymentMethod = $('input[name="payment"]:checked').val();
+                    // console.log(document.querySelector('input[name="payment"]:checked'));
+                }
+                // i++;
+            } else {
+                // $('#selectAddressError').append('Please Select Address');
+                // console.log(current_fs.prev());
+                // $(this).attr('disabled', true)
+                // current_fs.show();
+                // current_fs.prev().show();
+                // $(".previous").click();
+            }
+            // console.log('vldtin', form.valid());
+            previous_fs = $(this).parent().prev();
+            // let index = 0;
+
+            // console.log('prev', previous_fs);
+            // console.log('addval', Object.values($('#address-'+index))[0].checked)
+            // index++;
+            //Add Class Active
+            $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+            //show the next fieldset
+            // console.log(address.value)
+            // let id = 0;
+            // if (opacity == 1) {
+            // }
+        });
+
+        $(".previous").click(function(){
+
+            current_fs = $(this).parent();
+            previous_fs = $(this).parent().prev();
+
+            //Remove class active
+            $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
+
+            //show the previous fieldset
+            previous_fs.show();
+
+            //hide the current fieldset with style
+            current_fs.animate({opacity: 0}, {
+            step: function(now) {
+            // for making fielset appear animation
+            opacity = 1 - now;
+
+            current_fs.css({
+            'display': 'none',
+            'position': 'relative'
+            });
+            previous_fs.css({'opacity': opacity});
+            },
+            duration: 500
+            });
+            setProgressBar(--current);
+
+        });
+
+        function setProgressBar(curStep){
+        var percent = parseFloat(100 / steps) * curStep;
+        percent = percent.toFixed();
+        $(".progress-bar")
+        .css("width",percent+"%")
+        }
+
+        $(".submit").click(function(){
+            return false;
+        })
+
+    });
+} else {
+    window.location = '/';
+}
 </script>
 

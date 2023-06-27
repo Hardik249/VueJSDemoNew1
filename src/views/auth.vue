@@ -158,8 +158,8 @@ const try_login = async () => {
                 password: password,
                 // email: 'user-client'
         })
-      console.log('urlFormData', urlFormData)
-      console.log('email', email)
+      // console.log('urlFormData', urlFormData)
+      // console.log('email', email)
                 // alert('login')
         // if (check_mail(data_login.email)) {
                 // const response = await fetch('http://localhost:3005/api/login', {
@@ -170,31 +170,37 @@ const try_login = async () => {
                         console.log('response', response.data)
                         if (response.data.status == 'login Validation Fail') {
                                 let emailError = response.data.path == 'email' ? response.data.message : '';
-                                console.log(response.data.path == 'email')
+                                // console.log(response.data.path == 'email')
                                 let passError = response.data.path == 'password' ? response.data.message : '';
-                                console.log(passError)
+                                // console.log(passError)
 
                                 document.getElementById('emailError').append(emailError);
                                 document.getElementById('passwordError').append(passError);
 
+                                $('#password').val('');
                                 // $('emailError').append(emailError);
                                 // $('passwordError').append(passError);
                         }
                         if (response.data.status == 'fail users login') {
                                 // document.getElementById('allErrors').append(error.response.data.error)
+                                $('#password').val('');
                                 $('#allErrors').append(response.data.message)
                         }
                         if (response.data.status == 'jwt Login Succeed!') {
                                 // console.log('d', response.data)
                                 // console.log('n', response.data.data.name)
                                 // console.log('e', response.data.data.email)
-                                console.log('a', response.data.auth)
+                                // console.log('a', response.data.auth)
                                 // console.log(response.data)
                                 sessionStorage.jwtToken = response.data.auth
                                 sessionStorage.id = response.data.data.id
                                 sessionStorage.name = response.data.data.name
                                 sessionStorage.email = response.data.data.email
                                 window.location = '/'
+                                localStorage.jwtToken = response.data.auth
+                                localStorage.id = response.data.data.id
+                                localStorage.name = response.data.data.name
+                                localStorage.email = response.data.data.email
                         }
                         // localStorage.name = 
                         // sessionStorage.jwtToken = response.data.access_token
@@ -244,7 +250,7 @@ const try_login = async () => {
                             $('#allErrors').append(error.response.data.error)
                           }
                         }
-                        console.log(error);
+                        console.log('errorf', error);
                 });
                 // console.log('resp', resp);
                 // alert('resp');
@@ -297,7 +303,7 @@ const fetchData = async(event) => {
                 password_confirmation: password_confirmation,
                 contact: contact,
         })
-        console.log('urlFormData', urlFormData)
+        // console.log('urlFormData', urlFormData)
         let errors;
         // axios.get('http://127.0.0.1:8000/api/get_all_user', {
         // axios.post('http://127.0.0.1:8000/api/auth/register', formData, {
@@ -316,18 +322,18 @@ const fetchData = async(event) => {
                 console.log('response', response);
 
                 $('.error').html('')
-                console.log('response', response.data)
+                // console.log('response', response.data)
                 if (response.data.status == 'register Validation Fail') {
                         let nameError = response.data.path == 'name' ? response.data.message : '';
-                        console.log(response.data.path == 'name')
+                        // console.log(response.data.path == 'name')
                         let emailError = response.data.path == 'email' ? response.data.message : '';
-                        console.log(response.data.path == 'email')
+                        // console.log(response.data.path == 'email')
                         let passError = response.data.path == 'password' ? response.data.message : '';
-                        console.log(passError)
+                        // console.log(passError)
                         let confirmPassError = response.data.path == 'password_confirmation' ? response.data.message : '';
-                        console.log(confirmPassError)
+                        // console.log(confirmPassError)
                         let contactError = response.data.path == 'contact' ? response.data.message : '';
-                        console.log(response.data.path == 'contact')
+                        // console.log(response.data.path == 'contact')
 
                         document.getElementById('nameError').append(nameError);
                         document.getElementById('emailError').append(emailError);
@@ -335,11 +341,15 @@ const fetchData = async(event) => {
                         document.getElementById('confirmPassError').append(confirmPassError);
                         document.getElementById('contactError').append(contactError);
 
+                        $('#password').val('');
+                        $('#password_confirmation').val('');
                         // $('emailError').append(emailError);
                         // $('passwordError').append(passError);
                 }
                 if (response.data.status == 'fail users register') {
                         // document.getElementById('allErrors').append(error.response.data.error)
+                        $('#password').val('');
+                        $('#password_confirmation').val('');
                         $('#allErrors').append(response.data.message)
                 }
                 if (response.data.status == 'success users') {
@@ -394,9 +404,9 @@ const fetchData = async(event) => {
                         //   let passEr = key
                         //   let pasErr = key
                         // })
-                        console.log('p', passwordError)
-                        console.log('p0', passwordError[0])
-                        console.log('p1', passwordError[1])
+                        // console.log('p', passwordError)
+                        // console.log('p0', passwordError[0])
+                        // console.log('p1', passwordError[1])
                         // alert(passwordError)
                         $('#password').val('');
                         $('#password_confirmation').val('');

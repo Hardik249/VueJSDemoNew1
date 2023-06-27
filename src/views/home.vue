@@ -24,7 +24,7 @@ const handle_like = (e) => {
     // words_favorite.value = check_plural(e, 'Favorite')
     let cartProductIds = [];
     axios
-    .get(`http://localhost:3001/api/wishes/viewwishes/${sessionStorage.id}`)
+    .get(`http://localhost:3001/api/wishes/viewwishes/${localStorage.id}`)
     .then(response => {
         // console.log(response)
         count_likes.value = response.data.data.length;
@@ -44,21 +44,21 @@ let wishProduct;
 /* Watcheffect to do the change just one time ... increase performance */
 watchEffect(() => {
     axios
-    .get(`http://localhost:3001/api/wishes/viewwishes/${sessionStorage.id}`)
+    .get(`http://localhost:3001/api/wishes/viewwishes/${localStorage.id}`)
     .then(response => {
         // console.log(response)
         count_likes.value = response.data.data.length;
         words_favorite.value = check_plural(response.data.data.length, 'Favorite')
-        console.log('#wish-', $('#wish-'+wishProduct))
-        console.log('#wish', $('#wish'))
-        console.log('fill', $('#deleteItem').attr('fill'))
-        console.log('fillsvg', $('#deleteItem').attr('fillsvg'))
+        // console.log('#wish-', $('#wish-'+wishProduct))
+        // console.log('#wish', $('#wish'))
+        // console.log('fill', $('#deleteItem').attr('fill'))
+        // console.log('fillsvg', $('#deleteItem').attr('fillsvg'))
         this.items = response.data.data
         response.data.data.forEach(function(key, value) {
             wishProduct.push(key.productId)
             wishProduct = key.productId;
         })
-        console.log('#wish-', wishProduct)
+        // console.log('#wish-', wishProduct)
     })
     .catch(error => {
      // console.log(error)

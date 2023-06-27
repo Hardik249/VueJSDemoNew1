@@ -86,7 +86,7 @@ const store_cart = useCart()
 const store_wish = useWish()
 
 const open = () => {
-    if (!sessionStorage.jwtToken) {
+    if (!localStorage.jwtToken) {
         // alert('if')
         // console.log('items', store_wish.items)
         // state.items = JSON.parse(JSON.stringify(state.items))
@@ -97,7 +97,7 @@ const open = () => {
         // alert('else')
         // console.log('state', state);
         axios
-        .get(`http://localhost:3001/api/carts/viewcarts/${sessionStorage.id}`)
+        .get(`http://localhost:3001/api/carts/viewcarts/${localStorage.id}`)
         .then(response => {
        // console.log('gsvcp', response.data.data)
           store_cart.items = response.data.data

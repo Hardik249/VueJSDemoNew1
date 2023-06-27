@@ -8,7 +8,7 @@
         <div class="navelements">
             <!-- <router-link to="/">Toys</router-link> -->
             <router-link to="/">Home</router-link>
-            <router-link to="/">About</router-link>
+            <router-link to="/myorders">My Orders</router-link>
             <!-- <router-link to="/">
                 <span><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M11 7H7V11H11V7Z" fill="currentColor" />
@@ -66,7 +66,7 @@ const getCurrentUser = async () => {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            Authorization : `Bearer ${sessionStorage.jwtToken}` 
+            Authorization : `Bearer ${localStorage.jwtToken}`
         },
         // cookie: 'jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaWF0IjoxNjYzMTU5MjkxLCJleHAiOjE2NjMyNDU2OTF9.NdvORxlq7z2HLXePYqCDluugQN-pO8pKEYOJtZ8iGQY; '
 
@@ -81,7 +81,7 @@ const userType = () => {
   // return sessionStorage.getItem('email')
   // return sessionStorage.getItem('name')
   // return window.sessionStorage.getItem('email')
-  name = window.sessionStorage.getItem('name')
+  name = window.localStorage.getItem('name')
   return name;
   // return window.sessionStorage.getItem('name')
 }

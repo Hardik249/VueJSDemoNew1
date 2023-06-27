@@ -3,22 +3,22 @@ import axios from 'axios'
 
 export default {
   data() {
-	console.log('name', sessionStorage.name)
-	console.log('email', sessionStorage.email)
+	console.log('name', localStorage.name)
+	console.log('email', localStorage.email)
     return {
       // text: '',
-      id: sessionStorage.id,
-      name: sessionStorage.name,
-      email: sessionStorage.email,
+      id: localStorage.id,
+      name: localStorage.name,
+      email: localStorage.email,
     };
   },
   mounted () {
     axios
     // .get('http://127.0.0.1:8000/api/auth/user-profile',{
-    .get(`http://localhost:3001/api/users/getprofile/${sessionStorage.id}`,{
+    .get(`http://localhost:3001/api/users/getprofile/${localStorage.id}`,{
       mode: 'no-cors',
       headers: {
-        Authorization : `Bearer ${sessionStorage.jwtToken}`
+        Authorization : `Bearer ${localStorage.jwtToken}`
       }
     })
     .then(response => {
@@ -73,7 +73,7 @@ export default {
         // email: 'user-client'
       })
     console.log('urlFormData', urlFormData)
-     axios.put(`http://localhost:3001/api/users/updateprofile/${sessionStorage.id}`, urlFormData)
+     axios.put(`http://localhost:3001/api/users/updateprofile/${localStorage.id}`, urlFormData)
       .then(response => {
           $('.error').html('')
           console.log('response', response.data)
@@ -108,6 +108,9 @@ export default {
             sessionStorage.name = response.data.data.name
             sessionStorage.email = response.data.data.email
             window.location = '/';
+            localStorage.id = response.data.data.id
+            localStorage.name = response.data.data.name
+            localStorage.email = response.data.data.email
           }
         // let message = response.data.message
         // // alert(message)

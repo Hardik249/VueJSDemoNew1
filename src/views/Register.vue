@@ -50,7 +50,7 @@ export default {
       })
       .then(response => {
         console.log('response', response);
-        // sessionStorage.name = response.data.user.name
+        // localStorage.name = response.data.user.name
         window.location = '#/login'
         response.json().then(res => console.log(res));
         // if (err.code == 'ERR_BAD_REQUEST') {

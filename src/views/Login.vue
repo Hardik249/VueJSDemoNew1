@@ -41,6 +41,10 @@ export default {
         sessionStorage.email = response.data.user.email
         sessionStorage.id = response.data.user.id
         window.location = '/'
+        localStorage.jwtToken = response.data.auth
+        localStorage.id = response.data.data.id
+        localStorage.name = response.data.data.name
+        localStorage.email = response.data.data.email
         // this.$router.push("/");
         // response.json().then(res => console.log(res));
       })

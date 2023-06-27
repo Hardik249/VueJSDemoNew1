@@ -35,7 +35,7 @@ const isOpen = inject('dataModal')
 // let isOpen = localStorage.getItem('dataModal')
 // console.log(props.id)
 // console.log(props.currentComponent)
-console.log(isOpen)
+// console.log(isOpen)
 // const currentComponent = modalWish;
 const currentComponent = props.id == 1 ? modalCart : modalWish;
 
