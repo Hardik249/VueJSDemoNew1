@@ -26,5 +26,19 @@ export const useSort = defineStore("sorted_items", {
         this.selected_categories.push(category);
       }
     },
+    addOrRemoveSelected(category) {
+      if (this.selected_categories.includes(category)) {
+        this.selected_categories = this.selected_categories.filter((c) => c === category);
+      } else {
+        this.selected_categories.push(category);
+      }
+    },
+    addRemoveSelected(category) {
+      if (this.selected_categories.find((element) => element === category)) {
+        this.selected_categories.filter((element) => element === category);
+      } else {
+        this.selected_categories.push(category);
+      }
+    },
   },
 });

@@ -18,8 +18,31 @@
       <!-- {{ myorders }} -->
       <h2 class="text-charcoal hidden-sm-down">Your Orders</h2>
       <h5 class="text-charcoal hidden-md-up">Your Orders</h5>
+      <!-- <input type="" name=""> -->
+      <!-- <select class="mb-3">
+        <option>Past 3 Months</option>
+        <option>Past 7 Days</option>
+        <option>Past 30 Days</option>
+      </select> -->
+      Filter :
+      <select class="mb-3" id="filter">
+        <option value="">Select Month</option>
+        <option value="1">Jan</option>
+        <option value="2">Feb</option>
+        <option value="3">Mar</option>
+        <option value="4">Apr</option>
+        <option value="5">May</option>
+        <option value="6">Jun</option>
+        <option value="7">Jul</option>
+        <option value="8">Aug</option>
+        <option value="9">Sep</option>
+        <option value="10">Oct</option>
+        <option value="11">Nov</option>
+        <option value="12">Dec</option>
+      </select>
       <!-- {{ myorders != undefined }} -->
       <!-- {{ myorders.length != 0 }} -->
+      <!-- {{ myorders.length }} -->
       <div class="row" v-if="myorders != undefined">
         <div class="col-12" v-for="order in myorders">
           <!-- {{ dateFormat(order.createdAt) }} -->
@@ -130,4 +153,35 @@ let dateFormat = (datetime) => {
   // return date
   return `${date.toLocaleString("en-US", { month: 'short' })} ${date.getDate()}th, ${date.getFullYear()}`;
 }
+// console.log($('#filter').attr());
+$( document ).ready(function() {
+  // console.log( "ready!" );
+  $('#filter').change(function() {
+    // console.log($(this).val());
+    // console.log($(this).val() != '');
+    if ($(this).val() != '') {
+      axios
+      // .get(`http://localhost:3001/api/orderDetails/orderDetailsList/${sessionStorage.id}`)
+      .get(`http://localhost:3001/api/orders/ordersListByMonth/${localStorage.id}/${$(this).val()}`)
+      .then(response => {
+        // console.log('myorders', response.data.data);
+        message.value = response.data.message;
+        status.value = response.data.status;
+        myorders.value = response.data.data;
+      });
+    } else {
+      // myorders.value;
+      // console.log(myorders.value);
+      axios
+      // .get(`http://localhost:3001/api/orderDetails/orderDetailsList/${sessionStorage.id}`)
+      .get(`http://localhost:3001/api/orders/ordersList/${localStorage.id}`)
+      .then(response => {
+        // console.log('myorders', response.data.data);
+        message.value = response.data.message;
+        status.value = response.data.status;
+        myorders.value = response.data.data;
+      });
+    }
+  });
+});
 </script>

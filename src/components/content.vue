@@ -8,13 +8,18 @@
                 {{ category }} </categoriesList> -->
 
                 <button class="btn" id="clearAll" @click="clearAll" style="float: inline-end;">Clear All</button><br>
-                <div style="margin-left: 0px;background-color: lightgray;color: black;width: 45%;" v-if="selected_category ? selected_category : ''">
+                <div style="margin-left: 0px;background-color: lightgray;color: black;width: 61%;" v-if="selected_category ? selected_category : ''">
                     <span id="selectedCategory" @click="clearAll" style="cursor: pointer;">
                         {{ mark }} {{ selected_category }}
                     </span><br>
                 </div>
+
                 <!-- <div class="categories" v-for="category in categories" :key="category">
                     <input type="checkbox" class="isActive" :id="category" :name="category" :value="category" @click="productsByCategory(category)"> <label :for="category">{{category}}</label><br>
+                </div> -->
+
+                <!-- <div class="categories" v-for="category in categories" :key="category">
+                    <input type="checkbox" class="isActive" :id="category" :name="category" :value="category" @click="productsListByCategory(category)"> <label :for="category">{{category}}</label><br>
                 </div> -->
 
                 <!-- <div class="categories" v-for="category in categories" :key="category">
@@ -105,6 +110,54 @@ let productsByCategory = async (category) => {
         // store_cart.length = response.data.data.length;
         // store_cart.total_amount();
     });
+}
+
+let productsListByCategory = async (category) => {
+    // store_categories.add_or_remove_selected(query);
+    // store_categories.addOrRemoveSelected(query);
+    store_categories.addRemoveSelected(query);
+    if (JSON.parse(JSON.stringify(store_categories.selected_categories)).length !== 0) {
+        $('.isActive').prop('checked', false); // Unchecks it
+        // $('#'+category).prop('checked', true); // Checks it
+        // selected_category.value = category;
+        // mark.value = 'x';
+        queries.value.forEach(function(key, value) {
+            if (key == category) {
+            console.log(key);
+            $("#"+key).prop('checked', true); // Checks it
+              $("#"+key).addClass('active');
+            selected_category.value = key;
+            mark.value = 'x'
+              // isActive.value = false;
+            }
+        })
+        $('#selectedCategory').append(store_categories.value)
+        await axios
+        .get(`https://dummyjson.com/products/category/${category}`)
+        .then(response => {
+            // console.log('categories', response.data)
+            products.value = response.data.products;
+        })
+        .catch(error => {
+            if (error.response != undefined) {
+              if (error.response.status == 422) {
+                // let messages = JSON.parse(error.response.data)
+                // errors = JSON.parse(error.response.data)
+                $('.error').html('')
+                // this.nameError.append(error.response.data.name)
+              } else if (error.response.status == 401) {
+                // :class="{ 'active' : fetchData }"
+                // document.getElementByClassName('error').remove()
+                // document.getElementsByClassName('error').html('')
+                $('.error').html('')
+              }
+            }
+        });
+    }
+    else {
+        filtered_products.value = initial_products.value
+        total.value = 100;
+    }
 }
 
 const sort_by_category = (e) => {
@@ -424,75 +477,47 @@ const loadMoreData = () => {
 }
 
 const fetchData = (query) => {
-      // console.log('selectedCategory', selected_categories.value)
-    store_categories.add_or_remove_selected(query)
- // console.log(JSON.parse(JSON.stringify(store_categories.selected_categories)).length !== 0)
+    // store_categories.add_or_remove_selected(query);
+    // store_categories.addOrRemoveSelected(query);
+    store_categories.addRemoveSelected(query);
+    // console.log(JSON.parse(JSON.stringify(store_categories.selected_categories)));
     if (JSON.parse(JSON.stringify(store_categories.selected_categories)).length !== 0) {
       isActive = true;
       $('.isActive').removeClass('active');
-   // console.log('', store_categories.selected_categories)
-        // $('.isActive').prop('checked', false); // Unchecks it
-
-        $('.isActive').prop('checked', false); // Unchecks it
-      queries.value.forEach(function(key, value) {
-        if (key == query) {
-          $("#"+key).addClass('active');
-        $("#"+key).prop('checked', true); // Checks it
-        selected_category.value = key;
-        mark.value = ' x '
-          // isActive.value = false;
-        }
-        // $('.isActive').prop('checked', false); // Unchecks it
-        // $("#"+key).prop('checked', false); // Unchecks it
-        // $("#"+key).prop('checked', true); // Checks it
-        // $("#"+key).removeClass('active');
-      })
-      $('#selectedCategory').append(store_categories.value)
-      // console.log('selectedCategory1', selected_categories.value)
-      // `https://dummyjson.com/products/category/${category}`
-      // `https://dummyjson.com/products/category/${query}`
-      // $('.isActive').addClass('active');
-      // if (isActive.value == true) {}
-      limit.value = 6;
-      let url;
-      limit.value == total.value ? url = `https://dummyjson.com/products/search?limit=${limit.value}&q=${query}&skip=${limit.value}` : url = `https://dummyjson.com/products/search?limit=${limit.value}&q=${query}`;
-      // let url = `https://dummyjson.com/products/category/${query}`;
-      // axios.get('http://127.0.0.1:8000/api/auth/user-profile', {
-      // axios.get(`https://dummyjson.com/products/search?q=${query}`, {
-      // axios.get(`https://dummyjson.com/products/search?limit=${limit.value}&q=${query}`, {
-      axios.get(url, {
-        method: 'GET',
-        // method: 'POST',
-        mode: 'no-cors',
-      })
-      .then(resp => {
-        // $('.container').html('')
-        // limit.value = resp.data.limit;
-        // alert(limit.value)
-        // limit.value = limit.value + 6;
-        total.value = resp.data.total;
-        // limit.value > total.value ? limit.value = 6 : limit.value + 6;
-        items.value = resp;
-        products.value = resp.data.products
-        filtered_products.value = products.value
-        columns.value = Object.keys(resp.data.products[0]);
-        length.value = products.length;
-      })
-      .catch(error => {
-        if (error.response != undefined) {
-          if (error.response.status == 422) {
-            // let messages = JSON.parse(error.response.data)
-            // errors = JSON.parse(error.response.data)
-            $('.error').html('')
-            // this.nameError.append(error.response.data.name)
-          } else if (error.response.status == 401) {
-            // :class="{ 'active' : fetchData }"
-            // document.getElementByClassName('error').remove()
-            // document.getElementsByClassName('error').html('')
-            $('.error').html('')
-          }
-        }
-      });
+      $('.isActive').prop('checked', false); // Unchecks it
+        queries.value.forEach(function(key, value) {
+            if (key == query) {
+                $("#"+key).prop('checked', true); // Checks it
+                $("#"+key).addClass('active');
+                selected_category.value = key;
+                mark.value = 'x'
+            }
+        })
+        $('#selectedCategory').append(store_categories.value)
+        limit.value = 6;
+        let url;
+        limit.value == total.value ? url = `https://dummyjson.com/products/search?limit=${limit.value}&q=${query}&skip=${limit.value}` : url = `https://dummyjson.com/products/search?limit=${limit.value}&q=${query}`;
+        axios.get(url, {
+            method: 'GET',
+            mode: 'no-cors',
+        })
+        .then(resp => {
+            total.value = resp.data.total;
+            items.value = resp;
+            products.value = resp.data.products
+            filtered_products.value = products.value
+            columns.value = Object.keys(resp.data.products[0]);
+            length.value = products.length;
+        })
+        .catch(error => {
+            if (error.response != undefined) {
+              if (error.response.status == 422) {
+                $('.error').html('')
+              } else if (error.response.status == 401) {
+                $('.error').html('')
+              }
+            }
+        });
     }
     else {
         filtered_products.value = initial_products.value
