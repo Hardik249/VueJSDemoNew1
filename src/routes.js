@@ -50,6 +50,14 @@ export const routes = [
     path: '/checkout',
     name: 'Payment',
     component: import("@/components/payment/payment.vue"),
+    // component: import("@/components/payment/Payments.vue"),
+    meta: { breadCrumb: 'Payment' },
+  },
+  {
+    path: '/buy',
+    name: 'Buy',
+    // component: import("@/components/payment/payment.vue"),
+    component: import("@/components/payment/Payments.vue"),
     meta: { breadCrumb: 'Payment' },
   },
   {

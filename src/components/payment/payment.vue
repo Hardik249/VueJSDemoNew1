@@ -10,7 +10,7 @@
                     <div class="card px-0 pt-4 pb-0 mt-3 mb-3">
                         <h2 id="heading">Sign Up Your User Account</h2>
                         <p>Fill all form field to go to next step</p>
-                        <form id="msform">
+                        <form id="msform" @submit.prevent="createOrder">
                             <!-- progressbar -->
                             <ul id="progressbar">
                                 <li class="active" id="account"><strong>Account</strong></li>
@@ -151,6 +151,10 @@
                                             Select Payment Method
                                     </label>
                                     <div class="addressbox mt-2">
+                                        <input type="radio" id="razorpay" name="payment" value="razorpay">
+                                        <label for="razorpay">Razorpay</label><br>
+                                    </div>
+                                    <div class="addressbox mt-2">
                                         <input type="radio" id="goolepay" name="payment" value="goolepay">
                                         <label for="goolepay">goolepay</label><br>
                                     </div>
@@ -166,7 +170,7 @@
                                 </div> 
                                 <span for="payment" generated="true" class="help-block"></span>
                                 <span class="error" id="selectPaymentError"></span><br>
-                                <input type="button" name="next" class="next action-button" value="Submit" /> 
+                                <input type="submit" name="next" class="next submit action-button" value="Submit" />
                                 <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
                             </fieldset>
                             <fieldset>
@@ -179,6 +183,17 @@
                                             <h2 class="steps">Step 4 - 4</h2>
                                         </div>
                                     </div> <br><br>
+                                    <div id="razorpayForm" style="display:none;">
+                                      <form>
+                                        <div>
+                                          <input type="number" v-model="amount" />
+                                          <input type="text" v-model="currency" />
+
+                                          <button id="rzp-button1" type="button" class="btn">Create Order</button>
+                                        </div>
+                                      </form>
+                                    </div>
+                                  <div id="successMessage" style="display:none;">
                                     <h2 class="purple-text text-center"><strong>SUCCESS !</strong></h2> <br>
                                     <div class="row justify-content-center">
                                         <div class="col-3"> <img src="https://i.imgur.com/GwStPmg.png" class="fit-image"> </div>
@@ -188,7 +203,9 @@
                                             <h5 class="purple-text text-center">You Have Successfully Signed Up</h5>
                                         </div>
                                     </div>
+                                  </div>
                                 </div>
+                                <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
                             </fieldset>
                         </form>
                     </div>
@@ -498,7 +515,55 @@ import { element_index_in_array } from '@/services/utils/utils'
 
 let address = ref([]);
 const store_cart = useCart();
+let amount = ref(`${store_cart.total_amount()}`);
+let currency = ref('EUR');
+let script = ref(`https://checkout.razorpay.com/v1/checkout.js`);
 
+function loadRazorPay() {
+  return new Promise((resolve) => {
+    const script = document.createElement('script');
+    script.src = script.value;
+    script.onload = () => {
+      resolve(true);
+    };
+    script.onerror = () => {
+      resolve(false);
+    };
+    document.body.appendChild(script);
+  });
+}
+
+// async function createOrder() {
+//   // Access the amount and currency properties
+//   const orderData = {
+//     amount: amount.value,
+//     currency: currency.value,
+//   };
+
+//   // Make the API call to create the order
+//   try {
+//     const response = await axios.post('http://localhost:3001/api/orders/createorder/', orderData);
+//     const { order_id, amount, currency, key } = response.data;
+
+//     const razorpay = new Razorpay({
+//       key: key,
+//       amount: amount,
+//       currency: currency,
+//       name: 'My Store',
+//       // Add more options as needed
+//     });
+
+//     razorpay.on('payment.success', (payment_id) => {
+//       // Handle the payment success event
+//         loadRazorPay();
+//     });
+
+//     razorpay.open();
+//   } catch (error) {
+//     console.log(error);
+//     // Handle the error
+//   }
+// }
 
 onMounted(async () => {
     console.log('o')
@@ -508,8 +573,19 @@ onMounted(async () => {
         // console.log('pymnt', response.data.data)
         address.value = response.data.data;
     });
+    // const result = await loadRazorPay();
+    // if (!result) {
+    //   alert('Failed to load Razorpay script');
+    //   return;
+    // }
 });
-
+// async function mounted() {
+//     const result = await this.loadRazorPay();
+//     if (!result) {
+//       alert('Failed to load Razorpay script');
+//       return;
+//     }
+//   }
 let getUserAddresses = async () => {
     await axios
     .get(`http://localhost:3001/api/userAddress/userAddressList/${localStorage.id}`)
@@ -539,6 +615,62 @@ if (store_cart.items.length != 0) {
     }
 
     $(document).ready(function(){
+
+        $('#rzp-button1').click(async function(e){
+          // Access the amount and currency properties
+          const orderData = {
+            amount: amount.value,
+            currency: currency.value,
+          };
+
+          // Make the API call to create the order
+          try {
+            const response = await axios.post('http://localhost:3001/api/orders/createorder/', orderData);
+            const { order_id, amount, currency, key } = response.data;
+
+            const razorpay = new Razorpay({
+              key: key,
+              amount: amount,
+              currency: currency,
+              name: 'My Store',
+              // Add more options as needed
+                "handler": function (response){
+                    // alert(response.razorpay_payment_id);
+                    // alert(response.razorpay_order_id);
+                    // alert(response.razorpay_signature);
+                    $('#successMessage').css('display', '');
+                    $('#razorpayForm').css('display', 'none');
+                },
+            });
+
+            // "handler": function (response){
+            //     alert(response.razorpay_payment_id);
+            //     alert(response.razorpay_order_id);
+            //     alert(response.razorpay_signature);
+            //     $('#successMessage').css('display', '');
+            //     $('#razorpayForm').css('display', 'none');
+            // },
+
+            // razorpay.on('payment.success', (payment_id) => {
+            //   // Handle the payment success event
+            //     $('#successMessage').css('display', '');
+            //     $('#razorpayForm').css('display', 'none');
+            //     loadRazorPay();
+            // });
+
+            // razorpay.on('payment.success', (payment_id) => {
+            //   // Handle the payment success event
+            //   $('#successMessage').css('display', 'block');
+            //   $('#razorpayForm').css('display', 'none');
+            //   loadRazorPay();
+            // });
+
+            razorpay.open();
+          } catch (error) {
+            console.log(error);
+            // Handle the error
+          }
+        });
 
         $('#addressAdd').click(function() {
             // alert('ml')
@@ -649,7 +781,7 @@ if (store_cart.items.length != 0) {
 
         setProgressBar(current);
 
-        $(".next").click(function(){
+        $(".next").click(async function(){
             $('.error').html('');
 
             current_fs = $(this).parent();
@@ -696,19 +828,6 @@ if (store_cart.items.length != 0) {
                 addressId: id,
                 total: total,
             });
-            // console.log('id', id);
-            // // Define the custom method
-            // $.validator.addMethod(
-            //   "pattern",
-            //   function(value, element, pattern) {
-            //     if (!pattern || !value) {
-            //       return true; // Skip validation if pattern or value is not provided
-            //     }
-            //     var regex = new RegExp(pattern);
-            //     return regex.test(value);
-            //   },
-            //   "Invalid format."
-            // );
             let form = $('#msform');
             form.validate({
                 errorElement: 'span',
@@ -787,7 +906,7 @@ if (store_cart.items.length != 0) {
                 }
             }
             if (form.valid() === true) {
-                $("input[name='payment']")
+                // $("input[name='payment']")
                 // console.log('submit', $("input[name='payment']"))
                 // console.log('error', firstNameError ? firstNameError : "First Name required")
                 // alert(opacity)
@@ -808,6 +927,13 @@ if (store_cart.items.length != 0) {
                 });
                 // alert(current);
                 setProgressBar(++current);
+                if ($('input[name="payment"]:checked').val() == 'razorpay') {
+                    $('#successMessage').css('display', 'none');
+                    $('#razorpayForm').css('display', '');
+                } else {
+                    $('#successMessage').css('display', '');
+                    $('#razorpayForm').css('display', 'none');
+                }
                 // console.log('tv', $(this).val());
                 if ($(this).val() == 'Submit') {
                     let inputsPersonal = window.document.getElementsByClassName('personal-details');
@@ -956,7 +1082,8 @@ if (store_cart.items.length != 0) {
         .css("width",percent+"%")
         }
 
-        $(".submit").click(function(){
+        $(".submit").click(async function(){
+            // createOrder();
             return false;
         })
 
