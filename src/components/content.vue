@@ -45,7 +45,7 @@
                 <search @searched_word="handle_search"></search>
             </div>
             <div class="products">
-                <card v-for="product in filtered_products" :key="product.id" :url="product.thumbnail" :alt="product.title"
+                <card v-for="product in filtered_products" :key="product.id" :url="product.thumbnail" :alt="product.title" :stock="product.stock"
                     :title="product.title" :price="product.price" :category="product.category"
                     @handle_like="handle_like" @dis_like="remove_like" @item_clicked="add_item(product)" @product_clicked="add_wish(product)" :id="product.id">
                 </card>
@@ -362,15 +362,16 @@ let productsId;
 let wishProductIds = [];
 onMounted(async () => {
     await axios
-    .get('https://dummyjson.com/products?limit=6')
+    // .get('https://dummyjson.com/products?limit=6')
+    .get('http://localhost:3001/api/products/productsList')
     .then(response => {
-     // console.log('djp', response.data.limit)
-        products.value = response.data.products
+     console.log('rdp', response.data);
+        products.value = response.data.products ? response.data.products : response.data.data
         initial_products.value = products.value
      // console.log(products)
         limit.value = 6;
         items.value = response;
-        columns.value = Object.keys(response.data.products[0]);
+        columns.value = Object.keys(response.data.products ? response.data.products[0] : response.data.data[0]);
         totalProducts.value = response.data;
         totalProductsLimit.value = response.data.limit
         total.value = response.data.total;

@@ -95,6 +95,11 @@
                 <div v-else>
                     {{ item_in_wish.product.title }}
                 </div>
+                <div>
+                    <span :id="'stock-'+index" v-if="item_in_wish.product.stock < 2">
+                        Out of Stock
+                    </span>
+                </div>
                 <!-- <template v-slot:reduceQuantity>
                     <button class="handleQuantity" @click="reduceQuantity(item_in_wish)"> - </button>
                 </template>

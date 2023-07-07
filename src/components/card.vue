@@ -13,6 +13,7 @@
             <div class="prices">
                 <span> {{ price }} € </span>
                 <s> {{ strikeprice }} € </s>
+                <!-- <span> {{ stock  }} </span> -->
             </div>
         </div>
 
@@ -77,6 +78,10 @@ const props = defineProps({
     href: {
         type: String,
         required: true,
+    },
+    stock: {
+        type: String,
+        // default: 0,
     },
 })
 

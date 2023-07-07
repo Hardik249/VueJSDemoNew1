@@ -49,7 +49,8 @@
             <!-- Product Pricing -->
             <div class="product-price">
               <span> {{ product.price }} € </span>
-              <button @click="add_item(product)" class="cart-btn">Add to cart</button>
+              <button @click="add_item(product)" class="cart-btn" v-if="stockmsg == ''">Add to cart</button>
+              <span v-else>{{stockmsg}}</span>
             </div>
           </div>
         </main>
@@ -77,6 +78,7 @@ const store_cart = useCart()
 let bannerImage = ref();
 let activeClass = ref();
 const productImages = ref([])
+let stockmsg = ref("");
 // const productImages = [
 //   {
 //     id: 3435,
@@ -109,6 +111,7 @@ onMounted(async () => {
         // products.value = response.data.products
         // initial_products.value = products.value
         product.value = response.data.data;
+        stockmsg.value = response.data.data.stock < 2 ? 'Out of stock' : '';
      // console.log(product.value);
         bannerImage.value = response.data.data.thumbnail;
         productImages.value = response.data.images;

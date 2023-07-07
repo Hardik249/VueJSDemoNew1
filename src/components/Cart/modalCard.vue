@@ -9,7 +9,7 @@
                 </strong></p>
             <div class="quantity">
                 <slot name="reduceQuantity"></slot>
-                <span :id="'product-' + productId"> x {{ quantity }} </span>
+                <span :productId="'product-' + productId" :id="id"> x {{ quantity }} </span>
                 <slot name="addQuantity"></slot>
             </div>
         </div>
@@ -45,6 +45,7 @@ defineProps({
     },
     productId: {
         type: Number,
+        default: 0,
         // required: true
     },
 })

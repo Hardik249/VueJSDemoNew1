@@ -66,7 +66,10 @@
             <!-- v-if="store_cart.getItems ? " -->
             <!-- {{ store_cart.items.length }} -->
             <!-- {{ store_cart.number }} -->
-            <modalCard v-for="item_in_cart in store_cart.items" :image="item_in_cart.item ? item_in_cart.item.thumbnail : item_in_cart.product.thumbnail"
+            <modalCard v-for="(item_in_cart, index) in
+            store_cart.items" :image="item_in_cart.item ?
+            item_in_cart.item.thumbnail :
+            item_in_cart.product.thumbnail" :productId="'product-' + product.id"
                 :quantity="item_in_cart.number ? item_in_cart.number : item_in_cart.quantity" :computedPrice="item_in_cart.item ? item_in_cart.number * item_in_cart.item.price : item_in_cart.quantity * item_in_cart.product.price" :id="'product-'+item_in_cart.productId">
                 <!-- {{ productId }} -->
                 <!-- {{ item_in_cart.productId }} -->
@@ -84,6 +87,12 @@
                 </div>
                 <div v-else>
                     {{ item_in_cart.product.title }}
+                </div>
+                <div>
+                    <span :id="'stock-'+index">
+                        <!-- {{ stockmsg }} -->
+                        {{ stockmsg[index] }}
+                    </span>
                 </div>
                 <template v-slot:reduceQuantity>
                     <button class="handleQuantity" @click="reduceQuantity(item_in_cart)"> - </button>
@@ -107,7 +116,7 @@
             </div>
             <div class="promo" v-if="store_cart.items.length !== 0">
                 <!-- <input type="checkbox" class="isActive" id="ring" name="ring" value="ring" @click="fetchData('ring')"> <label for="ring">Rings</label><br> -->
-                <span><input type="checkbox" v-model="have_promo"> I have a promo code </span><br>
+                <span><input type="checkbox" v-model="have_promo" id="have_promo"> <label for="have_promo"> I have a promo code </label></span><br>
                 <input type="text" v-if="have_promo" placeholder="Code promo" v-model="promo_value"
                     @input="check_promo_code">
             </div>
@@ -133,16 +142,22 @@ import modalCard from './modalCard.vue';
 import { useCart } from '@/store/cart.store.js'
 import { element_index_in_array } from '@/services/utils/utils'
 import axios from 'axios';
+// import modal from './modal.vue';
 
 let limit = ref(0);
 // let productId = ref(0);
 let totalProducts = ref(0);
 let length = ref(0);
+let quantity = ref([]);
 let items = ref([]);
 // let columns = ref([]);
 let totalProductsLimit = ref(0);
 
 let cart_products = ref([]);
+let products = ref([]);
+// let stockmsg = ref("");
+const stockmsg = ref([]);
+
 const store_cart = useCart()
 const isOpen = inject('dataModalCart')
 // let productId = store_cart.productId;
@@ -317,13 +332,105 @@ watchEffect(() => {
     total.value = store_cart.total_amount().toFixed(2)
  // console.log(isOpen + "zfzfzefzefez")
 })
-const goPayement = () => {
-    if (!localStorage.jwtToken) {
-        window.location = '#/auth'
-    } else {
-        window.location = '#/checkout'
+onMounted(async () => {
+    await axios
+    // .get('https://dummyjson.com/products?limit=6')
+    .get('http://localhost:3001/api/products/productslist')
+    .then(response => {
+     console.log('rdp', response.data);
+        products.value = response.data.products ? response.data.products : response.data.data;
+    });
+})
+// const goPayement = async () => {
+//     if (!localStorage.jwtToken) {
+//         window.location = '#/auth'
+//     } else {
+//         let isStock = false;
+//         let stock = new Array();
+//         let stockmsg;
+//         // let isStock;
+//         store_cart.items.forEach(async function(index, item) {
+//             // console.log(`${index.quantity} ${item}`);
+//             console.log(`${index.productId} ${item}`);
+//             await axios
+//             // .get('https://dummyjson.com/products?limit=6')
+//             .get(`http://localhost:3001/api/products/product/${index.productId}`)
+//             .then(response => {
+//                 console.log('response', response);
+//                 // console.log('s', response.data.data.stock);
+//                 // console.log('condition', response.data.data.stock > 2);
+//                 // if (response.data.data.stock >= 2) {
+//                 //     window.location = '#/checkout'
+//                 // }
+//                 stockmsg = response.data.data.stock >= 2 ? 'out of stock' : '';
+//                 isStock = response.data.data.stock >= 2 ? true : false;
+//                 stock.push(response.data.data.stock);
+//                 // stock['stock'] = response.data.data.stock;
+//             });
+//             // console.log('is', isStock);
+//             if (isStock === true) {
+//                 window.location = '#/checkout'
+//             } else {
+//                 // window.location = '#/'
+//                 $('#stock').append(stockmsg);
+//             }
+//             // stock.forEach(function(key, value) {
+//             //     console.log(`${key} ${value}`);
+//             //     console.log(key);
+//             // })
+//         })
+//                 $('#stock').append(stockmsg);
+//         // console.log(stock);
+//         // console.log('ist', isStock);
+//         // await axios
+//         // // .get('https://dummyjson.com/products?limit=6')
+//         // .get('http://localhost:3001/api/products/productslist')
+//         // .then(response => {
+//         //     console.log('quantity', response.data.data);
+//         //     console.log(store_cart.items);
+//         //     response.data.data.forEach(function(key, value) {
+//         //         // console.log(`${key.stock} ${value}`);
+//         //         console.log('condition', key.stock > 2);
+//         //     })
+//         //     store_cart.items.forEach(function(index, item) {
+//         //         console.log(`${index.quantity} ${item}`);
+//         //     })
+//         // });
+//     }
+// }
+
+const goPayement = async () => {
+  if (!localStorage.jwtToken) {
+    window.location = '#/auth';
+  } else {
+    let isStock = false;
+    let stock = new Array();
+let stockmsg1;
+    for (const index in store_cart.items) {
+      const item = store_cart.items[index];
+      // console.log(index);
+      try {
+        const response = await axios.get(`http://localhost:3001/api/products/product/${item.productId}`);
+        console.log('response', response);
+        if (response.data.data.stock >= 2) {
+          stockmsg.value[index] = ''; // Empty stock message if stock is sufficient
+        } else {
+          stockmsg.value[index] = 'Out of stock';
+        }
+        stockmsg1 = response.data.data.stock >= 2 ? '' : $('#stock'+index).append('out of stock');
+        // $('#stock'+index).append('out of stock')
+        isStock = response.data.data.stock >= 2 ? false : true;
+        stock.push(response.data.data.stock);
+      } catch (error) {
+        console.error('Error:', error);
+      }
     }
-}
+    // console.log(stockmsg1);
+    if (isStock === false) {
+        window.location = '#/checkout';
+    }
+  }
+};
 </script>
 
 <style scoped>

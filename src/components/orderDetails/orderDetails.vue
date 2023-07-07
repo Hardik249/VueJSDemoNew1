@@ -49,6 +49,7 @@
                           </div>
                           <div class="flex-lg-grow-1 ms-3">
                             <h6 class="small mb-0"><a :href="myorder.product ? '#/product/'+ myorder.product.id : ''" class="text-reset">{{ myorder.product ? myorder.product.title : '' }}</a></h6>
+                            <h6 class="small" v-if="myorder.product.stock < 2">Out of Stock</h6>
                             <!-- <span class="small">Color: Black</span> -->
                           </div>
                         </div>
