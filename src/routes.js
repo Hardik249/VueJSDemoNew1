@@ -47,6 +47,13 @@ export const routes = [
     // props: () => {default : true}
   },
   {
+    path: '/cart',
+    name: 'Cart',
+    component: import("@/components/Cart/modelCart.vue"),
+    // component: import("@/components/payment/Payments.vue"),
+    meta: { breadCrumb: 'Cart' },
+  },
+  {
     path: '/checkout',
     name: 'Payment',
     component: import("@/components/payment/payment.vue"),
