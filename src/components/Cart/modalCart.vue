@@ -66,10 +66,13 @@
             <!-- v-if="store_cart.getItems ? " -->
             <!-- {{ store_cart.items.length }} -->
             <!-- {{ store_cart.number }} -->
+            <!-- {{ item_in_cart.product.id }} -->
+            <!-- :productId="'product-' + product.id" -->
+            <!-- :productId="item_in_cart.product.id" -->
             <modalCard v-for="(item_in_cart, index) in
             store_cart.items" :image="item_in_cart.item ?
             item_in_cart.item.thumbnail :
-            item_in_cart.product.thumbnail" :productId="'product-' + product.id"
+            item_in_cart.product.thumbnail" :productId="item_in_cart.product.id"
                 :quantity="item_in_cart.number ? item_in_cart.number : item_in_cart.quantity" :computedPrice="item_in_cart.item ? item_in_cart.number * item_in_cart.item.price : item_in_cart.quantity * item_in_cart.product.price" :id="'product-'+item_in_cart.productId">
                 <!-- {{ productId }} -->
                 <!-- {{ item_in_cart.productId }} -->
